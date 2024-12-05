@@ -1,0 +1,209 @@
+<html><head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f0f0f0;
+  }
+  
+  .game-container {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 20px;
+  }
+  
+  .hangman-svg {
+    width: 200px;
+    height: 200px;
+    margin: 20px;
+  }
+  
+  .word-display {
+    font-size: 2em;
+    letter-spacing: 0.3em;
+    margin: 20px;
+  }
+  
+  .keyboard {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 5px;
+    margin: 20px;
+  }
+  
+  .key {
+    padding: 10px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .key:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .key:hover:not(:disabled) {
+    background: #45a049;
+  }
+  
+  .image-hint {
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+  }
+  
+  .stats {
+    margin: 10px;
+    font-size: 1.2em;
+  }
+</style>
+</head>
+<body>
+<div class="game-container">
+  <h1>Juego del Ahorcado</h1>
+  <div class="stats">
+    Aciertos: <span id="wins">0</span> | Fallos: <span id="losses">0</span>
+  </div>
+  
+  <svg class="hangman-svg" viewBox="0 0 200 200">
+    <!-- Base -->
+    <line x1="40" y1="180" x2="160" y2="180" stroke="black" stroke-width="4"/>
+    <!-- Poste vertical -->
+    <line x1="60" y1="20" x2="60" y2="180" stroke="black" stroke-width="4" id="vertical"/>
+    <!-- Poste horizontal -->
+    <line x1="60" y1="20" x2="140" y2="20" stroke="black" stroke-width="4" id="horizontal"/>
+    <!-- Soga -->
+    <line x1="140" y1="20" x2="140" y2="40" stroke="black" stroke-width="4" id="rope"/>
+    <!-- Cabeza -->
+    <circle cx="140" cy="55" r="15" stroke="black" stroke-width="4" fill="transparent" id="head"/>
+    <!-- Cuerpo -->
+    <line x1="140" y1="70" x2="140" y2="120" stroke="black" stroke-width="4" id="body"/>
+    <!-- Brazos -->
+    <line x1="140" y1="80" x2="120" y2="100" stroke="black" stroke-width="4" id="leftArm"/>
+    <line x1="140" y1="80" x2="160" y2="100" stroke="black" stroke-width="4" id="rightArm"/>
+    <!-- Piernas -->
+    <line x1="140" y1="120" x2="120" y2="150" stroke="black" stroke-width="4" id="leftLeg"/>
+    <line x1="140" y1="120" x2="160" y2="150" stroke="black" stroke-width="4" id="rightLeg"/>
+  </svg>
+  
+  <div id="imageHint"></div>
+  <div class="word-display" id="wordDisplay"></div>
+  <div class="keyboard" id="keyboard"></div>
+</div>
+
+<script>
+const words = [
+
+  { word: 'PERRO', img: '<img src="perro.png" alt="Imagen de un perro" width="20%">' },
+  { word: 'GATO', img: '<img src="gato.png" alt="Imagen de un gato" width="20%">' },
+  { word: 'CASA', img: '<img src="casa.png" alt="Imagen de una casa" width="20%">' },
+  { word: 'SOL', img: '<img src="sol.png" alt="Imagen del sol" width="20%">' },
+  { word: 'LUNA', img: '<img src="luna.png" alt="Imagen de la luna" width="20%">' },
+  { word: 'ARBOL', img: '<img src="arbol.png" alt="Imagen de un árbol" width="20%">' },
+  { word: 'FLOR', img: '<img src="flor.png" alt="Imagen de una flor" width="20%">' },
+  { word: 'CIELO', img: '<img src="cielo.png" alt="Imagen del cielo" width="20%">' },
+  { word: 'ESTRELLA', img: '<img src="estrella.png" alt="Imagen de una estrella" width="20%">' },
+  { word: 'CARRO', img: '<img src="carro.png" alt="Imagen de un carro" width="20%">' },
+  { word: 'CHICO', img: '<img src="chico.png" alt="Imagen de un niño" width="20%">' },
+  { word: 'CHICA', img: '<img src="chica.png" alt="Imagen de una niña" width="20%">' },
+  { word: 'COMIDA', img: '<img src="comida.png" alt="Imagen de comida" width="20%">' },
+  { word: 'AGUA', img: '<img src="agua.png" alt="Imagen de agua" width="20%">' },
+  { word: 'LIBRO', img: '<img src="libro.png" alt="Imagen de un libro" width="20%">' },
+  { word: 'ESCUELA', img: '<img src="escuela.png" alt="Imagen de una escuela" width="20%">' }
+
+
+];
+
+
+let currentWord = '';
+let currentImage = '';
+let guessedLetters = new Set();
+let mistakes = 0;
+let wins = 0;
+let losses = 0;
+
+const bodyParts = ['head', 'body', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'];
+
+function initializeGame() {
+  const randomIndex = Math.floor(Math.random() * words.length);
+  currentWord = words[randomIndex].word;
+  currentImage = words[randomIndex].img;
+  guessedLetters.clear();
+  mistakes = 0;
+  
+  // Reset hangman
+  bodyParts.forEach(part => {
+    document.getElementById(part).style.display = 'none';
+  });
+  
+  // Show image hint
+  document.getElementById('imageHint').innerHTML = currentImage;
+  
+  updateWordDisplay();
+  updateKeyboard();
+}
+
+function updateWordDisplay() {
+  const display = currentWord
+    .split('')
+    .map(letter => guessedLetters.has(letter) ? letter : '_')
+    .join(' ');
+  document.getElementById('wordDisplay').textContent = display;
+}
+
+function updateKeyboard() {
+  const keyboard = document.getElementById('keyboard');
+  keyboard.innerHTML = '';
+  
+  'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('').forEach(letter => {
+    const button = document.createElement('button');
+    button.textContent = letter;
+    button.className = 'key';
+    button.disabled = guessedLetters.has(letter);
+    button.onclick = () => makeGuess(letter);
+    keyboard.appendChild(button);
+  });
+}
+
+function makeGuess(letter) {
+  guessedLetters.add(letter);
+  
+  if (!currentWord.includes(letter)) {
+    mistakes++;
+    if (mistakes <= bodyParts.length) {
+      document.getElementById(bodyParts[mistakes - 1]).style.display = 'block';
+    }
+    
+    if (mistakes === bodyParts.length) {
+      losses++;
+      document.getElementById('losses').textContent = losses;
+      alert(`¡Perdiste! La palabra era ${currentWord}`);
+      initializeGame();
+      return;
+    }
+  }
+  
+  updateWordDisplay();
+  updateKeyboard();
+  
+  if ([...currentWord].every(letter => guessedLetters.has(letter))) {
+    wins++;
+    document.getElementById('wins').textContent = wins;
+    alert('¡Felicitaciones! ¡Ganaste!');
+    initializeGame();
+  }
+}
+
+// Iniciar el juego
+initializeGame();
+</script>
+</body></html>

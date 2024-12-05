@@ -1,0 +1,239 @@
+<html><head><base href="https://webeditor.example.com/output/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f0f2f5;
+    }
+
+    .titulo {
+        font-size: 30px;
+        font-weight: bold;
+        margin-left: 30px;
+        color: #2c3e50;
+    }
+    
+    .subtitulo {
+        font-size: 20px;
+        margin-left: 30px;
+        margin-top: -23px;
+        color: #34495e;
+    }
+
+    .titulo_celda {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    
+    .imagen { 
+        width: 140px;
+        height: 140px;
+        margin: 5px;
+        cursor: pointer;
+        border: 3px solid transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .imagen.selected {
+        border-color: #3498db;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    }
+    
+    .tabla {
+        border-collapse: separate;
+        border-spacing: 60px;
+    }
+    
+    .alineada_arriba {
+        vertical-align: top;
+        text-align: right;
+    }
+    
+    .contenido_celda {
+        font-size: 20px;
+        background-color: rgb(215, 227, 251);
+        padding: 20px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .contenido_celda:hover {
+        background-color: rgb(190, 210, 250);
+    }
+
+    .contenido_celda.selected {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .correct {
+        background-color: #2ecc71 !important;
+        color: white;
+    }
+
+    .incorrect {
+        background-color: #e74c3c !important;
+        color: white;
+    }
+
+    #verificar {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #verificar:hover {
+        background-color: #3498db;
+    }
+
+    #verificar:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+    }
+</style>
+</head>
+<body>
+    <p class="titulo">Titulo del conjunto de fichas de vocabulario</p>
+    <p class="subtitulo"><b>Relaciona</b> las imagenes con las palabras</p>
+    
+    <table class="tabla">
+    <tr>
+        <td>
+            <table>
+            <tr>
+                <td class="titulo_celda">1</td>
+                <td class="titulo_celda">2</td>
+                <td class="titulo_celda">3</td>
+            </tr>
+            <tr>
+                <td><img class="imagen" data-id="1" src="https://via.placeholder.com/140x140.png?text=1" alt="Imagen_01"></td>
+                <td><img class="imagen" data-id="2" src="https://via.placeholder.com/140x140.png?text=2" alt="Imagen_02"></td>
+                <td><img class="imagen" data-id="3" src="https://via.placeholder.com/140x140.png?text=3" alt="Imagen_03"></td>
+            </tr>
+            <tr>
+                <td class="titulo_celda">4</td>
+                <td class="titulo_celda">5</td>
+                <td class="titulo_celda">6</td>
+            </tr>
+            <tr>
+                <td><img class="imagen" data-id="4" src="https://via.placeholder.com/140x140.png?text=4" alt="Imagen_04"></td>
+                <td><img class="imagen" data-id="5" src="https://via.placeholder.com/140x140.png?text=5" alt="Imagen_05"></td>
+                <td><img class="imagen" data-id="6" src="https://via.placeholder.com/140x140.png?text=6" alt="Imagen_06"></td>
+            </tr>
+            </table>
+        </td>
+    
+        <td class="alineada_arriba">
+            <table>
+                <tr>
+                    <td class="titulo_celda">a</td>
+                    <td class="contenido_celda" data-answer="3">familiar</td>
+                </tr>
+                <tr>
+                    <td class="titulo_celda">b</td>
+                    <td class="contenido_celda" data-answer="4">cultural</td>
+                </tr>
+                <tr>
+                    <td class="titulo_celda">c</td>
+                    <td class="contenido_celda" data-answer="6">social</td>
+                </tr>
+                <tr>
+                    <td class="titulo_celda">d</td>
+                    <td class="contenido_celda" data-answer="2">deportivo</td>
+                </tr>
+                <tr>
+                    <td class="titulo_celda">e</td>
+                    <td class="contenido_celda" data-answer="1">de trabajo</td>
+                </tr>
+                <tr>
+                    <td class="titulo_celda">f</td>
+                    <td class="contenido_celda" data-answer="5">religioso</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
+
+    <button id="verificar" disabled>Verificar</button>
+
+<script>
+let selectedImage = null;
+let selectedWord = null;
+
+// Add click handlers to images
+document.querySelectorAll('.imagen').forEach(img => {
+    img.addEventListener('click', function() {
+        // Remove previous selection
+        document.querySelectorAll('.imagen').forEach(i => i.classList.remove('selected'));
+        
+        // Select this image
+        this.classList.add('selected');
+        selectedImage = this;
+
+        updateVerificarButton();
+    });
+});
+
+// Add click handlers to words
+document.querySelectorAll('.contenido_celda').forEach(cell => {
+    cell.addEventListener('click', function() {
+        // Remove previous selection
+        document.querySelectorAll('.contenido_celda').forEach(c => c.classList.remove('selected'));
+        
+        // Select this word
+        this.classList.add('selected');
+        selectedWord = this;
+
+        updateVerificarButton();
+    });
+});
+
+function updateVerificarButton() {
+    const verificarBtn = document.getElementById('verificar');
+    verificarBtn.disabled = !(selectedImage && selectedWord);
+}
+
+document.getElementById('verificar').addEventListener('click', function() {
+    checkMatch();
+});
+
+function checkMatch() {
+    const imageId = selectedImage.dataset.id;
+    const wordAnswer = selectedWord.dataset.answer;
+
+    if(imageId === wordAnswer) {
+        // Correct match
+        selectedImage.style.opacity = '0.5';
+        selectedWord.classList.add('correct');
+        selectedImage.style.pointerEvents = 'none';
+        selectedWord.style.pointerEvents = 'none';
+    } else {
+        // Incorrect match
+        selectedWord.classList.add('incorrect');
+        setTimeout(() => {
+            selectedWord.classList.remove('incorrect');
+        }, 1000);
+    }
+
+    // Clear selections
+    selectedImage.classList.remove('selected');
+    selectedWord.classList.remove('selected');
+    selectedImage = null;
+    selectedWord = null;
+    
+    // Disable verify button after checking
+    document.getElementById('verificar').disabled = true;
+}
+</script>
+
+</body></html>

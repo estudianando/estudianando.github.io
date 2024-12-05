@@ -1,0 +1,452 @@
+<html><head>
+<meta charset="UTF-8">
+<title>Dictado en Español</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        max-width: 800px;
+        width: 90%;
+    }
+
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #2980b9;
+    }
+
+    .text-area {
+        margin: 20px 0;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        margin: 0 5px;
+        border: 2px solid #3498db;
+        border-radius: 4px;
+        width: 120px;
+    }
+
+    .feedback {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .correct {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .incorrect {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .score {
+        text-align: center;
+        font-size: 1.2em;
+        color: #2c3e50;
+        margin-top: 20px;
+    }
+
+    .hint {
+        color: #666;
+        font-size: 0.9em;
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dictado en Español</h1>
+        
+        <div class="controls">
+            <button id="playAudio">▶️ Reproducir Audio</button>
+            <button id="checkAnswers">✅ Verificar Respuestas</button>
+            <button id="showSolution">💡 Ver Solución</button>
+            <button id="nextExercise">➡️ Siguiente Ejercicio</button>
+        </div>
+
+        <div class="text-area" id="dictationText">
+            <!-- El texto con huecos se insertará aquí -->
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="score" id="score">Puntuación: 0/0</div>
+        <div class="hint">Escucha el audio y completa los espacios en blanco</div>
+    </div>
+
+<script>
+const exercises = [
+    {
+        text: "El [perro] juega en el [jardín] con una [pelota] roja.",
+        words: ["perro", "jardín", "pelota"]
+    },
+    {
+        text: "Mi [hermana] estudia [medicina] en la [universidad].",
+        words: ["hermana", "medicina", "universidad"]
+    },
+    {
+        text: "El [sol] brilla en el [cielo] [azul].",
+        words: ["sol", "cielo", "azul"]
+    },
+	{ 
+		text: "El [gato] duerme en la [silla] junto al [ventanal].", 
+		words: ["gato", "silla", "ventanal"] 
+	},
+	{ 
+		text: "Mi [padre] trabaja en una [oficina] del [centro].", 
+		words: ["padre", "oficina", "centro"] 
+	},
+	{ 
+		text: "El [perro] ladra en la [caseta] del [jardín].", 
+		words: ["perro", "caseta", "jardín"] 
+	}, 
+	{ 
+		text: "Mi [padre] trabaja en una [oficina] del [centro].", 
+		words: ["padre", "oficina", "centro"] 
+	}, 
+	{ 
+		text: "El [viento] sopla fuerte en la [playa] [desierta].", 
+		words: ["viento", "playa", "desierta"] 
+	}, 
+	{ 
+		text: "La [luna] brilla en la [noche] [oscura].", 
+		words: ["luna", "noche", "oscura"] 
+	}, 
+	{ 
+		text: "Mi [amigo] pinta un [cuadro] en su [estudio].", 
+		words: ["amigo", "cuadro", "estudio"] 
+	}, 
+	{ 
+		text: "El [niño] corre en el [parque] con su [cometa].", 
+		words: ["niño", "parque", "cometa"] 
+	}, 
+	{ 
+		text: "La [flor] crece en el [jardín] [colorido].", 
+		words: ["flor", "jardín", "colorido"] 
+	}, 
+	{ 
+		text: "Mi [madre] cocina en la [cocina] de la [casa].", 
+		words: ["madre", "cocina", "casa"] 
+	}, 
+	{ 
+		text: "El [barco] navega en el [océano] [inmenso].", 
+		words: ["barco", "océano", "inmenso"] 
+	}, 
+	{ 
+		text: "El [pájaro] canta en la [rama] del [árbol].", 
+		words: ["pájaro", "rama", "árbol"] 
+	}, 
+	{ 
+		text: "Mi [hermano] juega al [fútbol] en el [campo].", 
+		words: ["hermano", "fútbol", "campo"] 
+	}, 
+	{ 
+		text: "La [niña] lee un [libro] en la [biblioteca].", 
+		words: ["niña", "libro", "biblioteca"] 
+	}, 
+	{ 
+		text: "El [profesor] enseña [matemáticas] en el [aula].", 
+		words: ["profesor", "matemáticas", "aula"] 
+	}, 
+	{ 
+		text: "La [estrella] brilla en el [cielo] [nocturno].", 
+		words: ["estrella", "cielo", "nocturno"] 
+	}, 
+	{ 
+		text: "Mi [abuelita] teje en su [silla] [mecedora].", 
+		words: ["abuelita", "silla", "mecedora"] 
+	}, 
+	{ 
+		text: "El [perro] ladra en el [patio] de la [casa].", 
+		words: ["perro", "patio", "casa"] 
+	}, 
+	{ 
+		text: "Mi [primo] nada en la [piscina] del [club].", 
+		words: ["primo", "piscina", "club"] 
+	}, 
+	{ 
+		text: "El [león] ruge en la [selva] [africana].", 
+		words: ["león", "selva", "africana"] 
+	}, 
+	{ 
+		text: "El [tren] llega a la [estación] [central].", 
+		words: ["tren", "estación", "central"] 
+	}, 
+	{ 
+		text: "Mi [tía] toca el [piano] en el [salón].", 
+		words: ["tía", "piano", "salón"] 
+	}, 
+	{ 
+		text: "El [doctor] atiende a un [paciente] en el [hospital].", 
+		words: ["doctor", "paciente", "hospital"] 
+	}, 
+	{ 
+		text: "La [tierra] se mueve en el [campo] de [cultivo].", 
+		words: ["tierra", "campo", "cultivo"] 
+	}, 
+	{ 
+		text: "Mi [sobrina] baila en el [escenario] del [teatro].", 
+		words: ["sobrina", "escenario", "teatro"] 
+	}, 
+	{ 
+		text: "El [carro] avanza por la [carretera] [nacional].", 
+		words: ["carro", "carretera", "nacional"] 
+	}, 
+	{ 
+		text: "El [músico] toca la [guitarra] en el [concierto].", 
+		words: ["músico", "guitarra", "concierto"] 
+	}, 
+	{ 
+		text: "La [tortuga] nada en el [acuario] [tropical].", 
+		words: ["tortuga", "acuario", "tropical"] 
+	}, 
+	{ 
+		text: "El [bombero] apaga el [incendio] en el [edificio].", 
+		words: ["bombero", "incendio", "edificio"] 
+	}, 
+	{ 
+		text: "La [abuela] hornea una [tarta] en la [cocina].", 
+		words: ["abuela", "tarta", "cocina"] 
+	}, 
+	{ 
+		text: "El [artista] esculpe una [escultura] en su [taller].", 
+		words: ["artista", "escultura", "taller"] 
+	}, 
+	{ 
+		text: "El [chef] prepara una [cena] en el [restaurante].", 
+		words: ["chef", "cena", "restaurante"] 
+	}, 
+	{ 
+		text: "La [bailarina] danza en el [escenario] del [teatro].", 
+		words: ["bailarina", "escenario", "teatro"] 
+	}, 
+	{ 
+		text: "Mi [primo] toca la [batería] en la [banda].", 
+		words: ["primo", "batería", "banda"] 
+	}, 
+	{ 
+		text: "El [pianista] interpreta una [pieza] en el [concierto].", 
+		words: ["pianista", "pieza", "concierto"] 
+	}, 
+	{ 
+		text: "El [cocinero] fríe un [huevo] en la [sartén].", 
+		words: ["cocinero", "huevo", "sartén"] 
+	}, 
+	{ 
+		text: "La [nieve] cubre el [paisaje] [invernal].", 
+		words: ["nieve", "paisaje", "invernal"] 
+	}, 
+	{ 
+		text: "El [pintor] mezcla [colores] en su [paleta].", 
+		words: ["pintor", "colores", "paleta"] 
+	}, 
+	{ 
+		text: "La [policía] investiga el [crimen] en la [escena].", 
+		words: ["policía", "crimen", "escena"] 
+	}, 
+	{ 
+		text: "El [bebé] duerme en su [cuna] [cómoda].", 
+		words: ["bebé", "cuna", "cómoda"] 
+	}, 
+	{ 
+		text: "La [estrella] del [mar] descansa en la [arena].", 
+		words: ["estrella", "mar", "arena"] 
+	}, 
+	{ 
+		text: "El [piloto] conduce el [avión] en el [cielo].", 
+		words: ["piloto", "avión", "cielo"] 
+	}, 
+	{ 
+		text: "Mi [novia] dibuja un [retrato] en su [cuaderno].", 
+		words: ["novia", "retrato", "cuaderno"] 
+	}, 
+	{ 
+		text: "El [barbero] corta el [pelo] en su [tienda].", 
+		words: ["barbero", "pelo", "tienda"] 
+	}, 
+	{ 
+		text: "El [ladrón] roba en una [joyería] de la [ciudad].", 
+		words: ["ladrón", "joyería", "ciudad"] 
+	}, 
+	{ 
+		text: "Mi [amiga] cose un [vestido] en su [máquina].", 
+		words: ["amiga", "vestido", "máquina"] 
+	}, 
+	{ 
+		text: "El [ingeniero] diseña un [puente] en su [oficina].", 
+		words: ["ingeniero", "puente", "oficina"] 
+	}, 
+	{ 
+		text: "El [guitarrista] ensaya con su [guitarra] en el [estudio].", 
+		words: ["guitarrista", "guitarra", "estudio"] 
+	}, 
+	{ 
+		text: "Mi [vecina] riega las [plantas] en el [balcón].", 
+		words: ["vecina", "plantas", "balcón"] 
+	}, 
+	{ 
+		text: "La [maestra] califica los [exámenes] en la [escuela].", 
+		words: ["maestra", "exámenes", "escuela"] }
+	
+];
+
+let currentExercise = 0;
+let score = 0;
+let totalAttempts = 0;
+let speaking = false;
+
+function createInputs(text, words) {
+    let processedText = text;
+    words.forEach((word, index) => {
+        processedText = processedText.replace(
+            `[${word}]`,
+            `<input type="text" data-correct="${word}" id="input${index}">`
+        );
+    });
+    return processedText;
+}
+
+function getFullText(exercise) {
+    return exercise.text.replace(/\[(.*?)\]/g, '$1');
+}
+
+function playAudio() {
+    if (speaking) {
+        window.speechSynthesis.cancel();
+        speaking = false;
+        return;
+    }
+
+    const exercise = exercises[currentExercise];
+    const fullText = getFullText(exercise);
+    
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    
+    utterance.onstart = () => {
+        speaking = true;
+    };
+    
+    utterance.onend = () => {
+        speaking = false;
+    };
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+function loadExercise() {
+    const exercise = exercises[currentExercise];
+    document.getElementById('dictationText').innerHTML = createInputs(exercise.text, exercise.words);
+    document.getElementById('feedback').innerHTML = '';
+    document.getElementById('feedback').className = 'feedback';
+}
+
+function checkAnswers() {
+    const inputs = document.querySelectorAll('input[type="text"]');
+    let allCorrect = true;
+    let correctCount = 0;
+
+    inputs.forEach(input => {
+        const userAnswer = input.value.toLowerCase().trim();
+        const correctAnswer = input.dataset.correct.toLowerCase();
+
+        if (userAnswer === correctAnswer) {
+            input.style.backgroundColor = '#d4edda';
+            correctCount++;
+        } else {
+            input.style.backgroundColor = '#f8d7da';
+            allCorrect = false;
+        }
+    });
+
+    const feedback = document.getElementById('feedback');
+    if (allCorrect) {
+        feedback.innerHTML = '¡Excelente! Todas las respuestas son correctas.';
+        feedback.className = 'feedback correct';
+        score++;
+    } else {
+        feedback.innerHTML = 'Hay algunos errores. ¡Inténtalo de nuevo!';
+        feedback.className = 'feedback incorrect';
+    }
+    totalAttempts++;
+    updateScore();
+}
+
+function showSolution() {
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        input.value = input.dataset.correct;
+        input.style.backgroundColor = '#d4edda';
+    });
+}
+
+function nextExercise() {
+    if (speaking) {
+        window.speechSynthesis.cancel();
+        speaking = false;
+    }
+    currentExercise = (currentExercise + 1) % exercises.length;
+    loadExercise();
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.value = '';
+        input.style.backgroundColor = 'white';
+    });
+}
+
+function updateScore() {
+    document.getElementById('score').innerHTML = `Puntuación: ${score}/${totalAttempts}`;
+}
+
+// Event Listeners
+document.getElementById('playAudio').addEventListener('click', playAudio);
+document.getElementById('checkAnswers').addEventListener('click', checkAnswers);
+document.getElementById('showSolution').addEventListener('click', showSolution);
+document.getElementById('nextExercise').addEventListener('click', nextExercise);
+
+// Iniciar el primer ejercicio
+loadExercise();
+</script>
+
+</body>
+</html>

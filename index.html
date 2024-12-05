@@ -167,6 +167,7 @@ body {
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s ease;
+	text-decoration: none;
 }
 
 .test-button:hover {
@@ -722,6 +723,44 @@ body {
     }
 }
 
+:root {
+    --disponible: #90EE90;
+    --ocupado: #FFB6C6;
+    --no-disponible: #D3D3D3;
+}
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+.calendar-table th, .calendar-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+.header-cell {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+.time-label {
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+}
+.disponible {
+    background-color: var(--disponible);
+}
+.ocupado {
+    background-color: var(--ocupado);
+}
+.no-disponible {
+    background-color: var(--no-disponible);
+}
+
+
 /* Add these styles for the mini-games section */
 .mini-games-section {
     width: 100%;
@@ -824,9 +863,9 @@ body {
         
         <nav class="nav">
             <a href="index.html" class="nav-link">Inicio</a>
-            <a href=" " class="nav-link">Blog Personal</a>
-            <a href=" " class="nav-link">Sobre mí</a>
-            <a href=" " class="nav-link">Contacto</a>
+            <a href="blog.html" class="nav-link">Blog</a>
+            <a href="practica.html" class="nav-link">Practica / Juega</a>
+            <a href="contacto.html" class="nav-link">Contacto</a>
 
             <div class="flags">
                 
@@ -1082,228 +1121,41 @@ body {
             <div class="schedule-table">
 				<center><h2> Diciembre </h2></center>
 				<br>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Hora</th>
-                           <th>Miércoles<br> 4 </th> 
-						   <th>Jueves<br> 5 </th> 
-						   <th>Viernes<br> 6 </th> 
-						   <th>Sábado<br> 7 </th> 
-						   <th>Domingo<br> 8 </th> 
-						   <th>Lunes<br> 9 </th> 
-						   <th>Martes<br> 10 </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-						<!--  
-						
-						Ocupado 
-						  <td class="occupied">Ocupado</td>
-					    
-							
-						Disponible 
-						  <td>Disponible</td>
-						  
-						  
-						No disponible 
-							<td style="background-color:#ccc;">No disponible</td>
-						
-						-->
-                            <td>09:00</td>
-                            <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>10:00</td>
-                            <td class="occupied">Ocupado</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>11:00</td>
-                             <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>12:00</td>
-                           <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>13:00</td>
-                            <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>14:00</td>
-                            <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>15:00</td>
-                            <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>16:00</td>
-                            <td class="occupied">Ocupado</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>17:00</td>
-                          	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>18:00</td>
-                           	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>19:00</td>
-                            	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>20:00</td>
-                           	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>21:00</td>
-                           	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>22:00</td>
-                          	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                        <tr>
-                            <td>23:00</td>
-                           	<td style="background-color:#ccc;">No disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-							<td>Disponible</td>
-						    <td>Disponible</td>
-							<td>Disponible</td>
-                        </tr>
-                    </tbody>
-                </table>
+<table class="calendar-table"><thead><tr><th class="header-cell"></th><th class="header-cell"><span class="day-name">Jueves</span><span class="day-number">
+6/12</span></th><th class="header-cell"><span class="day-name">Viernes</span><span class="day-number">
+7/12</span></th><th class="header-cell"><span class="day-name">Sábado</span><span class="day-number">
+8/12</span></th><th class="header-cell"><span class="day-name">Domingo</span><span class="day-number">
+9/12</span></th><th class="header-cell"><span class="day-name">Lunes</span><span class="day-number">
+10/12</span></th><th class="header-cell"><span class="day-name">Martes</span><span class="day-number">
+11/12</span></th><th class="header-cell"><span class="day-name">Miércoles</span><span class="day-number">
+12/12</span></th></tr></thead><tbody><tr><td class="time-label">9:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">10:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">11:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">12:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">13:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">14:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">15:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">16:00</td><td class="ocupado">Ocupado</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">17:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">18:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">19:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">20:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">21:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">22:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr><tr><td class="time-label">23:00</td><td class="no-disponible">No disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td><td class="disponible">Disponible</td></tr></tbody></table>
             </div>
            
         </div>
 		
     </section>
 
-
-    <section class="blog-section animated">
-        <h2 class="section-title">Mi blog</h2>
-        
-        <div class="blog-post">
-            <h3 class="post-title">Título del Post 1</h3>
-            <div class="post-meta">
-                <span class="post-date">15 de marzo, 2024</span>
-                <span class="post-time">14:30</span>
-            </div>
-            <svg class="blog-image" viewBox="0 0 800 400">
-                <rect width="800" height="400" fill="#e0e0e0" rx="24" ry="24"/>
-                <text x="400" y="200" text-anchor="middle" fill="#666">Imagen del blog</text>
-            </svg>
-            <p class="post-content">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </p>
-        </div>
-    </section>
-
-  
-
-    <section class="level-test-section animated">
+   <section class="level-test-section animated">
         <div class="test-content">
-            <svg class="test-image" viewBox="0 0 425 358">
-                <rect width="425" height="358" fill="#e0e0e0"/>
-                <text x="212" y="179" text-anchor="middle" fill="#666">Test de nivel</text>
-            </svg>
+            <img class="feature-image" src="prueba_test.png" width="294" height="221" alt="Prueba de nivel">
+						<!--
+                        <svg class="feature-image" viewBox="0 0 294 221">
+                            <rect width="294" height="221" fill="#e0e0e0" rx="24" ry="24"/>
+                            <circle cx="147" cy="80" r="40" fill="#666"/>
+                            <path d="M147 130 Q147 140 147 150 T147 170" stroke="#666" stroke-width="4"/>
+                            <text x="147" y="190" text-anchor="middle" fill="#666">Pin Hsuan Yu</text>
+                        </svg>
+						-->
             <div class="test-info">
-                <h3 class="test-title">Descubre tu nivel actual</h3>
-                <p class="test-description">Realiza nuestra prueba de nivel gratuita y personalizada para evaluar tus habilidades actuales. Este test te ayudará a identificar tus puntos fuertes y áreas de mejora, permitiéndonos crear un plan de estudio adaptado a tus necesidades específicas.</p>
-                <button class="test-button">Prueba tu nivel ahora</button>
+                <h3 class="test-title">¡Prueba tu nivel de español ahora!</h3>
+                <p class="test-description">Realiza nuestra prueba de nivel gratuita y para evaluar tus habilidades actuales. Este test te ayudará a identificar tus puntos fuertes y áreas de mejora, permitiéndonos crear un plan de estudio adaptado a tus necesidades específicas.</p>
+                <a class="test-button" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScflIUVLfaHtWoLqk1zbzgy6PWs6FBRUo820zIx7_mlB74hKQ/viewform?usp=sharing">Prueba tu nivel ahora</a>
+				
+				
             </div>
         </div>
     </section>
-
+<!--
     <section class="level-test-section animated">
         <div class="test-content">
             <div class="test-info">
@@ -1317,125 +1169,8 @@ body {
             </svg>
         </div>
     </section>
+-->
 
-
-    <section class="contact-section animated">
-        <h2 class="section-title">Contacta conmigo</h2>
-        <form class="contact-form" action="mailto:ensenando.con.nando@gmail.com" method="POST" enctype="text/plain">
-            <div class="form-group">
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required>
-            </div>
-            <div class="form-group">
-                <label for="apellidos">Apellidos</label>
-                <input type="text" id="apellidos" name="apellidos" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="contenido">Contenido</label>
-                <textarea id="contenido" name="contenido" rows="6" required></textarea>
-            </div>
-            <button type="submit" class="test-button">Enviar</button>
-        </form>
-    </section>
-
-    <section class="mini-games-section animated">
-        <h2 class="section-title">Practica con mis mini-juegos</h2>
-        <div class="games-grid">
-            <a href="https://example.com/game1" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Juego de Memoria</text>
-                </svg>
-                <h3 class="game-title">Juego de Memoria</h3>
-                <p class="game-description">Practica vocabulario con este divertido juego de memoria.</p>
-            </a>
-
-            <a href="https://example.com/game2" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Ahorcado</text>
-                </svg>
-                <h3 class="game-title">Ahorcado</h3>
-                <p class="game-description">Adivina palabras y mejora tu vocabulario.</p>
-            </a>
-
-            <a href="https://example.com/game3" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Quiz Gramática</text>
-                </svg>
-                <h3 class="game-title">Quiz Gramática</h3>
-                <p class="game-description">Pon a prueba tus conocimientos gramaticales.</p>
-            </a>
-
-            <a href="https://example.com/game4" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Palabras Cruzadas</text>
-                </svg>
-                <h3 class="game-title">Palabras Cruzadas</h3>
-                <p class="game-description">Crucigramas educativos para aprender nuevo vocabulario.</p>
-            </a>
-
-            <a href="https://example.com/game5" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Sopa de Letras</text>
-                </svg>
-                <h3 class="game-title">Sopa de Letras</h3>
-                <p class="game-description">Encuentra palabras ocultas y mejora tu vocabulario.</p>
-            </a>
-
-            <a href="https://example.com/game6" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Conjugación</text>
-                </svg>
-                <h3 class="game-title">Conjugación</h3>
-                <p class="game-description">Practica la conjugación de verbos en todos los tiempos.</p>
-            </a>
-
-            <a href="https://example.com/game7" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Ordenar Frases</text>
-                </svg>
-                <h3 class="game-title">Ordenar Frases</h3>
-                <p class="game-description">Aprende estructura gramatical ordenando frases.</p>
-            </a>
-
-            <a href="https://example.com/game8" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Dictado</text>
-                </svg>
-                <h3 class="game-title">Dictado</h3>
-                <p class="game-description">Mejora tu comprensión auditiva y ortografía.</p>
-            </a>
-
-            <a href="https://example.com/game9" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Trivia Cultural</text>
-                </svg>
-                <h3 class="game-title">Trivia Cultural</h3>
-                <p class="game-description">Aprende sobre cultura mientras practicas el idioma.</p>
-            </a>
-
-            <a href="https://example.com/game10" class="game-card">
-                <svg class="game-image" viewBox="0 0 200 200">
-                    <rect width="200" height="200" fill="#e0e0e0" rx="12" ry="12"/>
-                    <text x="100" y="100" text-anchor="middle" fill="#666">Sinónimos</text>
-                </svg>
-                <h3 class="game-title">Sinónimos</h3>
-                <p class="game-description">Expande tu vocabulario encontrando palabras similares.</p>
-            </a>
-        </div>
-    </section>
 
     <footer class="footer">
         <div class="social-icons">
@@ -1463,7 +1198,7 @@ body {
                 </svg>
             </a>
         </div>
-        <p class="copyright">Copyright 2024 Lingoda GmbH. Zimmerstr. 69, 10117 Berlin - All Rights Reserved</p>
+        <p class="copyright">Copyright 2024 Fernando García Gázquez - All Rights Reserved</p>
     </footer>
 
     <script>

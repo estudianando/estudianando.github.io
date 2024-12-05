@@ -1,0 +1,181 @@
+<html><head><base href="." />
+<meta charset="UTF-8">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  body {
+    background: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .game-container {
+    max-width: 800px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .score-panel {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+  }
+
+  .card {
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card svg {
+    width: 120px;
+    height: 120px;
+  }
+
+  .input-area {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 1.1em;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #45a049;
+  }
+
+  .feedback {
+    margin-top: 10px;
+    font-size: 1.1em;
+    min-height: 30px;
+  }
+
+  .correct {
+    color: #4CAF50;
+  }
+
+  .incorrect {
+    color: #f44336;
+  }
+</style>
+</head>
+<body>
+<div class="game-container">
+  <div class="score-panel">
+    <h2>Juego de Memoria en Español</h2>
+    <p>Puntuación: <span id="score">0</span> / <span id="total">50</span></p>
+  </div>
+  <div id="current-card" class="card"></div>
+  <div class="input-area">
+    <input type="text" id="guess-input" placeholder="Escribe la palabra...">
+    <button onclick="checkAnswer()">Comprobar</button>
+  </div>
+  <div id="feedback" class="feedback"></div>
+</div>
+
+<script>
+const vocabulary = [
+  { word: 'perro', img: '<img src="perro.png" alt="Imagen de un perro" width="90%">' },
+  { word: 'gato', img: '<img src="gato.png" alt="Imagen de un gato" width="90%">' },
+  { word: 'casa', img: '<img src="casa.png" alt="Imagen de una casa" width="90%">' },
+  { word: 'sol', img: '<img src="sol.png" alt="Imagen del sol" width="90%">' },
+  { word: 'luna', img: '<img src="luna.png" alt="Imagen de la luna" width="90%">' },
+  { word: 'árbol', img: '<img src="arbol.png" alt="Imagen de un árbol" width="90%">' },
+  { word: 'flor', img: '<img src="flor.png" alt="Imagen de una flor" width="90%">' },
+  { word: 'cielo', img: '<img src="cielo.png" alt="Imagen del cielo" width="90%">' },
+  { word: 'estrella', img: '<img src="estrella.png" alt="Imagen de una estrella" width="90%">' },
+  { word: 'carro', img: '<img src="carro.png" alt="Imagen de un carro" width="90%">' },
+  { word: 'chico', img: '<img src="chico.png" alt="Imagen de un niño" width="90%">' },
+  { word: 'chica', img: '<img src="chica.png" alt="Imagen de una niña" width="90%">' },
+  { word: 'comida', img: '<img src="comida.png" alt="Imagen de comida" width="90%">' },
+  { word: 'agua', img: '<img src="agua.png" alt="Imagen de agua" width="90%">' },
+  { word: 'libro', img: '<img src="libro.png" alt="Imagen de un libro" width="90%">' },
+  { word: 'escuela', img: '<img src="escuela.png" alt="Imagen de una escuela" width="90%">' }
+
+];
+
+let currentIndex = 0;
+let score = 0;
+
+function showCard() {
+  const card = document.getElementById('current-card');
+  card.innerHTML = vocabulary[currentIndex].img;
+}
+
+function checkAnswer() {
+  const input = document.getElementById('guess-input');
+  const feedback = document.getElementById('feedback');
+  const userGuess = input.value.toLowerCase().trim();
+  const correctWord = vocabulary[currentIndex].word;
+
+  if (userGuess === correctWord) {
+    score++;
+    feedback.innerHTML = '¡Correcto!';
+    feedback.className = 'feedback correct';
+    document.getElementById('score').textContent = score;
+  } else {
+    feedback.innerHTML = `Incorrecto. La palabra correcta era: ${correctWord}`;
+    feedback.className = 'feedback incorrect';
+  }
+
+  input.value = '';
+  currentIndex = (currentIndex + 1) % vocabulary.length;
+  
+  if (currentIndex === 0) {
+    alert(`¡Juego terminado! Tu puntuación final es: ${score}/${vocabulary.length}`);
+    score = 0;
+    document.getElementById('score').textContent = score;
+  }
+  
+  showCard();
+}
+
+// Iniciar el juego
+showCard();
+
+// Permitir enviar respuesta con Enter
+document.getElementById('guess-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    checkAnswer();
+  }
+});
+</script>
+</body></html>

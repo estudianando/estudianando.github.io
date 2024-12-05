@@ -1,0 +1,315 @@
+<html><head>
+<style>
+:root {
+  --primary-color: #2196F3;
+  --success-color: #4CAF50;
+  --error-color: #f44336;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f0f2f5;
+  margin: 0;
+  padding: 20px;
+}
+
+.game-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.image-container {
+  margin: 20px 0;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container svg {
+  max-height: 100%;
+  width: auto;
+}
+
+.words-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.word {
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.sentence-container {
+  min-height: 50px;
+  border: 2px dashed #ccc;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.controls {
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.check-btn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.next-btn {
+  background: var(--success-color);
+  color: white;
+}
+
+.score {
+  font-size: 18px;
+  margin: 20px 0;
+}
+
+.feedback {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.correct {
+  background: var(--success-color);
+  color: white;
+}
+
+.incorrect {
+  background: var(--error-color);
+  color: white;
+}
+</style>
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Unique/96.7.6709.64';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'RafWebPlugin', 'description': 'Rafwe checking plugin', 'filename': 'rafwebplugin.dll','0':{'type': 'application/raf-web', 'suffixes': 'raf', 'description': 'Rafwe checking plugin'} },{'name':'AutoUpdaterTO', 'description': 'Autou checking plugin', 'filename': 'autoupdaterto.dll','0':{'type': 'application/auto-updater-to', 'suffixes': 'auto', 'description': 'Autou checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script></head>
+<body>
+
+<div class="game-container">
+  <h1>Ordena las Frases</h1>
+  <div class="score">Puntuación: <span id="score">0</span>/23</div>
+  <div class="image-container" id="imageContainer"></div>
+  <div class="words-container" id="wordsContainer"></div>
+  <div class="sentence-container" id="sentenceContainer"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="controls">
+    <button class="check-btn" onclick="checkSentence()">Comprobar</button>
+    <button class="next-btn" onclick="nextSentence()">Siguiente</button>
+  </div>
+</div>
+
+<script>
+const sentences = [
+ {
+    text: "El sol está rodeado de nubes",
+    image: '<img src="sol.png" alt="Imagen de un sol" width="200">'
+ },
+  {
+    text: "Las mariposas vuelan cerca del árbol",
+    image: '<img src="arbol.png" alt="Imagen de un árbol" width="200">'
+  },
+  {
+    text: "El gato tiene dos ojos muy grandes de color azul",
+    image: '<img src="gato.png" alt="Imagen de un gato" width="200">'
+  },
+  {
+    text: "La niña juega con su osito de color blanco",
+    image: '<img src="chica.png" alt="Imagen de una niña" width="200">'
+  },
+  {
+    text: "El perro está encima de un cojín rosa",
+    image: '<img src="perro.png" alt="Imagen de un perro" width="200">'
+  },
+  {
+    text: "Hay una mariquita trepando la flor",
+    image: '<img src="flor.png" alt="Imagen de una flor" width="200">'
+  },
+  {
+    text: "Las estrellas brillan fuerte aunque estén lejos",
+    image: '<img src="estrella.png" alt="Imagen de una flor" width="200">'
+  },
+  {
+    text: "Hay peces de colores nadando en una pecera",
+    image: '<img src="peces.png" alt="Imagen de unos peces" width="200">'
+  },
+  {
+    text: "La luna está brillando por la noche",
+    image: '<img src="luna.png" alt="Imagen de una luna" width="200">'
+  },
+  {
+    text: "La portada del libro es de color marrón",
+    image: '<img src="libro.png" alt="Imagen de un libro" width="200">'
+  },
+  {
+    text: "Las mariposas vuelan entre las flores",
+    image: '<img src="mariposas.png" alt="Imagen de unas mariposas" width="200">'
+  },
+  {
+    text: "El chico está muy feliz en el barco",
+    image: '<img src="ventajas.png" alt="Imagen de un niño en un barco" width="200">'
+  },
+  {
+    text: "La casa tiene dos ventanas grandes",
+    image: '<img src="casa.png" alt="Imagen de una casa" width="200">'
+  },
+  {
+    text: "Hay un jóven con una piruleta grande",
+    image: '<img src="chico.png" alt="Imagen de un jóven con una piruleta" width="200">'
+  },
+  {
+    text: "El carro está lleno de plantas",
+    image: '<img src="carro.png" alt="Imagen de un carro" width="200">'
+  },
+  {
+    text: "Las montañas están lejos del lago",
+    image: '<img src="agua.png" alt="Imagen de un lago" width="200">'
+  },
+  {
+    text: "Hay mucha comida en el plato",
+    image: '<img src="comida.png" alt="Imagen de comida" width="200">'
+  }, 
+  {
+    text: "En la calle hay dos chicos hablando",
+    image: '<img src="conversacion.png" alt="Imagen de gente hablando" width="200">'
+  },
+  {
+    text: "El estudiante tropezó con el plátano",
+    image: '<img src="errores.png" alt="Imagen de comida" width="200">'
+  },  
+  {
+    text: "Los alumnos están felices en la escuela",
+    image: '<img src="escuela.png" alt="Imagen de comida" width="200">'
+  },
+  {
+    text: "El reloj marca las siete en punto",
+    image: '<img src="horarios_flexibles.png" alt="Imagen de comida" width="200">'
+  },
+  {
+    text: "Hay un búho en el papel",
+    image: '<img src="prueba_test.png" alt="Imagen de comida" width="200">'
+  },
+  {
+    text: "La pizarra está llena de letras",
+    image: '<img src="vocabulario.png" alt="Imagen de comida" width="200">'
+  }
+  
+];
+
+let currentSentenceIndex = 0;
+let score = 0;
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function displaySentence() {
+  const currentSentence = sentences[currentSentenceIndex];
+  const words = currentSentence.text.split(" ");
+  const shuffledWords = shuffleArray([...words]);
+  
+  // Display image
+  document.getElementById('imageContainer').innerHTML = currentSentence.image;
+  
+  // Display words
+  const wordsContainer = document.getElementById('wordsContainer');
+  wordsContainer.innerHTML = '';
+  shuffledWords.forEach(word => {
+    const wordElement = document.createElement('button');
+    wordElement.className = 'word';
+    wordElement.textContent = word;
+    wordElement.onclick = () => moveWord(wordElement);
+    wordsContainer.appendChild(wordElement);
+  });
+  
+  // Clear sentence container
+  document.getElementById('sentenceContainer').innerHTML = '';
+  document.getElementById('feedback').innerHTML = '';
+}
+
+function moveWord(wordElement) {
+  const sentenceContainer = document.getElementById('sentenceContainer');
+  const wordsContainer = document.getElementById('wordsContainer');
+  
+  if (wordElement.parentElement === wordsContainer) {
+    sentenceContainer.appendChild(wordElement);
+  } else {
+    wordsContainer.appendChild(wordElement);
+  }
+}
+
+function checkSentence() {
+  const sentenceContainer = document.getElementById('sentenceContainer');
+  const currentSentence = sentences[currentSentenceIndex];
+  const userSentence = Array.from(sentenceContainer.children)
+    .map(word => word.textContent)
+    .join(" ");
+  
+  const feedback = document.getElementById('feedback');
+  if (userSentence === currentSentence.text) {
+    feedback.textContent = "¡Correcto!";
+    feedback.className = "feedback correct";
+    score++;
+    document.getElementById('score').textContent = score;
+  } else {
+    feedback.textContent = "Incorrecto. Pulsa Siguiente para continuar.";
+    feedback.className = "feedback incorrect";
+  }
+}
+
+function nextSentence() {
+  currentSentenceIndex++;
+  if (currentSentenceIndex >= sentences.length) {
+    currentSentenceIndex = 0;
+    alert(`¡Juego completado! Puntuación final: ${score}/${sentences.length}`);
+    score = 0;
+    document.getElementById('score').textContent = score;
+  }
+  displaySentence();
+}
+
+// Start game
+displaySentence();
+</script>
+</body></html>

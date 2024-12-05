@@ -1,0 +1,476 @@
+<html><head><base href="/">
+<meta charset="UTF-8">
+<title>Trivial de Vocabulario Español</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        max-width: 800px;
+        width: 90%;
+    }
+
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .question-container {
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 10px;
+        background: #f8f9fa;
+    }
+
+    .question {
+        font-size: 1.2em;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .options {
+        display: grid;
+        gap: 10px;
+    }
+
+    .option {
+        background: #fff;
+        border: 2px solid #3498db;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .option:hover {
+        background: #e8f4fc;
+    }
+
+    .option.selected {
+        background: #3498db;
+        color: white;
+    }
+
+    .option.correct {
+        background: #2ecc71;
+        color: white;
+        border-color: #27ae60;
+    }
+
+    .option.incorrect {
+        background: #e74c3c;
+        color: white;
+        border-color: #c0392b;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #2980b9;
+    }
+
+    .score {
+        text-align: center;
+        font-size: 1.2em;
+        color: #2c3e50;
+        margin-top: 20px;
+    }
+
+    .progress {
+        text-align: center;
+        color: #666;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trivial de Vocabulario</h1>
+        <div class="question-container">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+        </div>
+        <div class="controls">
+            <button id="checkAnswer">Comprobar Respuesta</button>
+            <button id="nextQuestion">Siguiente Pregunta</button>
+        </div>
+        <div class="score" id="score">Puntuación: 0/0</div>
+        <div class="progress" id="progress">Pregunta 1 de 100</div>
+    </div>
+
+<script>
+const questions = [
+    {
+        question: "¿Qué significa 'ensimismado'?",
+        options: ["Distraído en sus pensamientos", "Muy alegre", "Enfadado", "Dormido"],
+        correct: 0
+    },
+    {
+        question: "¿Cuál es el sinónimo de 'efímero'?",
+        options: ["Eterno", "Pasajero", "Duradero", "Constante"],
+        correct: 1
+    },
+    {
+        question: "¿Qué es un 'ademán'?",
+        options: ["Un tipo de comida", "Un movimiento o gesto", "Una prenda de vestir", "Un mueble"],
+        correct: 1
+    },
+    {
+        question: "¿Qué significa 'atávico'?",
+        options: ["Moderno", "Ancestral", "Tecnológico", "Futurista"],
+        correct: 1
+    },
+    {
+        question: "¿Qué es una 'dádiva'?",
+        options: ["Una maldición", "Un regalo", "Una enfermedad", "Un insulto"],
+        correct: 1
+    },
+    {
+        question: "¿Qué significa 'impetuoso'?",
+        options: ["Arrogante", "Violento y rápido", "Perezoso", "Tranquilo"],
+        correct: 1
+    },
+    {
+        question: "¿Qué es un 'resquicio'?",
+        options: ["Una abertura pequeña", "Un postre", "Un animal", "Una planta"],
+        correct: 0
+    },
+    {
+        question: "¿Qué significa 'taciturno'?",
+        options: ["Hablador", "Callado y melancólico", "Divertido", "Energético"],
+        correct: 1
+    },
+    {
+        question: "¿Qué es una 'añoranza'?",
+        options: ["Una celebración", "Una nostalgia", "Una comida", "Una danza"],
+        correct: 1
+    },
+    {
+        question: "¿Qué significa 'sempiterno'?",
+        options: ["Temporal", "Eterno", "Moderno", "Antiguo"],
+        correct: 1
+    },
+    {
+        question: "¿Qué es un 'vestigio'?",
+        options: ["Una huella del pasado", "Un tipo de ropa", "Una comida", "Un baile"],
+        correct: 0
+    },
+    {
+        question: "¿Qué significa 'fatuo'?",
+        options: ["Inteligente", "Presumido y tonto", "Trabajador", "Honesto"],
+        correct: 1
+    },
+	{ 
+		question: "¿Qué es un 'arquetipo'?", 
+		options: ["Un modelo original", "Un tipo de flor", "Un estilo de música", "Una estructura química"], 
+		correct: 0 
+	},
+	{ 
+		question: "¿Qué significa 'inexorable'?", 
+		options: ["Que no se puede detener", "Que es muy amable", "Que se repite constantemente", "Que es muy pequeño"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'diatriba'?", 
+		options: ["Un discurso violento", "Una joya valiosa", "Un tipo de árbol", "Una técnica de cocina"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'epítome'?", 
+		options: ["Un resumen breve", "Un animal pequeño", "Un edificio alto", "Un tipo de planta"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'prolijo'?", 
+		options: ["Extenso y detallado", "Muy rápido", "Poco importante", "Muy costoso"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'oxímoron'?", 
+		options: ["Una figura retórica", "Una enfermedad rara", "Un instrumento musical", "Una piedra preciosa"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'sagaz'?", 
+		options: ["Astuto y perspicaz", "Muy lento", "Muy ruidoso", "De gran tamaño"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'dicterio'?", 
+		options: ["Un insulto", "Un animal marino", "Un tipo de fruta", "Un estilo de arte"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'lenitivo'?", 
+		options: ["Que calma el dolor", "Que causa risa", "Que provoca sueño", "Que es muy grande"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'nadir'?", 
+		options: ["El punto más bajo", "Una figura geométrica", "Un tipo de tejido", "Un aparato electrónico"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'peregrino'?", 
+		options: ["Que es extraño o raro", "Que es muy fuerte", "Que es muy sabroso", "Que es muy caro"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'panacea'?", 
+		options: ["Una cura para todos los males", "Un tipo de flor", "Un estilo arquitectónico", "Un sistema filosófico"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'acerbo'?", 
+		options: ["Amargo y áspero", "Muy dulce", "Muy rápido", "Muy fuerte"], correct: 0 
+		}, 
+	{ 
+		question: "¿Qué es un 'incipit'?", 
+		options: ["El comienzo de un texto", "Un tipo de planta", "Un instrumento musical", "Una técnica de pintura"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'laxo'?", 
+		options: ["Que es poco estricto", "Que es muy pesado", "Que es muy suave", "Que es muy oscuro"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'palíndromo'?", 
+		options: ["Una palabra que se lee igual al derecho y al revés", "Una estructura matemática", "Un tipo de sonido", "Un fenómeno meteorológico"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'venia'?", 
+		options: ["Permiso o autorización", "Un tipo de enfermedad", "Una técnica de combate", "Un fenómeno natural"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'quimera'?", 
+		options: ["Una ilusión o fantasía", "Un tipo de metal", "Un dispositivo electrónico", "Una estructura molecular"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'fatuo'?", 
+		options: ["Que es vanidoso y presumido", "Que es muy rápido", "Que es muy viejo", "Que es muy pesado"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'acrónimo'?", 
+		options: ["Una palabra formada por las iniciales de otras", "Un tipo de vehículo", "Un mineral raro", "Una técnica de pintura"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'efímero'?", 
+		options: ["Que dura poco tiempo", "Que es muy raro", "Que es muy pesado", "Que es muy caro"], 
+		correct: 0 
+		}, 
+	{ 
+		question: "¿Qué es una 'hégira'?", 
+		options: ["Una emigración o éxodo", "Un tipo de música", "Una estructura biológica", "Un fenómeno natural"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'inane'?", 
+		options: ["Que es vacío o sin sentido", "Que es muy pesado", "Que es muy luminoso", "Que es muy dulce"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'monolito'?", 
+		options: ["Una gran piedra solitaria", "Un tipo de planta", "Un aparato electrónico", "Una estructura química"], 
+		correct: 
+		0
+	}, 
+	{ 
+		question: "¿Qué significa 'solaz'?", 
+		options: ["Relajación o descanso", "Un tipo de comida", "Un fenómeno climático", "Una técnica de arte"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'arcadia'?", 
+		options: ["Un lugar idealizado de paz y felicidad", "Una enfermedad grave", "Una técnica de combate", "Un tipo de instrumento"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'nefelibata'?", 
+		options: ["Que vive en un mundo de sueños", "Que es muy rápido", "Que es muy fuerte", "Que es muy pesado"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'escolio'?", 
+		options: ["Una nota o comentario aclaratorio", "Un tipo de ave", "Un fenómeno meteorológico", "Una enfermedad"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'abúlico'?", 
+		options: ["Que tiene falta de voluntad", "Que es muy fuerte", "Que es muy grande", "Que es muy ruidoso"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'tropelía'?", 
+		options: ["Un acto violento", "Un tipo de música", "Un dispositivo electrónico", "Una técnica de arte"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'ineluctable'?", 
+		options: ["Que no se puede evitar", "Que es muy sabroso", "Que es muy costoso", "Que es muy luminoso"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'cónclave'?", 
+		options: ["Una reunión secreta", "Un tipo de comida", "Una estructura matemática", "Un fenómeno natural"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'contumaz'?", 
+		options: ["Que es obstinado y tenaz", "Que es muy ligero", "Que es muy dulce", "Que es muy raro"], correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es una 'epopeya'?", 
+		options: ["Un poema épico", "Un tipo de flor", "Un estilo de música", "Una técnica de combate"], 
+		correct: 0 
+	},
+	{ 
+		question: "¿Qué significa 'osadía'?", 
+		options: ["Valentía o atrevimiento", "Un tipo de enfermedad", "Una estructura química", "Un fenómeno meteorológico"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'panegírico'?", 
+		options: ["Un discurso de alabanza", "Un tipo de vehículo", "Un mineral raro", "Una técnica de pintura"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'pueril'?", 
+		options: ["Que es infantil o inmaduro", "Que es muy pesado", "Que es muy caro", "Que es muy fuerte"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'vedado'?", 
+		options: ["Una área prohibida", "Un tipo de instrumento", "Un fenómeno natural", "Un estilo de música"], 
+		correct: 0 
+	},
+	{ 
+		question: "¿Qué significa 'avieso'?", 
+		options: ["Que es malintencionado", "Que es muy rápido", "Que es muy dulce", "Que es muy luminoso"], correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'seudónimo'?", 
+		options: ["Un nombre falso", "Un tipo de comida", "Un aparato electrónico", "Una estructura biológica"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué significa 'cacofonía'?", 
+		options: ["Sonido desagradable", "Un tipo de flor", "Un fenómeno climático", "Una técnica de arte"], 
+		correct: 0 
+	}, 
+	{ 
+		question: "¿Qué es un 'paroxismo'?", 
+		options: ["Un ataque repentino de una enfermedad", "Un tipo de música", "Un dispositivo electrónico", "Una técnica de pintura"], 
+		correct: 0 
+	}
+];
+
+let currentQuestion = 0;
+let score = 0;
+let selectedOption = null;
+let questionAnswered = false;
+
+function loadQuestion() {
+    const question = questions[currentQuestion];
+    document.getElementById('question').textContent = question.question;
+    
+    const optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = '';
+    
+    question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsContainer.appendChild(optionElement);
+    });
+
+    document.getElementById('progress').textContent = `Pregunta ${currentQuestion + 1} de ${questions.length}`;
+    questionAnswered = false;
+    selectedOption = null;
+}
+
+function selectOption(index) {
+    if (questionAnswered) return;
+    
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => option.classList.remove('selected'));
+    options[index].classList.add('selected');
+    selectedOption = index;
+}
+
+function checkAnswer() {
+    if (selectedOption === null || questionAnswered) return;
+
+    const correctAnswer = questions[currentQuestion].correct;
+    const options = document.querySelectorAll('.option');
+    
+    options[correctAnswer].classList.add('correct');
+    if (selectedOption !== correctAnswer) {
+        options[selectedOption].classList.add('incorrect');
+    } else {
+        score++;
+    }
+
+    questionAnswered = true;
+    updateScore();
+}
+
+function nextQuestion() {
+    if (!questionAnswered) return;
+    
+    currentQuestion++;
+    if (currentQuestion >= questions.length) {
+        currentQuestion = 0;
+    }
+    
+    loadQuestion();
+}
+
+function updateScore() {
+    document.getElementById('score').textContent = `Puntuación: ${score}/${currentQuestion + 1}`;
+}
+
+// Event Listeners
+document.getElementById('checkAnswer').addEventListener('click', checkAnswer);
+document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
+
+// Iniciar el juego
+loadQuestion();
+</script>
+
+</body>
+</html>

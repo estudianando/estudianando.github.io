@@ -1,0 +1,1204 @@
+<html><head><meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<title>Profesor de Español Online</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.header {
+    width: 100%;
+    height: 64px;
+    padding: 0 24px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    width: 150px;
+    height: 33px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.flag {
+    width: 20px;
+    height: 20px;
+}
+
+.flags {
+    display: flex;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.main-section {
+    width: 100%;
+    padding: 0 20px;
+    background: linear-gradient(to right, #ecefff -68.92%, #ecefff 119.48%);
+}
+
+.section-title {
+    font-size: 35px;
+    color: #051f4e;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 40px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 30px;
+}
+
+.feature-image {
+    width: 294px;
+    height: 221px;
+    background: #e0e0e0;
+    margin-bottom: 20px;
+    border-radius: 1.5rem;
+}
+
+.feature-title {
+    font-size: 24px;
+    color: #051f4e;
+    margin-bottom: 15px;
+}
+
+.feature-text {
+    font-size: 16px;
+    color: #051f4e;
+    line-height: 1.5;
+}
+
+.level-test-section:nth-of-type(1) {
+    width: 100%;
+    padding: 40px 20px;
+    background: white;
+}
+
+.level-test-section:nth-of-type(2) {
+    width: 100%;
+    padding: 40px 20px;
+    background: #f7ebfb;
+}
+
+.test-content {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center;
+    padding: 40px;
+    justify-content: center;
+}
+
+.level-test-section:last-child .test-content {
+    flex-direction: column;
+    text-align: center;
+}
+
+.level-test-section:last-child .test-info {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.test-image {
+    width: 425px;
+    height: 358px;
+    background: #e0e0e0;
+    border-radius: 1.5rem;
+}
+
+.lista-content {
+
+	padding-left: 50px;
+	
+}
+.test-info {
+    flex: 1;
+}
+
+.test-title {
+    font-size: 35px;
+    color: #051f4e;
+    margin-bottom: 20px;
+}
+
+.test-description {
+    font-size: 16px;
+    color: #051f4e;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.test-button {
+    padding: 15px 30px;
+    background: #051f4e;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.test-button:hover {
+    background: #0a2f6e;
+}
+
+.footer {
+    background: linear-gradient(85deg, #121d59, #8200ad 99.88%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    fill: white;
+    transition: opacity 0.3s ease;
+}
+
+.social-icon:hover {
+    opacity: 0.8;
+}
+
+.copyright {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Add these styles for the blog layout and sidebar */
+.blog-layout {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.blog-sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.blog-sidebar h3 {
+    color: #051f4e;
+    font-size: 20px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #051f4e;
+}
+
+.posts-index {
+    list-style: none;
+}
+
+.posts-index li {
+    margin-bottom: 12px;
+}
+
+.posts-index a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+    display: block;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.posts-index a:hover {
+    background: #f5f5f5;
+    color: #051f4e;
+}
+
+.blog-main {
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+@media screen and (max-width: 768px) {
+    .blog-layout {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .blog-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        margin-bottom: 20px;
+    }
+}
+
+/* Add these styles for the stars */
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.star {
+    width: 20px;
+    height: 20px;
+    fill: #ffd700;
+}
+
+@media screen and (max-width: 480px) {
+    .star {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+/* Add these carousel styles to your existing CSS */
+.carousel-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-buttons {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    transform: translateY(-50%);
+}
+
+.carousel-button {
+    background: rgba(5, 31, 78, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.carousel-button:hover {
+    background: rgba(5, 31, 78, 1);
+}
+
+.carousel-button svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+@media screen and (max-width: 768px) {
+    .carousel-buttons {
+        padding: 0 10px;
+    }
+    
+    .carousel-button {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .carousel-button svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Add these styles for the blog section */
+.blog-section {
+    width: 100%;
+    padding: 40px 20px;
+    background: white;
+}
+
+.blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-meta {
+    text-align: left; /* Change from center to left */
+    margin-bottom: 20px;
+    color: #666; /* This is already grey */
+    font-size: 14px;
+}
+
+.post-date, .post-time {
+    margin: 0 10px;
+}
+
+.blog-image {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.post-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+	padding-top: 20px;
+}
+
+/* Update responsive styles for the post title */
+@media screen and (max-width: 768px) {
+    .post-title {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .post-title {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .blog-post {
+        padding: 15px;
+    }
+    
+    .post-meta {
+        font-size: 12px;
+    }
+    
+    .post-content {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .blog-post {
+        padding: 10px;
+    }
+    
+    .blog-image {
+        margin-bottom: 15px;
+    }
+}
+
+/* Add these styles to your existing CSS */
+.contact-section {
+    width: 100%;
+    padding: 40px 20px;
+    background: white;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #051f4e;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #051f4e;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+@media screen and (max-width: 768px) {
+    .contact-form {
+        padding: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .contact-form {
+        padding: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+}
+
+/* Add these styles for the about section */
+.about-section {
+    width: 100%;
+    padding: 40px 20px;
+    background: white;
+}
+
+.about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    align-items: start;
+    padding: 20px;
+}
+
+.about-text {
+    flex: 1;
+    text-align: right;
+}
+
+.about-text p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #051f4e;
+    font-size: 16px;
+}
+
+.about-image {
+    width: 400px;
+    height: 400px;
+    flex-shrink: 0;
+}
+
+/* Add these media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    .about-content {
+        flex-direction: column-reverse;
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .about-text {
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .about-image {
+        max-width: 250px;
+    }
+
+    .about-text p {
+        font-size: 14px;
+    }
+}
+
+/* Add these styles for the mini-games section */
+.mini-games-section {
+    width: 100%;
+    padding: 40px 20px;
+    background: white;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.game-card {
+    text-decoration: none;
+    color: inherit;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.game-image {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 15px;
+}
+
+.game-title {
+    font-size: 18px;
+    color: #051f4e;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.game-description {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    line-height: 1.4;
+}
+
+@media screen and (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .game-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .game-title {
+        font-size: 16px;
+    }
+
+    .game-description {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+    }
+}
+</style>
+</head>
+<body>
+    <header class="header">
+   
+	<img src="logo.png" width="150" height="51" alt="mi logo">
+		<!--
+        <svg class="logo" viewBox="0 0 150 33">
+            <rect width="150" height="33" fill="#f0f0f0"/>
+            <text x="10" y="22" font-family="Open Sans" font-size="14" fill="#333">和南多一起学习</text>
+        </svg>
+		-->
+        
+          <nav class="nav">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="blog.html" class="nav-link">Blog</a>
+            <a href="practica.html" class="nav-link">Practica / Juega</a>
+            <a href="contacto.html" class="nav-link">Contacto</a>
+
+            <div class="flags">
+                
+			<a href="index.html">
+				<img src="spain.jpg" width="23" height="15" alt="bandera españa">
+			</a>
+			<!--	
+				 
+					<svg class="flag" viewBox="0 0 20 20">
+						<rect width="20" height="6" fill="#c60b1e"/>
+						<rect y="6" width="20" height="8" fill="#ffc400"/>
+						<rect y="14" width="20" height="6" fill="#c60b1e"/>
+					</svg>
+                 
+			-->
+			<a href="index_en.html"> 
+				<img src="usa.jpg" width="23" height="15" alt="bandera eeuu">
+			</a>	
+			<!--
+								
+					<svg class="flag" viewBox="0 0 20 20">
+						<rect width="20" height="20" fill="#00247d"/>
+						<path d="M0,0 L20,20 M20,0 L0,20" stroke="#ffffff" stroke-width="2"/>
+						<path d="M10,0 L10,20 M0,10 L20,10" stroke="#ffffff" stroke-width="3"/>
+						<path d="M10,0 L10,20 M0,10 L20,10" stroke="#cf142b" stroke-width="2"/>
+					</svg>
+				
+             -->
+			 <a href="index_tw.html">
+				<img src="taiwan.jpg" width="23" height="15" alt="bandera taiwan">
+			</a>
+			<!--
+				
+					<svg class="flag" viewBox="0 0 20 20">
+						<rect width="20" height="20" fill="#fe0000"/>
+						<rect width="10" height="10" fill="#000095"/>
+						<circle cx="5" cy="5" r="3" fill="white"/>
+					</svg>
+					
+			   -->	
+            </div>
+        </nav>
+    </header>
+
+  <section>
+        <h2 class="section-title"> Trucos para mejorar tu español </h2>
+        
+        <div class="blog-layout">
+            <aside class="blog-sidebar">
+                <h3>Últimos Posts</h3>
+                <ul class="posts-index">
+					<li><a href="#post4">Beneficios de aprender español online</a></li>
+					<li><a href="#post3">Vocabulario esencial para principiantes</a></li>
+                    <li><a href="#post2">Errores comunes al aprender español</a></li>
+			        <li> <a href="#post1">Cómo mejorar tu fluidez en español</a></li> 
+				
+                </ul>
+            </aside>
+
+		<div class="blog-main">
+                <div id="post1" class="blog-post">
+                    <h3 class="feature-title">Cómo mejorar la fluidez </h3> 
+                    <div class="post-meta">
+                        <span class="fas fa-calendar-alt"></span> 21 de Noviembre, 2024
+                        <span class="fas fa-clock"></span> 18:36
+                    </div>
+					
+					<img src="fluidez.png" width="400" alt="Fluidez hablando">
+
+                    <p class="post-content">
+                        Aprender español es una aventura emocionante, pero ganar fluidez puede ser un desafío. La fluidez no solo implica conocer vocabulario y gramática; también requiere confianza, práctica constante y estrategias adecuadas. A continuación, te presentamos consejos prácticos que te ayudarán a mejorar tu fluidez en español de manera efectiva.
+					</p>
+					
+					<br>					
+
+       				<h2> Habla desde el primer día </h2> 	
+
+					<p class="post-content">
+						La práctica activa es esencial. No esperes a tener un nivel avanzado para empezar a hablar. Busca oportunidades para interactuar con hablantes nativos o compañeros de aprendizaje. Puedes unirte a intercambios de idiomas en línea, clubes de conversación o practicar con amigos que hablen español.	
+					</p>	
+					
+					<p class="post-content">
+						Un truco útil es pensar en español. Durante el día, describe mentalmente lo que haces, lo que ves o lo que planeas. Esto fortalece tu habilidad para formar frases rápidamente y de manera natural.
+                    </p>	
+					
+					<br>
+						
+					<h2>  Escucha, escucha y escucha </h2> 
+			
+					<p class="post-content">
+						La exposición constante al idioma es clave para ganar fluidez. Dedica tiempo a escuchar podcasts, canciones, programas de televisión y videos en español. Incluso si no comprendes todo al principio, tu cerebro comenzará a familiarizarse con los sonidos, el ritmo y las estructuras del idioma.
+					</p>	
+
+					<p class="post-content">					
+						Prueba escuchar audiolibros mientras lees el texto en español. Esto no solo mejora tu comprensión auditiva, sino que también refuerza la conexión entre la pronunciación y la escritura.	
+					</p>	
+
+					<br>
+
+					<h2> Amplía tu vocabulario útil	</h2>
+
+					<p class="post-content">										
+						En lugar de memorizar largas listas de palabras, enfócate en aprender vocabulario que realmente usarás en conversaciones cotidianas. Agrupa palabras por temas como comida, viajes, trabajo o aficiones.
+					</p>	
+					
+					<p class="post-content">
+						Una técnica efectiva es usar tarjetas de memoria (flashcards) o aplicaciones como Anki o Quizlet. Además, asegúrate de aprender frases comunes y expresiones idiomáticas para sonar más natural.
+					</p>
+					
+					<br>
+					
+					 <h2> Grábate y evalúa tu progreso </h2>
+					 
+					 <p class="post-content">	
+						Grabar tu voz es una excelente forma de identificar áreas de mejora. Lee en voz alta, narra tu día o responde preguntas comunes. Luego, escucha tus grabaciones para notar errores en pronunciación o estructuras gramaticales.
+					 </p>
+					 
+					 <p class="post-content">
+						Comparar tus grabaciones a lo largo del tiempo también te ayudará a medir tu progreso y a mantenerte motivado.
+					 </p>
+					 
+					 <br>
+					 
+					 <h2> Sumérgete en la cultura </h2>
+					 
+					 <p class="post-content">
+						La fluidez no solo se trata de hablar bien; también implica entender el contexto cultural del idioma. Explora las tradiciones, películas, literatura y noticias de los países hispanohablantes. Esto no solo enriquecerá tu aprendizaje, sino que también te dará temas interesantes para conversar con nativos.
+					 </p>
+
+					<br>	
+
+					  <h2> No temas cometer errores	</h2>
+	
+					  <p class="post-content">
+						El miedo a equivocarte es uno de los mayores obstáculos para la fluidez. Recuerda que los errores son una parte natural del aprendizaje. Cada equivocación es una oportunidad para mejorar y aprender algo nuevo.
+					  </p>
+						
+					  <br>
+					  
+					   <h2> Establece una rutina diaria </h2>
+					   
+					   <p class="post-content">
+							Dedica al menos 15-30 minutos diarios a practicar español, ya sea hablando, escuchando, leyendo o escribiendo. La consistencia es mucho más efectiva que estudiar durante largas sesiones esporádicas.
+					   </p>
+					 
+                </div>
+                
+				<hr>
+				
+                <div id="post2" class="blog-post">
+                    <h3 class="feature-title">Errores comunes al aprender español</h3>
+                   <div class="post-meta">
+                        <span class="fas fa-calendar-alt"></span> 24 de Noviembre, 2024
+                        <span class="fas fa-clock"></span> 22:08
+                    </div>
+					
+					<img src="errores.png" width="400" alt="Fluidez hablando">					
+                    
+                    <p class="post-content">
+                        Todos cometemos errores cuando aprendemos un nuevo idioma. En este post, te muestro los errores más comunes y cómo evitarlos para que puedas mejorar tu español de manera efectiva.
+					</p> 
+
+					<br>
+
+					<h2> Confundir "ser" y "estar" </h2>
+					
+					<p class="post-content">
+						Muchos estudiantes luchan para decidir cuándo usar "ser" o "estar". Recuerda: ser describe características permanentes ("Ella es alta"), mientras que estar indica estados temporales o ubicación ("Ella está cansada").
+					</p> 
+					
+					<br>
+
+					<h2> Olvidar los géneros de los sustantivos </h2>
+					
+					<p class="post-content">
+						En español, los sustantivos tienen género, lo que afecta a los artículos y adjetivos. Por ejemplo, decimos el libro pero la mesa. Aprende los sustantivos con sus artículos para evitar confusiones.
+					</p> 
+
+					<br>
+
+					<h2> Usar los "false friends" </h2>		
+					
+					<p class="post-content">
+						Palabras como actualmente (que significa "en este momento") pueden confundir a angloparlantes que piensan que significa "actually". Investiga las diferencias para evitar malentendidos.
+					</p> 
+					
+					<br>
+
+					<h2> Omitir las preposiciones correctas </h2>	
+
+					<p class="post-content">
+						Preposiciones como por y para pueden ser complicadas. Por se usa para indicar causa o medio, mientras que para señala propósito o destino.
+					</p> 
+					
+					
+			   </div>
+			   
+			   <hr>
+                
+                <div id="post3" class="blog-post">
+                    <h3 class="feature-title">Vocabulario esencial para principiantes</h3>
+                    
+					<div class="post-meta">
+                        <span class="fas fa-calendar-alt"></span> 27 de Noviembre, 2024
+                        <span class="fas fa-clock"></span> 10:43
+                    </div>
+					
+					<img src="vocabulario.png" width="400" alt="Fluidez hablando">					
+
+                    <p class="post-content">
+                        ¿Estás comenzando a aprender español? Aquí tienes una lista de vocabulario esencial que te ayudará a comunicarte en situaciones cotidianas. ¡Empieza a aprender hoy mismo!
+                    </p>
+					
+					<br>
+
+					<h2>  Saludos y expresiones básicas </h2>	
+					
+					 <p class="post-content">
+						Comenzar una conversación de manera correcta es clave. Estas palabras y frases son esenciales para interactuar:
+					 </p>
+					 
+					 <p class="post-content">
+					 <ul class="lista-content">
+					 
+						 <li> Hola
+						 <li> Buenos días / Buenas tardes / Buenas noches
+						 <li> ¿Cómo estás? / ¿Qué tal?
+						 <li> Muy bien, gracias. ¿Y tú?
+						 <li> Por favor / Gracias / De nada
+						  <li> Perdón / Lo siento / Disculpa
+					</ul>
+					</p>
+					
+					<p class="post-content">
+						Estas expresiones te ayudarán a ser educado y amigable en cualquier situación.
+					</p>
+					
+					<br>
+
+					<h2>  Vocabulario para el día a día </h2>	
+					
+					<p class="post-content">
+						El idioma cotidiano está lleno de palabras prácticas. Estas son algunas imprescindibles:
+					</p>
+					
+					 <p class="post-content">
+					 <ul class="lista-content">
+					 
+						 <li> Nombres de objetos comunes: mesa, silla, teléfono, llave, puerta.
+						 <li> Verbos útiles: tener, ser, estar, hacer, ir, venir, hablar, comer, beber, dormir.
+						 <li> Adjetivos comunes: bueno/a, malo/a, grande, pequeño/a, bonito/a, feo/a.
+			
+					</ul>
+					</p>
+					
+					<p class="post-content">
+						Familiarízate con estas palabras para describir objetos, acciones y características básicas.
+					</p>
+					
+					<br>
+
+					<h2>   Números, días y meses </h2>	
+					
+					<p class="post-content">
+						Es importante manejar los números para hablar de dinero, fechas o cantidades:
+					</p>
+					
+					 <p class="post-content">
+					 <ul class="lista-content">
+					 
+						 <li> Números básicos: uno, dos, tres… hasta diez. Luego aprende veinte, treinta, cien y mil.
+						 <li> Días de la semana: lunes, martes, miércoles, jueves, viernes, sábado, domingo.
+						 <li> Meses del año: enero, febrero, marzo… diciembre.
+			
+					</ul>
+					</p>
+					
+					<p class="post-content">
+						Dominar estos términos es útil para programar citas, comprar o planificar actividades.
+					</p>
+
+					<br>
+
+					<h2> Palabras relacionadas con la comida y bebida </h2>	
+					
+					<p class="post-content">
+						La comida es un tema universal, así que estas palabras son indispensables:
+					</p>
+					
+					 <p class="post-content">
+					 <ul class="lista-content">
+					 
+						 <li> Comidas comunes: pan, arroz, pollo, carne, pescado, frutas (manzana, plátano, naranja) y verduras (tomate, lechuga, cebolla).
+						 <li> Bebidas: agua, café, té, jugo, cerveza, vino.
+						 <li> En un restaurante: menú, cuenta, mesa, camarero/a.
+			
+					</ul>
+					</p>
+					
+					 <p class="post-content">
+						Aprender estas palabras te permitirá disfrutar de la gastronomía en los países hispanohablantes.
+					 </p>
+					
+					<br>
+
+					<h2> Palabras para moverse y viajar </h2>
+					
+					 <p class="post-content">
+						Si estás de viaje, este vocabulario será esencial:
+					  </p>
+					
+					<p class="post-content">
+					 <ul class="lista-content">
+					 
+						 <li> Transporte: autobús, tren, avión, taxi, coche.
+						 <li> Direcciones: derecha, izquierda, recto, aquí, allá.
+						 <li> Lugares comunes: hotel, restaurante, aeropuerto, estación, baño.
+			
+					</ul>
+					</p>
+					
+					 <p class="post-content">
+						Saber cómo pedir ayuda para llegar a un destino puede ser crucial.
+					 </p>
+					
+					
+                </div>
+                
+                <div id="post4" class="blog-post">
+                    <h3 class="feature-title">Beneficios de aprender español online</h3>
+                 
+					<div class="post-meta">
+                        <span class="fas fa-calendar-alt"></span> 2 de Diciembre, 2024
+                        <span class="fas fa-clock"></span> 08:12
+                    </div>
+					
+					<img src="ventajas.png" width="400" alt="Ventajas de aprender español">					
+					
+                    <p class="post-content">
+                        Aprender español online tiene muchas ventajas. En este post, exploramos los beneficios de las clases en línea y cómo puedes aprovechar al máximo tu aprendizaje desde casa.
+                    </p>
+					
+					 <p class="post-content">
+						El español, con más de 500 millones de hablantes nativos, se ha consolidado como uno de los idiomas más importantes del mundo. Aprenderlo abre puertas a nuevas oportunidades personales y profesionales, y en la era digital, hacerlo online se ha convertido en la opción preferida de muchos. ¿Por qué? A continuación, te presentamos los principales beneficios de aprender español en línea.
+					</p>
+					
+					<br>
+
+					<h2> Flexibilidad Horaria </h2>
+					
+					 <p class="post-content">
+						Una de las mayores ventajas del aprendizaje online es la posibilidad de adaptar el estudio a tu propio horario. Ya no necesitas ajustarte a las horas de una clase presencial; las plataformas virtuales permiten que aprendas cuando más te convenga. Esto es especialmente útil para quienes trabajan, estudian o tienen compromisos familiares, ya que puedes diseñar tu propio ritmo de aprendizaje.
+					 </p>
+					
+					 <p class="post-content">
+						
+					  <br>
+
+					<h2> Acceso a Recursos Globales </h2>
+					
+					 <p class="post-content">
+						Las herramientas digitales brindan acceso a una amplia variedad de materiales, desde videos interactivos y ejercicios prácticos hasta clases con hablantes nativos. Esto significa que puedes sumergirte en el idioma y la cultura española o latinoamericana sin salir de casa. Además, muchas plataformas ofrecen clases con profesores certificados, garantizando un aprendizaje de calidad.
+					 </p>
+					 
+					   <br>
+
+					<h2> Personalización del Aprendizaje </h2>
+					
+					 <p class="post-content">
+						Al aprender español online, puedes elegir programas que se adapten a tus necesidades específicas. ¿Necesitas aprender español para viajar, para negocios o simplemente para ampliar tu horizonte cultural? Las opciones son casi infinitas, y muchas plataformas ofrecen pruebas de nivel para comenzar en el punto exacto que necesitas.
+					 </p>
+					 
+					   <br>
+
+					<h2> Económico y Ecológico </h2>
+					
+					 <p class="post-content">
+						El aprendizaje online tiende a ser más económico que las clases presenciales tradicionales, ya que elimina costos asociados como el transporte o el material físico. Además, es una opción más sostenible, ya que no requiere el uso de papel ni desplazamientos, contribuyendo a la reducción de tu huella de carbono.
+					 </p>
+					 
+					   <br>
+
+					<h2> Conexión con Hablantes Nativos </h2>
+					
+					 <p class="post-content">
+						Las plataformas digitales te permiten interactuar directamente con hablantes nativos, mejorando tu pronunciación y comprensión cultural. Las herramientas como Zoom, Skype o Google Meet hacen posible que tengas acceso directo a profesores y compañeros de diferentes partes del mundo, enriqueciéndote tanto lingüística como culturalmente.
+					 </p>
+					 
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                </svg>
+            </a>
+            <a href="https://youtube.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+                </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+            </a>
+        </div>
+        <p class="copyright">Copyright 2024 Fernando García Gázquez - All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    entry.target.classList.remove('fade-out');
+                } else {
+                    entry.target.classList.add('fade-out');
+                    entry.target.classList.remove('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animated').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Mobile menu functionality
+        const menuButton = document.querySelector('.menu-button');
+        const nav = document.querySelector('.nav');
+
+        menuButton.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target) && !menuButton.contains(e.target)) {
+                nav.classList.remove('active');
+            }
+        });
+
+        // Close menu when window is resized above mobile breakpoint
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                nav.classList.remove('active');
+            }
+        });
+
+        const carousel = {
+            track: document.querySelector('.carousel-track'),
+            slides: document.querySelectorAll('.carousel-slide'),
+            prevButton: document.querySelector('.carousel-button.prev'),
+            nextButton: document.querySelector('.carousel-button.next'),
+            currentSlide: 0,
+            slideInterval: null,
+
+            init() {
+                this.prevButton.addEventListener('click', () => this.moveSlide('prev'));
+                this.nextButton.addEventListener('click', () => this.moveSlide('next'));
+                
+                // Start automatic sliding
+                this.startAutoSlide();
+                
+                // Pause automatic sliding when hovering over the carousel
+                this.track.parentElement.addEventListener('mouseenter', () => this.stopAutoSlide());
+                this.track.parentElement.addEventListener('mouseleave', () => this.startAutoSlide());
+            },
+
+            moveSlide(direction) {
+                if (direction === 'next') {
+                    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+                } else {
+                    this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+                }
+                
+                this.updateSlidePosition();
+            },
+
+            updateSlidePosition() {
+                this.track.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+            },
+
+            startAutoSlide() {
+                this.slideInterval = setInterval(() => {
+                    this.moveSlide('next');
+                }, 5000); // Change slides every 5 seconds
+            },
+
+            stopAutoSlide() {
+                clearInterval(this.slideInterval);
+            }
+        };
+
+        // Initialize the carousel
+        document.addEventListener('DOMContentLoaded', () => {
+            carousel.init();
+        });
+    </script>
+</body>
+</html>

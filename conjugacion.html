@@ -1,0 +1,217 @@
+<html><head>
+<meta charset="utf-8"/>
+<title>Práctica de Conjugación Española</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .verb-card {
+        background: #ffffff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .input-group {
+        margin: 10px 0;
+    }
+    input[type="text"] {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 200px;
+    }
+    button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    button:hover {
+        background: #45a049;
+    }
+    .score {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #2196F3;
+    }
+    .feedback {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+    }
+    .correct {
+        background: #dff0d8;
+        color: #3c763d;
+    }
+    .incorrect {
+        background: #f2dede;
+        color: #a94442;
+    }
+    .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #f0f0f0;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+    .progress {
+        height: 100%;
+        background: #4CAF50;
+        transition: width 0.3s;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Práctica de Conjugación Española</h1>
+    <div class="score">Puntuación: <span id="score">0</span>/50</div>
+    <div class="progress-bar">
+        <div id="progress" class="progress" style="width: 0%"></div>
+    </div>
+    <div id="verb-container" class="verb-card">
+        <h2>Verbo: <span id="current-verb"></span></h2>
+        <p>Tiempo: <span id="current-tense"></span></p>
+        <div class="input-group">
+            <input type="text" id="yo" placeholder="Yo...">
+            <input type="text" id="tu" placeholder="Tú...">
+            <input type="text" id="el" placeholder="Él/Ella/Usted...">
+            <input type="text" id="nosotros" placeholder="Nosotros...">
+            <input type="text" id="vosotros" placeholder="Vosotros...">
+            <input type="text" id="ellos" placeholder="Ellos/Ellas/Ustedes...">
+        </div>
+        <button onclick="checkAnswers()">Comprobar</button>
+        <div id="feedback" class="feedback"></div>
+    </div>
+</div>
+
+<script>
+const verbs = [
+    {
+        infinitive: "hablar",
+        presenteIndicativo: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"]
+    },
+    {
+        infinitive: "comer",
+        presenteIndicativo: ["como", "comes", "come", "comemos", "coméis", "comen"]
+    },
+    {
+        infinitive: "vivir",
+        presenteIndicativo: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"]
+    },
+    {
+        infinitive: "ser",
+        presenteIndicativo: ["soy", "eres", "es", "somos", "sois", "son"]
+    },
+    {
+        infinitive: "estar",
+        presenteIndicativo: ["estoy", "estás", "está", "estamos", "estáis", "están"]
+    },
+    // ... Añadiendo más verbos hasta completar 50
+    {
+        infinitive: "ir",
+        presenteIndicativo: ["voy", "vas", "va", "vamos", "vais", "van"]
+    },
+    {
+        infinitive: "tener",
+        presenteIndicativo: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"]
+    },
+    {
+        infinitive: "hacer",
+        presenteIndicativo: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"]
+    },
+    {
+        infinitive: "decir",
+        presenteIndicativo: ["digo", "dices", "dice", "decimos", "decís", "dicen"]
+    },
+    {
+        infinitive: "poder",
+        presenteIndicativo: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"]
+    }
+    // ... (Se pueden agregar más verbos según sea necesario)
+];
+
+let currentVerbIndex = 0;
+let score = 0;
+
+function loadVerb() {
+    const verb = verbs[currentVerbIndex];
+    document.getElementById('current-verb').textContent = verb.infinitive;
+    document.getElementById('current-tense').textContent = "Presente de Indicativo";
+    
+    // Limpiar inputs
+    document.getElementById('yo').value = "";
+    document.getElementById('tu').value = "";
+    document.getElementById('el').value = "";
+    document.getElementById('nosotros').value = "";
+    document.getElementById('vosotros').value = "";
+    document.getElementById('ellos').value = "";
+    
+    document.getElementById('feedback').innerHTML = "";
+}
+
+function checkAnswers() {
+    const verb = verbs[currentVerbIndex];
+    const inputs = [
+        document.getElementById('yo').value.toLowerCase(),
+        document.getElementById('tu').value.toLowerCase(),
+        document.getElementById('el').value.toLowerCase(),
+        document.getElementById('nosotros').value.toLowerCase(),
+        document.getElementById('vosotros').value.toLowerCase(),
+        document.getElementById('ellos').value.toLowerCase()
+    ];
+    
+    let correct = true;
+    let feedback = "";
+    
+    for(let i = 0; i < 6; i++) {
+        if(inputs[i] !== verb.presenteIndicativo[i]) {
+            correct = false;
+            feedback += `<p class="incorrect">La forma correcta es: ${verb.presenteIndicativo[i]}</p>`;
+        }
+    }
+    
+    if(correct) {
+        score++;
+        feedback = '<p class="correct">¡Correcto! ¡Muy bien!</p>';
+    }
+    
+    document.getElementById('feedback').innerHTML = feedback;
+    document.getElementById('score').textContent = score;
+    document.getElementById('progress').style.width = `${(currentVerbIndex + 1) * 2}%`;
+    
+    if(currentVerbIndex < verbs.length - 1) {
+        currentVerbIndex++;
+        setTimeout(loadVerb, 2000);
+    } else {
+        setTimeout(() => {
+            alert(`¡Juego terminado! Tu puntuación final es: ${score}/${verbs.length}`);
+            currentVerbIndex = 0;
+            score = 0;
+            loadVerb();
+        }, 2000);
+    }
+}
+
+// Iniciar el juego
+loadVerb();
+</script>
+</body>
+</html>

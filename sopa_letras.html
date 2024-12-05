@@ -1,0 +1,200 @@
+<html><head><base href="/" />
+<style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 20px;
+}
+
+.game-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.grid-container {
+    display: inline-grid;
+    grid-template-columns: repeat(15, 30px);
+    gap: 2px;
+    margin: 20px;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+}
+
+.selected {
+    background-color: #a8e6cf;
+}
+
+.found {
+    background-color: #ffd3b6;
+}
+
+.word-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 20px;
+}
+
+.word-item {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.word-found {
+    text-decoration: line-through;
+    color: #666;
+    background-color: #e8e8e8;
+}
+</style>
+</head>
+<body>
+<div class="game-container">
+    <h1>Sopa de Letras</h1>
+    <div id="grid" class="grid-container"></div>
+    <div id="wordList" class="word-list"></div>
+</div>
+
+<script>
+const words = [
+    'CASA', 'PERRO', 'GATO', 'MESA', 'LIBRO',
+    'LAPIZ', 'SILLA', 'AGUA', 'PAPEL', 'PUERTA',
+    'RELOJ', 'ARBOL', 'FLOR', 'CAMA', 'VASO',
+    'PLATO', 'MANO', 'PELO', 'TAZA', 'ROPA'
+];
+
+const gridSize = 15;
+let grid = [];
+let selectedCells = [];
+let foundWords = new Set();
+
+function createGrid() {
+    const gridElement = document.getElementById('grid');
+    grid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
+    
+    // Place words
+    words.forEach(word => {
+        let placed = false;
+        while (!placed) {
+            const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+            const x = Math.floor(Math.random() * gridSize);
+            const y = Math.floor(Math.random() * gridSize);
+            
+            if (canPlaceWord(word, x, y, direction)) {
+                placeWord(word, x, y, direction);
+                placed = true;
+            }
+        }
+    });
+    
+    // Fill empty cells
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            if (grid[i][j] === '') {
+                grid[i][j] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            }
+            
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.textContent = grid[i][j];
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            cell.addEventListener('mousedown', startSelection);
+            cell.addEventListener('mouseover', continueSelection);
+            gridElement.appendChild(cell);
+        }
+    }
+    
+    document.addEventListener('mouseup', endSelection);
+    
+    // Create word list
+    const wordListElement = document.getElementById('wordList');
+    words.forEach(word => {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word-item';
+        wordElement.textContent = word;
+        wordElement.id = `word-${word}`;
+        wordListElement.appendChild(wordElement);
+    });
+}
+
+function canPlaceWord(word, x, y, direction) {
+    if (direction === 'horizontal' && x + word.length > gridSize) return false;
+    if (direction === 'vertical' && y + word.length > gridSize) return false;
+    
+    for (let i = 0; i < word.length; i++) {
+        const currentX = direction === 'horizontal' ? x + i : x;
+        const currentY = direction === 'vertical' ? y + i : y;
+        if (grid[currentY][currentX] !== '' && grid[currentY][currentX] !== word[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function placeWord(word, x, y, direction) {
+    for (let i = 0; i < word.length; i++) {
+        const currentX = direction === 'horizontal' ? x + i : x;
+        const currentY = direction === 'vertical' ? y + i : y;
+        grid[currentY][currentX] = word[i];
+    }
+}
+
+function startSelection(e) {
+    selectedCells = [e.target];
+    e.target.classList.add('selected');
+}
+
+function continueSelection(e) {
+    if (e.buttons === 1 && selectedCells.length > 0) {
+        const lastCell = selectedCells[selectedCells.length - 1];
+        if (e.target !== lastCell) {
+            selectedCells.push(e.target);
+            e.target.classList.add('selected');
+        }
+    }
+}
+
+function endSelection() {
+    const selectedWord = getSelectedWord();
+    if (words.includes(selectedWord) && !foundWords.has(selectedWord)) {
+        foundWords.add(selectedWord);
+        selectedCells.forEach(cell => {
+            cell.classList.remove('selected');
+            cell.classList.add('found');
+        });
+        document.getElementById(`word-${selectedWord}`).classList.add('word-found');
+        
+        if (foundWords.size === words.length) {
+            setTimeout(() => alert('¡Felicitaciones! ¡Has encontrado todas las palabras!'), 100);
+        }
+    } else {
+        selectedCells.forEach(cell => cell.classList.remove('selected'));
+    }
+    selectedCells = [];
+}
+
+function getSelectedWord() {
+    return selectedCells.map(cell => cell.textContent).join('');
+}
+
+// Initialize the game
+createGrid();
+</script>
+</body></html>

@@ -1,0 +1,186 @@
+<html><head><meta charset="utf-8"/><title>Crucigrama en Español</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #f0f8ff;
+    }
+    .container {
+        max-width: 900px;
+        padding: 20px;
+    }
+    .crossword {
+        display: grid;
+        grid-template-columns: repeat(20, 30px);
+        gap: 1px;
+        background: #333;
+        padding: 1px;
+        margin: 20px auto;
+    }
+    .cell {
+        width: 30px;
+        height: 30px;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+    .black {
+        background: black;
+    }
+    .input-cell {
+        width: 100%;
+        height: 100%;
+        border: none;
+        text-align: center;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+    .clues {
+        margin-top: 20px;
+        column-count: 2;
+    }
+    .buttons {
+        text-align: center;
+        margin: 20px;
+    }
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    .number {
+        position: absolute;
+        font-size: 10px;
+        top: 2px;
+        left: 2px;
+    }
+</style>
+</head><body>
+<div class="container">
+    <h1>Crucigrama en Español</h1>
+    <div id="crossword" class="crossword"></div>
+    <div class="buttons">
+        <button onclick="checkAnswers()">Verificar</button>
+        <button onclick="showSolution()">Ver Solución</button>
+    </div>
+    <div class="clues">
+        <h3>Horizontales:</h3>
+        <div id="acrossClues"></div>
+        <h3>Verticales:</h3>
+        <div id="downClues"></div>
+    </div>
+</div>
+
+<script>
+const words = {
+    across: [
+        {word: "CASA", clue: "Lugar donde vives", row: 0, col: 0},
+        {word: "MESA", clue: "Mueble para comer", row: 2, col: 2},
+        {word: "PERRO", clue: "Animal doméstico que ladra", row: 4, col: 0},
+        {word: "LIBRO", clue: "Objeto para leer", row: 6, col: 3},
+        {word: "SOL", clue: "Estrella del sistema solar", row: 8, col: 1}
+    ],
+    down: [
+        {word: "CAMA", clue: "Mueble para dormir", row: 0, col: 0},
+        {word: "AMOR", clue: "Sentimiento profundo", row: 0, col: 3},
+        {word: "PEZ", clue: "Animal que vive en el agua", row: 4, col: 0},
+        {word: "LUZ", clue: "Ilumina el día", row: 6, col: 3},
+        {word: "SOL", clue: "Brilla en el cielo", row: 8, col: 1}
+    ]
+};
+
+let board = Array(15).fill().map(() => Array(20).fill(''));
+let solution = Array(15).fill().map(() => Array(20).fill(''));
+
+function createBoard() {
+    const crossword = document.getElementById('crossword');
+    const acrossClues = document.getElementById('acrossClues');
+    const downClues = document.getElementById('downClues');
+
+    // Crear pistas
+    words.across.forEach((word, index) => {
+        acrossClues.innerHTML += `<p>${index + 1}. ${word.clue}</p>`;
+    });
+    words.down.forEach((word, index) => {
+        downClues.innerHTML += `<p>${index + 1}. ${word.clue}</p>`;
+    });
+
+    // Colocar palabras en la solución
+    words.across.forEach(word => {
+        for(let i = 0; i < word.word.length; i++) {
+            solution[word.row][word.col + i] = word.word[i];
+        }
+    });
+    words.down.forEach(word => {
+        for(let i = 0; i < word.word.length; i++) {
+            solution[word.row + i][word.col] = word.word[i];
+        }
+    });
+
+    // Crear el tablero visual
+    for(let i = 0; i < 15; i++) {
+        for(let j = 0; j < 20; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            if(solution[i][j]) {
+                const input = document.createElement('input');
+                input.className = 'input-cell';
+                input.maxLength = 1;
+                input.dataset.row = i;
+                input.dataset.col = j;
+                cell.appendChild(input);
+            } else {
+                cell.className = 'cell black';
+            }
+            crossword.appendChild(cell);
+        }
+    }
+}
+
+function checkAnswers() {
+    const inputs = document.querySelectorAll('.input-cell');
+    let allCorrect = true;
+    
+    inputs.forEach(input => {
+        const row = parseInt(input.dataset.row);
+        const col = parseInt(input.dataset.col);
+        
+        if(input.value.toUpperCase() === solution[row][col]) {
+            input.style.backgroundColor = '#90EE90';
+        } else {
+            input.style.backgroundColor = '#FFB6C1';
+            allCorrect = false;
+        }
+    });
+
+    if(allCorrect) {
+        alert('¡Felicitaciones! ¡Has completado el crucigrama correctamente!');
+    }
+}
+
+function showSolution() {
+    const inputs = document.querySelectorAll('.input-cell');
+    
+    inputs.forEach(input => {
+        const row = parseInt(input.dataset.row);
+        const col = parseInt(input.dataset.col);
+        input.value = solution[row][col];
+        input.style.backgroundColor = '#90EE90';
+    });
+}
+
+createBoard();
+</script>
+</body></html>

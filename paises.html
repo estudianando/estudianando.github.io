@@ -1,0 +1,948 @@
+<html><head><base href="." />
+<meta charset="UTF-8">
+<title>Generador de Países</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .container {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .flag {
+        width: 300px;
+        height: 200px;
+        margin: 20px auto;
+        border: 2px solid #000; /* Changed from 1px solid #ddd to 2px solid #000 */
+        border-radius: 5px;
+        object-fit: cover;
+        display: block;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+    }
+
+    #countryName, #gentilicio {
+        font-size: 24px;
+        margin: 10px 0;
+        color: #333;
+    }
+
+    h1 {
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+
+    #continent {
+        font-size: 24px;
+        margin: 10px 0;
+        color: #333;
+    }
+
+    #showContinentBtn {
+        background-color: #3498db;
+    }
+
+    #showContinentBtn:hover {
+        background-color: #2980b9;
+    }
+
+    #hideContinentBtn {
+        background-color: #e74c3c;
+    }
+
+    #hideContinentBtn:hover {
+        background-color: #c0392b;
+    }
+
+    #hideGentilicioBtn {
+        background-color: #e74c3c;
+    }
+
+    #hideGentilicioBtn:hover {
+        background-color: #c0392b;
+    }
+</style>
+</head>
+<body>
+    <h1>Países del mundo</h1>
+    <div class="container">
+        <div class="button-container">
+            <button onclick="generateCountry()">Mostrar País al Azar</button>
+            <button onclick="showGentilicio()" id="gentilicioBtn" disabled>Mostrar Gentilicio</button>
+            <button onclick="hideGentilicio()" id="hideGentilicioBtn" disabled>Ocultar Gentilicio</button>
+            <button onclick="showContinent()" id="showContinentBtn" disabled>Mostrar Continente</button>
+            <button onclick="hideContinent()" id="hideContinentBtn" disabled>Ocultar Continente</button>
+        </div>
+        <h2 id="countryName"></h2>
+        <img id="flagImage" class="flag" style="display: none;" alt="">
+        <h3 id="gentilicio"></h3>
+        <h3 id="continent"></h3>
+    </div>
+<script>
+const countries = [
+    {
+        name: "España",
+        flag: "https://flagcdn.com/es.svg",
+        gentilicio: "español/española",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Afganistán",
+        flag: "https://flagcdn.com/af.svg",
+        gentilicio: "afgano/afgana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Albania",
+        flag: "https://flagcdn.com/al.svg",
+        gentilicio: "albanés/albanesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Alemania",
+        flag: "https://flagcdn.com/de.svg",
+        gentilicio: "alemán/alemana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Andorra",
+        flag: "https://flagcdn.com/ad.svg",
+        gentilicio: "andorrano/andorrana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Angola",
+        flag: "https://flagcdn.com/ao.svg",
+        gentilicio: "angoleño/angoleña",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Antigua y Barbuda",
+        flag: "https://flagcdn.com/ag.svg",
+        gentilicio: "antiguano/antiguana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Arabia Saudita",
+        flag: "https://flagcdn.com/sa.svg",
+        gentilicio: "saudí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Argelia",
+        flag: "https://flagcdn.com/dz.svg",
+        gentilicio: "argelino/argelina",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Argentina",
+        flag: "https://flagcdn.com/ar.svg",
+        gentilicio: "argentino/argentina",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Armenia",
+        flag: "https://flagcdn.com/am.svg",
+        gentilicio: "armenio/armenia",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Australia",
+        flag: "https://flagcdn.com/au.svg",
+        gentilicio: "australiano/australiana",
+        continent: "Oceanía",
+        continentGentilicio: "oceánico/oceánica"
+    },
+    {
+        name: "Austria",
+        flag: "https://flagcdn.com/at.svg",
+        gentilicio: "austriaco/austriaca",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Azerbaiyán",
+        flag: "https://flagcdn.com/az.svg",
+        gentilicio: "azerbaiyano/azerbaiyana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Bahamas",
+        flag: "https://flagcdn.com/bs.svg",
+        gentilicio: "bahameño/bahameña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Bangladés",
+        flag: "https://flagcdn.com/bd.svg",
+        gentilicio: "bangladesí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Barbados",
+        flag: "https://flagcdn.com/bb.svg",
+        gentilicio: "barbadense",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Baréin",
+        flag: "https://flagcdn.com/bh.svg",
+        gentilicio: "bareiní",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Bélgica",
+        flag: "https://flagcdn.com/be.svg",
+        gentilicio: "belga",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Belice",
+        flag: "https://flagcdn.com/bz.svg",
+        gentilicio: "beliceño/beliceña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Zimbabwe",
+        flag: "https://flagcdn.com/zw.svg",
+        gentilicio: "zimbabuense",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Taiwán",
+        flag: "https://flagcdn.com/tw.svg",
+        gentilicio: "taiwanés/taiwanesa",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Estados Unidos",
+        flag: "https://flagcdn.com/us.svg",
+        gentilicio: "estadounidense",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Canadá",
+        flag: "https://flagcdn.com/ca.svg",
+        gentilicio: "canadiense",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Nueva Zelanda",
+        flag: "https://flagcdn.com/nz.svg",
+        gentilicio: "neozelandés/neozelandesa",
+        continent: "Oceanía",
+        continentGentilicio: "oceánico/oceánica"
+    },
+    {
+        name: "Mongolia",
+        flag: "https://flagcdn.com/mn.svg",
+        gentilicio: "mongol",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "China",
+        flag: "https://flagcdn.com/cn.svg",
+        gentilicio: "chino/china",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Benín",
+        flag: "https://flagcdn.com/bj.svg",
+        gentilicio: "beninés/beninesa",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Bolivia",
+        flag: "https://flagcdn.com/bo.svg",
+        gentilicio: "boliviano/boliviana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Bosnia y Herzegovina",
+        flag: "https://flagcdn.com/ba.svg",
+        gentilicio: "bosnio/bosnia",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Brasil",
+        flag: "https://flagcdn.com/br.svg",
+        gentilicio: "brasileño/brasileña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Bulgaria",
+        flag: "https://flagcdn.com/bg.svg",
+        gentilicio: "búlgaro/búlgara",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Camerún",
+        flag: "https://flagcdn.com/cm.svg",
+        gentilicio: "camerunés/camerunesa",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Catar",
+        flag: "https://flagcdn.com/qa.svg",
+        gentilicio: "catarí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "República Checa",
+        flag: "https://flagcdn.com/cz.svg",
+        gentilicio: "checo/checa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Chipre",
+        flag: "https://flagcdn.com/cy.svg",
+        gentilicio: "chipriota",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Colombia",
+        flag: "https://flagcdn.com/co.svg",
+        gentilicio: "colombiano/colombiana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Congo",
+        flag: "https://flagcdn.com/cg.svg",
+        gentilicio: "congoleño/congoleña",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Corea del Norte",
+        flag: "https://flagcdn.com/kp.svg",
+        gentilicio: "norcoreano/norcoreana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Corea del Sur",
+        flag: "https://flagcdn.com/kr.svg",
+        gentilicio: "surcoreano/surcoreana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Tailandia",
+        flag: "https://flagcdn.com/th.svg",
+        gentilicio: "tailandés/tailandesa",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Costa de Marfil",
+        flag: "https://flagcdn.com/ci.svg",
+        gentilicio: "marfileño/marfileña",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Croacia",
+        flag: "https://flagcdn.com/hr.svg",
+        gentilicio: "croata",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Cuba",
+        flag: "https://flagcdn.com/cu.svg",
+        gentilicio: "cubano/cubana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Dinamarca",
+        flag: "https://flagcdn.com/dk.svg",
+        gentilicio: "danés/danesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Estonia",
+        flag: "https://flagcdn.com/ee.svg",
+        gentilicio: "estonio/estonia",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "República Dominicana",
+        flag: "https://flagcdn.com/do.svg",
+        gentilicio: "dominicano/dominicana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Egipto",
+        flag: "https://flagcdn.com/eg.svg",
+        gentilicio: "egipcio/egipcia",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "El Salvador",
+        flag: "https://flagcdn.com/sv.svg",
+        gentilicio: "salvadoreño/salvadoreña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Emiratos Árabes Unidos",
+        flag: "https://flagcdn.com/ae.svg",
+        gentilicio: "emiratí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Eslovenia",
+        flag: "https://flagcdn.com/si.svg",
+        gentilicio: "esloveno/eslovena",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Etiopía",
+        flag: "https://flagcdn.com/et.svg",
+        gentilicio: "etíope",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Filipinas",
+        flag: "https://flagcdn.com/ph.svg",
+        gentilicio: "filipino/filipina",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Finlandia",
+        flag: "https://flagcdn.com/fi.svg",
+        gentilicio: "finlandés/finlandesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Francia",
+        flag: "https://flagcdn.com/fr.svg",
+        gentilicio: "francés/francesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Georgia",
+        flag: "https://flagcdn.com/ge.svg",
+        gentilicio: "georgiano/georgiana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Ghana",
+        flag: "https://flagcdn.com/gh.svg",
+        gentilicio: "ghanés/ghanesa",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Guatemala",
+        flag: "https://flagcdn.com/gt.svg",
+        gentilicio: "guatemalteco/guatemalteca",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Guinea",
+        flag: "https://flagcdn.com/gn.svg",
+        gentilicio: "guineano/guineana",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Haití",
+        flag: "https://flagcdn.com/ht.svg",
+        gentilicio: "haitiano/haitiana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Honduras",
+        flag: "https://flagcdn.com/hn.svg",
+        gentilicio: "hondureño/hondureña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Hungría",
+        flag: "https://flagcdn.com/hu.svg",
+        gentilicio: "húngaro/húngara",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "India",
+        flag: "https://flagcdn.com/in.svg",
+        gentilicio: "indio/india",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Indonesia",
+        flag: "https://flagcdn.com/id.svg",
+        gentilicio: "indonesio/indonesia",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Iraq",
+        flag: "https://flagcdn.com/iq.svg",
+        gentilicio: "iraquí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Irán",
+        flag: "https://flagcdn.com/ir.svg",
+        gentilicio: "iraní",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Irlanda",
+        flag: "https://flagcdn.com/ie.svg",
+        gentilicio: "irlandés/irlandesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Islandia",
+        flag: "https://flagcdn.com/is.svg",
+        gentilicio: "islandés/islandesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Israel",
+        flag: "https://flagcdn.com/il.svg",
+        gentilicio: "israelí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Italia",
+        flag: "https://flagcdn.com/it.svg",
+        gentilicio: "italiano/italiana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Jamaica",
+        flag: "https://flagcdn.com/jm.svg",
+        gentilicio: "jamaicano/jamaicana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Japón",
+        flag: "https://flagcdn.com/jp.svg",
+        gentilicio: "japonés/japonesa",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Jordania",
+        flag: "https://flagcdn.com/jo.svg",
+        gentilicio: "jordano/jordana",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Kazajistán",
+        flag: "https://flagcdn.com/kz.svg",
+        gentilicio: "kazajo/kazaja",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Lituania",
+        flag: "https://flagcdn.com/lt.svg",
+        gentilicio: "lituano/lituana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Luxemburgo",
+        flag: "https://flagcdn.com/lu.svg",
+        gentilicio: "luxemburgués/luxemburguesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Macedonia",
+        flag: "https://flagcdn.com/mk.svg",
+        gentilicio: "macedonio/macedonia",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Malta",
+        flag: "https://flagcdn.com/mt.svg",
+        gentilicio: "maltés/maltesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Marruecos",
+        flag: "https://flagcdn.com/ma.svg",
+        gentilicio: "marroquí",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Vietnam",
+        flag: "https://flagcdn.com/vn.svg",
+        gentilicio: "vietnamita",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "México",
+        flag: "https://flagcdn.com/mx.svg",
+        gentilicio: "mexicano/mexicana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Mónaco",
+        flag: "https://flagcdn.com/mc.svg",
+        gentilicio: "monegasco/monegasca",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Nepal",
+        flag: "https://flagcdn.com/np.svg",
+        gentilicio: "nepalí",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Nicaragua",
+        flag: "https://flagcdn.com/ni.svg",
+        gentilicio: "nicaragüense",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Nigeria",
+        flag: "https://flagcdn.com/ng.svg",
+        gentilicio: "nigeriano/nigeriana",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Noruega",
+        flag: "https://flagcdn.com/no.svg",
+        gentilicio: "noruego/noruega",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+        {
+            name: "Holanda (Países Bajos)",
+            flag: "https://flagcdn.com/nl.svg",
+            gentilicio: "holandés/holandesa",
+            continent: "Europa",
+            continentGentilicio: "europeo/europea"
+        },
+
+    {
+        name: "Pakistán",
+        flag: "https://flagcdn.com/pk.svg",
+        gentilicio: "pakistaní",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Palestina",
+        flag: "https://flagcdn.com/ps.svg",
+        gentilicio: "palestino/palestina",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Panamá",
+        flag: "https://flagcdn.com/pa.svg",
+        gentilicio: "panameño/panameña",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Paraguay",
+        flag: "https://flagcdn.com/py.svg",
+        gentilicio: "paraguayo/paraguaya",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Perú",
+        flag: "https://flagcdn.com/pe.svg",
+        gentilicio: "peruano/peruana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Polonia",
+        flag: "https://flagcdn.com/pl.svg",
+        gentilicio: "polaco/polaca",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Portugal",
+        flag: "https://flagcdn.com/pt.svg",
+        gentilicio: "portugués/portuguesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Gran Bretaña",
+        flag: "https://flagcdn.com/gb.svg",
+        gentilicio: "británico/británica",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Rumanía",
+        flag: "https://flagcdn.com/ro.svg",
+        gentilicio: "rumano/rumana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Rusia",
+        flag: "https://flagcdn.com/ru.svg",
+        gentilicio: "ruso/rusa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Inglaterra",
+        flag: "https://flagcdn.com/gb-eng.svg",
+        gentilicio: "inglés/inglesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Escocia",
+        flag: "https://flagcdn.com/gb-sct.svg",
+        gentilicio: "escocés/escocesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Gales",
+        flag: "https://flagcdn.com/gb-wls.svg",
+        gentilicio: "galés/galesa",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Senegal",
+        flag: "https://flagcdn.com/sn.svg",
+        gentilicio: "senegalés/senegalesa",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Serbia",
+        flag: "https://flagcdn.com/rs.svg",
+        gentilicio: "serbio/serbia",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Singapur",
+        flag: "https://flagcdn.com/sg.svg",
+        gentilicio: "singapurense",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Siria",
+        flag: "https://flagcdn.com/sy.svg",
+        gentilicio: "sirio/siria",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Sudáfrica",
+        flag: "https://flagcdn.com/za.svg",
+        gentilicio: "sudafricano/sudafricana",
+        continent: "África",
+        continentGentilicio: "africano/africana"
+    },
+    {
+        name: "Suecia",
+        flag: "https://flagcdn.com/se.svg",
+        gentilicio: "sueco/sueca",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Suiza",
+        flag: "https://flagcdn.com/ch.svg",
+        gentilicio: "suizo/suiza",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Turquía",
+        flag: "https://flagcdn.com/tr.svg",
+        gentilicio: "turco/turca",
+        continent: "Asia",
+        continentGentilicio: "asiático/asiática"
+    },
+    {
+        name: "Ucrania",
+        flag: "https://flagcdn.com/ua.svg",
+        gentilicio: "ucraniano/ucraniana",
+        continent: "Europa",
+        continentGentilicio: "europeo/europea"
+    },
+    {
+        name: "Uruguay",
+        flag: "https://flagcdn.com/uy.svg",
+        gentilicio: "uruguayo/uruguaya",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    },
+    {
+        name: "Venezuela",
+        flag: "https://flagcdn.com/ve.svg",
+        gentilicio: "venezolano/venezolana",
+        continent: "América",
+        continentGentilicio: "americano/americana"
+    }
+];
+
+let currentCountry = null;
+
+function generateCountry() {
+    document.getElementById('gentilicio').textContent = '';
+    document.getElementById('continent').textContent = '';
+    currentCountry = countries[Math.floor(Math.random() * countries.length)];
+    document.getElementById('countryName').textContent = currentCountry.name;
+    const flagImage = document.getElementById('flagImage');
+    flagImage.src = currentCountry.flag;
+    flagImage.alt = `Bandera de ${currentCountry.name}`;
+    flagImage.style.display = 'block';
+    document.getElementById('gentilicioBtn').disabled = false;
+    document.getElementById('hideGentilicioBtn').disabled = true;
+    document.getElementById('showContinentBtn').disabled = false;
+    document.getElementById('hideContinentBtn').disabled = true;
+}
+
+function showGentilicio() {
+    if (currentCountry) {
+        document.getElementById('gentilicio').textContent = 
+            `Gentilicio: ${currentCountry.gentilicio}`;
+        document.getElementById('hideGentilicioBtn').disabled = false;
+        document.getElementById('gentilicioBtn').disabled = true;
+    }
+}
+
+function hideGentilicio() {
+    document.getElementById('gentilicio').textContent = '';
+    document.getElementById('hideGentilicioBtn').disabled = true;
+    document.getElementById('gentilicioBtn').disabled = false;
+}
+
+function showContinent() {
+    if (currentCountry) {
+        document.getElementById('continent').textContent = 
+            `Continente: ${currentCountry.continent} - Gentilicio: ${currentCountry.continentGentilicio}`;
+        document.getElementById('hideContinentBtn').disabled = false;
+        document.getElementById('showContinentBtn').disabled = true;
+    }
+}
+
+function hideContinent() {
+    document.getElementById('continent').textContent = '';
+    document.getElementById('hideContinentBtn').disabled = true;
+    document.getElementById('showContinentBtn').disabled = false;
+}
+</script>
+</body>
+</html>
