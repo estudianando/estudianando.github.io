@@ -1,0 +1,423 @@
+<html><head>
+<style>
+  body {
+    font-family: 'Georgia', serif;
+    background: #f4f1ea;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    color: #2c3e50;
+  }
+
+  .rounded-image { 
+    width: 400px; 
+	height: 400px;
+	border-radius: 1rem; 
+   }
+
+  .book-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .page-title {
+    font-size: 24px;
+    color: #8b4513;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .story-text {
+    font-size: 18px;
+    margin-bottom: 30px;
+	margin-top: 130px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .choice-link {
+    padding: 15px 25px;
+    background: #8b4513;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .choice-link:hover {
+    background: #6b3410;
+    transform: translateY(-2px);
+  }
+
+  .illustration {
+    width: 100%;
+    height: 200px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .speech-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .speech-button:hover {
+    background: #45a049;
+  }
+
+   .stop-speech-button {
+     background: #941116;
+	 color: white;
+     border: none;
+     padding: 10px 20px;
+     border-radius: 5px;
+     cursor: pointer;
+     margin: 10px 0;
+     display: flex;
+     align-items: center;
+     gap: 10px;
+   }
+   
+   .stop-speech-button:hover {
+     background: #69070B
+   }
+
+  .speech-icon {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="book-container" id="story-container">
+
+	<audio id="audioPlayer" controls autoplay loop> 
+		<source src="musica.mp3" type="audio/mpeg"> Tu navegador no soporta el elemento de audio. 
+	</audio>
+
+  <div id="page1" class="page">
+    <h1 class="page-title">La Aventura en el Bosque Misterioso</h1>
+    <button onclick="speakText('page1')" class="speech-button">
+		<svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/> 
+	 </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+       <img src="bosque.png" alt="Imagen de un bosque misterioso" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Te encuentras al borde de un misterioso bosque. El aire está cargado de una extraña energía y puedes elegir entre dos caminos: uno que se adentra en la espesura oscura, y otro que bordea el bosque hacia una pequeña cabaña que ves en la distancia.
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page2')">Adentrarte en el bosque oscuro</a>
+      <a href="#" class="choice-link" onclick="changePage('page3')">Ir hacia la cabaña</a>
+    </div>
+  </div>
+
+  <div id="page2" class="page" style="display: none;">
+    <h1 class="page-title">En las Profundidades del Bosque</h1>
+    <button onclick="speakText('page2')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+         <img src="espesura.png" alt="Imagen de mucha espesura" class="rounded-image">
+    </div>
+    <div class="story-text">
+      La oscuridad te rodea mientras avanzas entre los árboles. Escuchas un susurro extraño y ves un destello brillante entre los arbustos. También notas un sendero que parece conducir a un claro.
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page4')">Seguir el destello brillante</a>
+      <a href="#" class="choice-link" onclick="changePage('page5')">Ir hacia el claro</a>
+    </div>
+  </div>
+  
+  <div id="page5" class="page" style="display: none;">
+    <h1 class="page-title"> ¡Has sido atacado por unos lobos! </h1>
+    <button onclick="speakText('page5')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+         <img src="lobos.png" alt="Imagen de muchos lobos rodeándote" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Te encuentras a una manada de lobos. Te deboran lentamente y sientes cómo los colmillos desgarran tu carne. Vas muriendo poco a poco.
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page1')">Reiniciar juego</a>
+    </div>
+  </div>
+  
+  
+  
+  <div id="page3" class="page" style="display: none;">
+    <h1 class="page-title">La Cabaña Misteriosa</h1>
+   
+    <button onclick="speakText('page3')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+		<img src="cabaña.png" alt="Imagen de una cabaña misteriosa" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Te acercas a la cabaña y notas que hay luz en su interior. Puedes ver humo saliendo de la chimenea. ¿Qué decides hacer?
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page6')">Tocar la puerta</a>
+      <a href="#" class="choice-link" onclick="changePage('page7')">Mirar por la ventana</a>
+      <a href="#" class="choice-link" onclick="changePage('page1')">Sientes mucho miedo y deseas volver</a>
+
+    </div>
+  </div>
+
+  
+  <div id="page6" class="page" style="display: none;">
+    <h1 class="page-title"> ¡Una trampa! </h1>
+   
+    <button onclick="speakText('page6')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+		<img src="agujero.png" alt="Imagen de una cabaña misteriosa" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Has caído en una trampilla que estaba en la puerta de la cabaña. Te vas sintiendo cada vez más cansado. Mueres solo y desangrado.
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page1')">Reiniciar juego</a>
+    </div>
+  </div>
+
+
+  <div id="page7" class="page" style="display: none;">
+    <h1 class="page-title"> ¡Te han atravesado el cráneo de un balazo! </h1>
+   
+    <button onclick="speakText('page7')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+		<img src="balazo.png" alt="Imagen de una cabaña misteriosa" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Te han metido un balazo. Hay restos de tus sesos y de tu sangre por todo el suelo. Estas acabado
+    </div>
+    <div class="choices">
+      <a href="#" class="choice-link" onclick="changePage('page1')">Reiniciar juego</a>
+    </div>
+  </div>
+
+
+
+
+  <div id="page4" class="page" style="display: none;">
+    <h1 class="page-title">El Encuentro Mágico</h1>
+    <button onclick="speakText('page4')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+		<img src="orbe.png" alt="Imagen de un orbe mágico" class="rounded-image">
+    </div>
+    <div class="story-text">
+      ¡Has encontrado un orbe mágico flotante! Su luz te envuelve y sientes que puede otorgarte un deseo.
+    </div>
+    <div class="choices">
+
+      <a href="#" class="choice-link" onclick="changePage('page8')">Pedir sabiduría</a>
+      <a href="#" class="choice-link" onclick="changePage('page7')">Pedir poder</a>
+    </div>
+  </div>
+
+
+  <div id="page8" class="page" style="display: none;">
+    <h1 class="page-title">¡Recibes muchísima sabiduría!</h1>
+    <button onclick="speakText('page8')" class="speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Escuchar
+    </button>
+	
+	  <button onclick="stopAudio()" class="stop-speech-button">
+      <svg class="speech-icon" viewBox="0 0 20 20">
+        <path d="M10 2 L4 6 L4 14 L10 18 L10 2" fill="white"/>
+        <path d="M12 6 Q16 10 12 14" stroke="white" fill="none" stroke-width="2"/>
+      </svg>
+      Parar Audio
+    </button>
+	
+    <div class="illustration">
+		<img src="sabiduria.png" alt="Imagen de alguien sabio" class="rounded-image">
+    </div>
+    <div class="story-text">
+      Te sientes mucho más sabio. Tan sabio tan sabio que vuelves a tu casa y decides no perder el tiempo en bosques raros. Se acabó el juego
+    </div>
+    <div class="choices">
+
+      <a href="#" class="choice-link" onclick="changePage('page1')">Reiniciar juego</a>
+   
+    </div>
+  </div>
+
+
+  <div id="page5" class="page" style="display: none;">
+    <!-- Contenido similar para otras páginas -->
+  </div>
+</div>
+
+<script>
+
+const audioPlayer = document.getElementById('audioPlayer'); 
+audioPlayer.volume = 0.1; // Establece el volumen al 10%
+
+function changePage(pageId) {
+  // Ocultar todas las páginas
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(page => page.style.display = 'none');
+  
+  // Mostrar la página seleccionada
+  document.getElementById(pageId).style.display = 'block';
+  
+  // Scroll al inicio de la página
+  window.scrollTo(0, 0);
+}
+
+function speakText(pageId) {
+  const page = document.getElementById(pageId);
+  const title = page.querySelector('.page-title').textContent;
+  const text = page.querySelector('.story-text').textContent;
+  const fullText = `${title}. ${text}`;
+  
+  // Crear una nueva instancia de SpeechSynthesisUtterance
+  const utterance = new SpeechSynthesisUtterance(fullText);
+  
+  // Configurar el idioma a español
+  utterance.lang = 'es-ES';
+  
+  // Detener cualquier lectura en curso
+  window.speechSynthesis.cancel();
+  
+  // Iniciar la lectura
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopAudio() { 
+	speechSynthesis.cancel(); 
+}
+
+
+
+// Asegurarse de que la primera página está visible al inicio
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('page1').style.display = 'block';
+});
+</script>
+
+</body></html>
