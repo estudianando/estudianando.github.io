@@ -1,0 +1,401 @@
+<html><head><base href="https://cdn.example.com">
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' GLS/100.10.9521.95';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'VT AudioPlayback', 'description': 'VT audio playback', 'filename': 'vtaudioplayback.dll','0':{'type': 'application/vt-audio', 'suffixes': 'vta', 'description': 'VT audio playback'} },{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
+<title>Calendario Interactivo</title>
+<style>
+:root {
+    --disponible: #90EE90;
+    --ocupado: #FFB6C6;
+    --no-disponible: #D3D3D3;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.month-display {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.calendar-table th, .calendar-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.time-slot {
+    text-align: center;
+}
+
+.header-cell {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+}
+
+.time-label {
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-cell {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.disponible {
+    background-color: var(--disponible);
+}
+
+.ocupado {
+    background-color: var(--ocupado);
+}
+
+.no-disponible {
+    background-color: var(--no-disponible);
+}
+
+select {
+    padding: 5px;
+    margin: 5px;
+    font-size: 16px;
+}
+
+.day-name, .day-number {
+    cursor: pointer;
+    padding: 2px;
+    border: 1px solid transparent;
+    display: block;
+}
+
+.day-name:hover, .day-number:hover {
+    border-color: #fff;
+}
+
+.day-number.editing {
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.generate-section {
+    margin-top: 20px;
+}
+
+.generate-section button {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.generate-section button:hover {
+    background-color: #45a049;
+}
+
+.generate-section textarea {
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+    padding: 10px;
+    font-family: monospace;
+}
+</style>
+</head>
+<body>
+
+<h1 id="dayOfWeek">Día de la Semana</h1>
+
+<div class="calendar-header">
+    <div>
+        <label>Mes:</label>
+        <select id="month"></select>
+        <label>Año:</label>
+        <select id="year"></select>
+    </div>
+</div>
+
+<div class="month-display" id="monthDisplay"></div>
+<div id="calendar"></div>
+
+<div class="generate-section">
+    <button onclick="generateHTML()">Generar HTML</button>
+    <div id="codeSection" style="display: none;">
+        <textarea id="htmlCode" readonly></textarea>
+        <button onclick="copyHTML()">Copiar HTML</button>
+    </div>
+</div>
+
+<script>
+const hours = Array.from({length: 15}, (_, i) => i + 9);
+const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+function initializeCalendar() {
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
+    
+    const table = document.createElement('table');
+    table.className = 'calendar-table';
+    
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    
+    headerRow.appendChild(createHeaderCell(''));
+    
+    days.forEach((day, index) => {
+        const headerCell = createHeaderCell('');
+        
+        const daySpan = document.createElement('span');
+        daySpan.className = 'day-name';
+        daySpan.textContent = day;
+        daySpan.onclick = function() {
+            const currentIndex = days.indexOf(this.textContent);
+            const nextIndex = (currentIndex + 1) % days.length;
+            this.textContent = days[nextIndex];
+        };
+        headerCell.appendChild(daySpan);
+        
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'day-number';
+        dateSpan.contentEditable = true;
+        dateSpan.addEventListener('focus', function() {
+            this.classList.add('editing');
+        });
+        dateSpan.addEventListener('blur', function() {
+            this.classList.remove('editing');
+            let value = parseInt(this.textContent);
+            if (isNaN(value) || value < 1 || value > 31) {
+                value = 1;
+            }
+            this.textContent = `\n${value}/${parseInt(document.getElementById('month').value) + 1}`;
+        });
+        dateSpan.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+        headerCell.appendChild(dateSpan);
+        headerRow.appendChild(headerCell);
+    });
+    
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    const tbody = document.createElement('tbody');
+    hours.forEach(hour => {
+        const row = document.createElement('tr');
+        row.appendChild(createCell(`${hour}:00`, 'time-slot time-label'));
+        
+        for(let i = 0; i < 7; i++) {
+            const statusCell = createCell('Disponible', 'time-slot status-cell disponible');
+            statusCell.onclick = toggleStatus;
+            row.appendChild(statusCell);
+        }
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    calendar.appendChild(table);
+}
+
+function createHeaderCell(text) {
+    const th = document.createElement('th');
+    th.className = 'header-cell';
+    th.textContent = text;
+    return th;
+}
+
+function createCell(text, className) {
+    const td = document.createElement('td');
+    td.textContent = text;
+    td.className = className;
+    return td;
+}
+
+function toggleStatus(event) {
+    const cell = event.target;
+    if(cell.classList.contains('disponible')) {
+        cell.classList.remove('disponible');
+        cell.classList.add('ocupado');
+        cell.textContent = 'Ocupado';
+    } else if(cell.classList.contains('ocupado')) {
+        cell.classList.remove('ocupado');
+        cell.classList.add('no-disponible');
+        cell.textContent = 'No disponible';
+    } else {
+        cell.classList.remove('no-disponible');
+        cell.classList.add('disponible');
+        cell.textContent = 'Disponible';
+    }
+}
+
+function initializeSelectors() {
+    const monthSelect = document.getElementById('month');
+    const yearSelect = document.getElementById('year');
+    const monthDisplay = document.getElementById('monthDisplay');
+    
+    months.forEach((month, index) => {
+        const option = new Option(month, index);
+        monthSelect.add(option);
+    });
+    
+    const currentYear = new Date().getFullYear();
+    for(let year = currentYear - 5; year <= currentYear + 5; year++) {
+        const option = new Option(year, year);
+        yearSelect.add(option);
+    }
+    
+    monthSelect.value = new Date().getMonth();
+    yearSelect.value = currentYear;
+    
+    updateMonthDisplay();
+    
+    [monthSelect, yearSelect].forEach(select => {
+        select.addEventListener('change', () => {
+            updateCalendarDates();
+            updateMonthDisplay();
+        });
+    });
+}
+
+function updateMonthDisplay() {
+    const monthSelect = document.getElementById('month');
+    const yearSelect = document.getElementById('year');
+    const monthDisplay = document.getElementById('monthDisplay');
+    monthDisplay.textContent = `${months[monthSelect.value]} ${yearSelect.value}`;
+}
+
+function updateCalendarDates() {
+    const month = parseInt(document.getElementById('month').value);
+    const dateSpans = document.querySelectorAll('.day-number');
+    dateSpans.forEach((span, index) => {
+        const currentDay = span.textContent.split('/')[0].trim() || '1';
+        span.textContent = `\n${currentDay}/${month + 1}`;
+    });
+}
+
+function generateHTML() {
+    const calendar = document.querySelector('.calendar-table');
+    const codeSection = document.getElementById('codeSection');
+    const htmlCode = document.getElementById('htmlCode');
+    
+    const styles = `
+<style>
+:root {
+    --disponible: #90EE90;
+    --ocupado: #FFB6C6;
+    --no-disponible: #D3D3D3;
+}
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+.calendar-table th, .calendar-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+.header-cell {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+.time-label {
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+}
+.disponible {
+    background-color: var(--disponible);
+}
+.ocupado {
+    background-color: var(--ocupado);
+}
+.no-disponible {
+    background-color: var(--no-disponible);
+}
+</style>`;
+
+    let tableHTML = calendar.cloneNode(true);
+    
+    tableHTML.querySelectorAll('[contenteditable]').forEach(el => {
+        el.removeAttribute('contenteditable');
+    });
+    
+    const cells = tableHTML.getElementsByTagName('td');
+    for(let cell of cells) {
+        cell.removeAttribute('onclick');
+        if(cell.textContent === 'Disponible') {
+            cell.className = 'disponible';
+        } else if(cell.textContent === 'Ocupado') {
+            cell.className = 'ocupado';
+        } else if(cell.textContent === 'No disponible') {
+            cell.className = 'no-disponible';
+        }
+        if(cell.classList.contains('time-slot')) {
+            cell.className = cell.classList.contains('time-label') ? 'time-label' : '';
+        }
+    }
+    
+    codeSection.style.display = 'block';
+    htmlCode.value = styles + '\n' + tableHTML.outerHTML;
+}
+
+function copyHTML() {
+    const htmlCode = document.getElementById('htmlCode');
+    htmlCode.select();
+    document.execCommand('copy');
+    alert('Código HTML copiado al portapapeles');
+}
+
+// Initialize everything
+initializeCalendar();
+initializeSelectors();
+updateCalendarDates();
+
+function showDayOfWeek() { 
+	const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]; 
+	const today = new Date(); 
+	const day = days[today.getDay()]; 
+		document.getElementById("dayOfWeek").innerText = "Hoy es " + day; 
+	} 
+	
+	showDayOfWeek(); // Llamar a la función para mostrar el día de la semana
+
+</script>
+
+</body>
+</html>
