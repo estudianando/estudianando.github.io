@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Disponibilidad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h2 {
+            text-align: center;
+            color: #666;
+            font-weight: normal;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .available {
+            background-color: #90EE90;
+        }
+        .unavailable {
+            background-color: #FF6347;
+        }
+        #output {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        .button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Disponibilidad</h1>
+    <h2 id="month-subtitle"></h2>
+    <div id="calendar-container"></div>
+    <button id="generateBtn" class="button">Generar HTML</button>
+    <textarea id="output" readonly></textarea>
+    <button id="copyBtn" class="button">Copiar</button>
+
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Disponibilidad</title>
+</head>
+<body>
+    <h2 id="month-subtitle"></h2>
+    <div>
+        <label for="manualDatesInput">Introduce los días del mes (separados por comas):</label>
+        <input type="text" id="manualDatesInput" placeholder="Ejemplo: 1,2,3,4,5,6,7">
+        <button id="updateCalendarBtn">Actualizar Calendario</button>
+    </div>
+    <div id="calendar-container"></div>
+    <textarea id="output" rows="10" cols="80"></textarea>
+    <button id="generateBtn">Generar HTML</button>
+    <button id="copyBtn">Copiar HTML</button>
+
+    <script>
+        // Obtener los meses en español
+        const monthNames = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        // Obtener los días de la semana actuales con días del mes manuales
+        function getDaysOfWeek(manualDates) {
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const today = new Date();
+            const currentDayIndex = today.getDay(); // Índice del día actual
+            const weekDays = [];
+
+            // Validar que el número de días proporcionados sea 7
+            if (manualDates.length !== 7) {
+                throw new Error("Debe proporcionar exactamente 7 días del mes separados por comas.");
+            }
+
+            // Generar los días de la semana comenzando desde el día actual
+            manualDates.forEach((dayOfMonth, index) => {
+                const dayIndex = (currentDayIndex + index) % 7; // Rotación a partir del día actual
+                weekDays.push({
+                    name: days[dayIndex], // Día de la semana correspondiente
+                    date: dayOfMonth // Día del mes proporcionado
+                });
+            });
+
+            return weekDays;
+        }
+
+        // Crear la tabla de disponibilidad
+        function createAvailabilityCalendar(manualDates) {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = ''; // Limpiar el contenedor
+
+            const weekDays = getDaysOfWeek(manualDates);
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+
+            // Añadir una celda vacía para la columna de horas
+            const emptyHeader = document.createElement('th');
+            headerRow.appendChild(emptyHeader);
+
+            // Encabezados de días
+            weekDays.forEach(day => {
+                const th = document.createElement('th');
+                th.textContent = `${day.name} ${day.date < 10 ? '0' : ''}${day.date}`;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Crear filas de horas
+            const tbody = document.createElement('tbody');
+            const startHour = 9;
+            const endHour = 23;
+
+            for (let hour = startHour; hour <= endHour; hour++) {
+                const row = document.createElement('tr');
+                
+                // Formatear la hora para mostrar con dos dígitos
+                const formattedHour = `${hour < 10 ? '0' : ''}${hour}:00`;
+                const hourCell = document.createElement('th');
+                hourCell.textContent = formattedHour;
+                row.appendChild(hourCell);
+
+                // Celdas de disponibilidad para cada día
+                for (let i = 0; i < 7; i++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = 'Disponible';
+                    cell.classList.add('available');
+                    cell.addEventListener('click', function() {
+                        this.classList.toggle('available');
+                        this.classList.toggle('unavailable');
+                        this.textContent = this.classList.contains('available') ? 'Disponible' : 'No disponible';
+                    });
+                    row.appendChild(cell);
+                }
+
+                tbody.appendChild(row);
+            }
+
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+
+        // Generar HTML del calendario
+        function generateHTML() {
+            const table = document.querySelector('table');
+            const styleElement = document.querySelector('style');
+            const outputArea = document.getElementById('output');
+            const monthSubtitle = document.getElementById('month-subtitle');
+            
+            // Generar HTML de estilo
+            const styleHTML = styleElement ? styleElement.textContent : '';
+            
+            // Generar HTML de la tabla
+            const tableHTML = table.outerHTML;
+            
+            // Mostrar en el área de texto
+            outputArea.value = `<!-- Estilo CSS -->\n<style>\n${styleHTML}\n</style>\n\n<!-- Subtítulo de Mes -->\n<h2>${monthSubtitle.textContent}</h2>\n\n<!-- Tabla de Disponibilidad -->\n${tableHTML}`;
+        }
+
+        // Copiar al portapapeles
+        function copyToClipboard() {
+            const outputArea = document.getElementById('output');
+            outputArea.select();
+            document.execCommand('copy');
+            alert('HTML copiado al portapapeles');
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateCalendarBtn = document.getElementById('updateCalendarBtn');
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+
+            updateCalendarBtn.addEventListener('click', () => {
+                const manualDatesInput = document.getElementById('manualDatesInput').value;
+                try {
+                    const manualDates = manualDatesInput.split(',').map(num => parseInt(num.trim()));
+                    createAvailabilityCalendar(manualDates);
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            });
+
+            generateBtn.addEventListener('click', generateHTML);
+            copyBtn.addEventListener('click', copyToClipboard);
+        });
+    </script>
+</body>
+</html>
+
+</body>
+</html>
