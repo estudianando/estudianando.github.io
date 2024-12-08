@@ -1,0 +1,313 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de léxico  </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 15px;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de léxico </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <button class="btn btn-primary" id="next-btn" style="width: 100%">Siguiente pregunta</button>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+
+      {
+        question: "___________ que disfruta de los pequeños placeres de la vida.",
+        options: ["Soy persona", "Soy una persona", "Soy una", "No soy"],
+        correct: 1
+      },	  
+      {
+        question: "Para ir al trabajo, a veces ___________, es más rápido que el coche en hora punta.",
+        options: ["voy a motocicleta", "voy motocicleta", "voy en motocicleta", "voy de motocicleta"],
+        correct: 2
+      },	  
+      {
+        question: "La casa era encantadora, ___________  un cuento de hadas.",
+        options: ["como las de", "como los de", "como el de", "como la de"],
+        correct: 3
+      },
+      {
+        question: "Su propuesta es ___________ a la que ya hemos recibido, pero con algunas mejoras importantes.",
+        options: ["similario", "similaria", "similar", "simil"],
+        correct: 2
+      },
+      {
+        question: "Su entusiasmo era contagioso, ___________ un niño.",
+        options: ["coma", "como el de", "como la de", "si"],
+        correct: 1
+      },
+
+      {
+        question: "___________ voy a la playa con mis amigos.",
+        options: ["Este finde", "fin de semana", "Este fin de", "Este"],
+        correct: 0
+      },
+      {
+        question: "La reunión empieza ___________ 9, así que no lleguemos tarde.",
+        options: ["al las", "al de las", "el de las", "a las"],
+        correct: 3
+      },
+      {
+        question: "Su tarta de manzana es deliciosa, ___________  abuela",
+        options: ["como si", "como mi de", "como la de mi", "camo"],
+        correct: 2
+      },
+      {
+        question: "La construcción de la muralla era imponente, ___________  antiguos romanos.",
+        options: ["como el de los", "como el del", "como la del", "como la de los"],
+        correct: 3
+      },
+      {
+        question: "Vivía en un palacio, ___________  un rey.",
+        options: ["un", "como el de", "come", "como el"],
+        correct: 1
+      },
+      {
+        question: "No he dormido nada, así que es posible que ___________ dormido.",
+        options: ["vaya", "he", "dormirías", "playa"],
+        correct: 0
+      },
+      {
+        question: "Su plato estaba perfectamente presentado, ___________ mejores chefs.",
+        options: ["como tu", "como el de", "como el de los", "como la de"],
+        correct: 2
+      },
+      {
+        question: "___________ muy organizada y eficiente en el trabajo.",
+        options: ["Soy la", "Es", "Es persona", "Es una persona"],
+        correct: 3
+      },
+      {
+        question: "El clima de esta región es ___________ al del Mediterráneo, con veranos cálidos",
+        options: ["similar", "similitud", "similario", "senil"],
+        correct: 0
+      },
+      {
+        question: "Los fines de semana, ___________ por el parque para relajarme.",
+        options: ["voy en", "voy en bicicleta", "voy bicicleta", "voy a bicicleta"],
+        correct: 1
+      },
+      {
+        question: "Su voz era dulce y melodiosa, ___________  ángeles.",
+        options: ["como la de los", "como el del", "como el de la", "ninguna es correcta"],
+        correct: 0
+      }
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
