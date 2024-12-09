@@ -1,0 +1,259 @@
+<html><head><base href="/">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative; /* For arrow positioning */
+}
+
+.column {
+  flex: 1;
+  margin: 10px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.item {
+  padding: 15px;
+  margin: 10px 0;
+  background: #e9ecef;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  position: relative; /* For arrow positioning */
+}
+
+.item:hover {
+  background: #dee2e6;
+}
+
+.item.selected {
+  background: #b8daff;
+  border: 2px solid #007bff;
+}
+
+.correct {
+  background: #d4edda !important;
+  border: 2px solid #28a745;
+}
+
+.incorrect {
+  background: #f8d7da !important;
+  border: 2px solid #dc3545;
+}
+
+#checkButton {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#checkButton:hover {
+  background: #0056b3;
+}
+
+h2 {
+  color: #343a40;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#score {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: #343a40;
+}
+
+.arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.arrow line {
+  stroke: #007bff;
+  stroke-width: 2;
+}
+
+.arrow polygon {
+  fill: #007bff;
+}
+</style>
+</head>
+<body>
+<h2>Relaciona las frases correctamente</h2>
+<div class="container" id="container">
+  <svg class="arrow" width="100%" height="100%" style="position: absolute; left: 0; top: 0;"></svg>
+  <div class="column" id="left">
+    <div class="item" data-pair="1">Buenos dias</div>
+    <div class="item" data-pair="2">¿Qué es esto?</div>
+    <div class="item" data-pair="3">Perdona ¿qué es un boligrafo?</div>
+    <div class="item" data-pair="4">Chao hasta pronto</div>
+    <div class="item" data-pair="5">Muchas gracias</div>
+  </div>
+  <div class="column" id="right">
+    <div class="item" data-pair="5">De nada</div>
+    <div class="item" data-pair="1">Hola soy Cris</div>
+    <div class="item" data-pair="4">Adios hasta mañana</div>
+    <div class="item" data-pair="3">Sí es un bolígrafo</div>
+    <div class="item" data-pair="2">No lo sé</div>
+  </div>
+</div>
+<button id="checkButton">Comprobar respuestas</button>
+<div id="score"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let selectedLeft = null;
+  let selectedRight = null;
+  const matches = new Map();
+  const arrows = new Map();
+  const svg = document.querySelector('.arrow');
+
+  function createArrow(from, to) {
+    const fromRect = from.getBoundingClientRect();
+    const toRect = to.getBoundingClientRect();
+    const containerRect = document.getElementById('container').getBoundingClientRect();
+
+    const fromX = fromRect.right - containerRect.left;
+    const fromY = fromRect.top + (fromRect.height / 2) - containerRect.top;
+    const toX = toRect.left - containerRect.left;
+    const toY = toRect.top + (toRect.height / 2) - containerRect.top;
+
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const arrowHead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+
+    line.setAttribute('x1', fromX);
+    line.setAttribute('y1', fromY);
+    line.setAttribute('x2', toX);
+    line.setAttribute('y2', toY);
+
+    // Calculate arrow head points
+    const angle = Math.atan2(toY - fromY, toX - fromX);
+    const arrowLength = 10;
+    const arrowWidth = 6;
+    const points = [
+      [toX, toY],
+      [toX - arrowLength * Math.cos(angle) + arrowWidth * Math.sin(angle), 
+       toY - arrowLength * Math.sin(angle) - arrowWidth * Math.cos(angle)],
+      [toX - arrowLength * Math.cos(angle) - arrowWidth * Math.sin(angle),
+       toY - arrowLength * Math.sin(angle) + arrowWidth * Math.cos(angle)]
+    ].map(point => point.join(',')).join(' ');
+
+    arrowHead.setAttribute('points', points);
+
+    arrow.appendChild(line);
+    arrow.appendChild(arrowHead);
+    return arrow;
+  }
+
+  document.querySelectorAll('#left .item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (selectedLeft === item) {
+        item.classList.remove('selected');
+        selectedLeft = null;
+      } else {
+        if (selectedLeft) {
+          selectedLeft.classList.remove('selected');
+        }
+        item.classList.add('selected');
+        selectedLeft = item;
+      }
+      
+      if (selectedLeft && selectedRight) {
+        makeMatch(selectedLeft, selectedRight);
+      }
+    });
+  });
+
+  document.querySelectorAll('#right .item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (selectedRight === item) {
+        item.classList.remove('selected');
+        selectedRight = null;
+      } else {
+        if (selectedRight) {
+          selectedRight.classList.remove('selected');
+        }
+        item.classList.add('selected');
+        selectedRight = item;
+      }
+      
+      if (selectedLeft && selectedRight) {
+        makeMatch(selectedLeft, selectedRight);
+      }
+    });
+  });
+
+  function makeMatch(leftItem, rightItem) {
+    // Remove old arrows and matches
+    matches.forEach((value, key) => {
+      if (value === leftItem || value === rightItem || key === leftItem || key === rightItem) {
+        const oldArrow = arrows.get(key);
+        if (oldArrow) {
+          oldArrow.remove();
+          arrows.delete(key);
+        }
+        matches.delete(key);
+      }
+    });
+    
+    // Create new match and arrow
+    matches.set(leftItem, rightItem);
+    const arrow = createArrow(leftItem, rightItem);
+    arrows.set(leftItem, arrow);
+    svg.appendChild(arrow);
+    
+    // Clear selections
+    leftItem.classList.remove('selected');
+    rightItem.classList.remove('selected');
+    selectedLeft = null;
+    selectedRight = null;
+  }
+
+  document.getElementById('checkButton').addEventListener('click', checkAnswers);
+
+  function checkAnswers() {
+    let score = 0;
+    
+    document.querySelectorAll('.item').forEach(item => {
+      item.classList.remove('correct', 'incorrect');
+    });
+
+    matches.forEach((rightItem, leftItem) => {
+      const leftPair = leftItem.getAttribute('data-pair');
+      const rightPair = rightItem.getAttribute('data-pair');
+      
+      if(leftPair === rightPair) {
+        score++;
+        leftItem.classList.add('correct');
+        rightItem.classList.add('correct');
+      } else {
+        leftItem.classList.add('incorrect');
+        rightItem.classList.add('incorrect');
+      }
+    });
+
+    document.getElementById('score').textContent = `Puntuación: ${score} de 5 correctas`;
+  }
+});
+</script>
+</body></html>
