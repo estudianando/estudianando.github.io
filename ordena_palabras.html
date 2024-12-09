@@ -1,0 +1,244 @@
+<html><head><base href="." />
+<meta charset="UTF-8">
+<title>Ordena las frases</title>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f8ff;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    max-width: 800px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.words-container {
+    margin: 20px 0;
+    min-height: 60px;
+}
+
+.drop-zone {
+    border: 2px dashed #ccc;
+    min-height: 60px;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.word-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.word-btn:hover {
+    transform: scale(1.05);
+}
+
+.draggable {
+    cursor: move;
+}
+
+.success-message {
+    color: #4CAF50;
+    font-weight: bold;
+    display: none;
+    margin: 10px 0;
+}
+
+.check-btn {
+    background-color: #2196F3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.next-btn {
+    background-color: #FF9800;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+    display: none;
+}
+
+.level-indicator {
+    color: #666;
+    margin: 10px 0;
+}
+
+.illustration {
+    width: 200px;
+    height: 200px;
+    margin: 20px 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Ordena las frases</h1>
+    <div class="level-indicator">Nivel <span id="currentLevel">1</span> de 5</div>
+    
+    <div id="illustrations">
+        <center><img src="carro.png" class="illustration" id="illustration1" style="display:none"></center>
+      
+        <center><img src="chico_comiendo_sandwich.png" class="illustration" id="illustration2" style="display:none"></center>
+
+        <center><img src="clases_personalizadas.png" class="illustration" id="illustration3" style="display:none"></center>
+
+        <center><img src="arbol.png" class="illustration" id="illustration4" style="display:none"></center>
+
+        <center><img src="errores.png" class="illustration" id="illustration5" style="display:none"></center>
+    </div>
+
+    <p>Ordena las palabras para formar la frase correcta:</p>
+    
+    <div class="words-container" id="wordsContainer">
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+    </div>
+
+    <button class="check-btn" onclick="checkOrder()">Verificar orden</button>
+    <button class="next-btn" id="nextButton" onclick="nextLevel()">Siguiente nivel</button>
+    <div class="success-message" id="successMessage">¡Correcto! Has ordenado la frase correctamente.</div>
+</div>
+
+<script>
+const phrases = [
+    "El carro está lleno de plantas",
+    "El chico come un sandwich",
+    "El profesor enseña la lección",
+    "El árbol crece hacia arriba",
+    "El niño ha tropezado con una cáscara de plátano"
+];
+
+let currentLevel = 0;
+let words = [];
+let correctOrder = [];
+
+function initLevel() {
+    document.getElementById("wordsContainer").innerHTML = "";
+    document.getElementById("dropZone").innerHTML = "";
+    document.getElementById("successMessage").style.display = "none";
+    document.getElementById("nextButton").style.display = "none";
+    document.getElementById("currentLevel").textContent = currentLevel + 1;
+    document.querySelectorAll(".illustration").forEach((ill, index) => {
+        ill.style.display = index === currentLevel ? "block" : "none";
+    });
+    words = phrases[currentLevel].split(" ");
+    correctOrder = [...words];
+    words = shuffleArray([...words]);
+    words.forEach(word => {
+        const button = document.createElement("button");
+        button.className = "word-btn draggable";
+        button.draggable = true;
+        button.textContent = word;
+        
+        button.addEventListener('dragstart', handleDragStart);
+        button.addEventListener('dragend', handleDragEnd);
+        
+        document.getElementById("wordsContainer").appendChild(button);
+    });
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+const dropZone = document.getElementById("dropZone");
+dropZone.addEventListener('dragover', handleDragOver);
+dropZone.addEventListener('drop', handleDrop);
+
+let draggedElement = null;
+
+function handleDragStart(e) {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.4';
+}
+
+function handleDragEnd(e) {
+    e.target.style.opacity = '1';
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    if (draggedElement) {
+        dropZone.appendChild(draggedElement);
+        draggedElement = null;
+    }
+}
+
+function returnWordsToOrigin() {
+    const dropZone = document.getElementById("dropZone");
+    const wordsContainer = document.getElementById("wordsContainer");
+    const buttons = Array.from(dropZone.children);
+    
+    buttons.forEach(button => {
+        button.style.opacity = '0.5';
+        setTimeout(() => {
+            wordsContainer.appendChild(button);
+            button.style.opacity = '1';
+        }, 300);
+    });
+}
+
+function checkOrder() {
+    const currentWords = Array.from(dropZone.children).map(btn => btn.textContent);
+    const isCorrect = correctOrder.every((word, index) => word === currentWords[index]);
+    
+    const successMessage = document.getElementById("successMessage");
+    successMessage.style.display = isCorrect ? "block" : "none";
+    
+    if (isCorrect) {
+        document.getElementById("nextButton").style.display = 
+            currentLevel < phrases.length - 1 ? "block" : "none";
+        if (currentLevel === phrases.length - 1) {
+            alert("¡Felicidades! Has completado todos los niveles.");
+        }
+    } else {
+        alert("¡Inténtalo de nuevo! El orden no es correcto.");
+        setTimeout(returnWordsToOrigin, 1000);  // Changed to 1000ms (1 second)
+    }
+}
+
+function nextLevel() {
+    if (currentLevel < phrases.length - 1) {
+        currentLevel++;
+        initLevel();
+    }
+}
+
+initLevel();
+</script>
+</body>
+</html>
