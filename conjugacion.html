@@ -103,90 +103,113 @@
 </div>
 
 <script>
-const verbs = [
+const verbConjugations = [
     {
         infinitive: "hablar",
-        presenteIndicativo: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"]
+        presenteIndicativo: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"],
+        preteritoIndicativo: ["hablé", "hablaste", "habló", "hablamos", "hablasteis", "hablaron"],
+        futuroIndicativo: ["hablaré", "hablarás", "hablará", "hablaremos", "hablaréis", "hablarán"]
     },
     {
         infinitive: "comer",
-        presenteIndicativo: ["como", "comes", "come", "comemos", "coméis", "comen"]
+        presenteIndicativo: ["como", "comes", "come", "comemos", "coméis", "comen"],
+        preteritoIndicativo: ["comí", "comiste", "comió", "comimos", "comisteis", "comieron"],
+        futuroIndicativo: ["comeré", "comerás", "comerá", "comeremos", "comeréis", "comerán"]
     },
     {
         infinitive: "vivir",
-        presenteIndicativo: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"]
+        presenteIndicativo: ["vivo", "vives", "vive", "vivimos", "vivís", "viven"],
+        preteritoIndicativo: ["viví", "viviste", "vivió", "vivimos", "vivisteis", "vivieron"],
+        futuroIndicativo: ["viviré", "vivirás", "vivirá", "viviremos", "viviréis", "vivirán"]
     },
     {
         infinitive: "ser",
-        presenteIndicativo: ["soy", "eres", "es", "somos", "sois", "son"]
+        presenteIndicativo: ["soy", "eres", "es", "somos", "sois", "son"],
+        preteritoIndicativo: ["fui", "fuiste", "fue", "fuimos", "fuisteis", "fueron"],
+        futuroIndicativo: ["seré", "serás", "será", "seremos", "seréis", "serán"]
     },
     {
         infinitive: "estar",
-        presenteIndicativo: ["estoy", "estás", "está", "estamos", "estáis", "están"]
+        presenteIndicativo: ["estoy", "estás", "está", "estamos", "estáis", "están"],
+        preteritoIndicativo: ["estuve", "estuviste", "estuvo", "estuvimos", "estuvisteis", "estuvieron"],
+        futuroIndicativo: ["estaré", "estarás", "estará", "estaremos", "estaréis", "estarán"]
     },
-    // ... Añadiendo más verbos hasta completar 50
     {
         infinitive: "ir",
-        presenteIndicativo: ["voy", "vas", "va", "vamos", "vais", "van"]
+        presenteIndicativo: ["voy", "vas", "va", "vamos", "vais", "van"],
+        preteritoIndicativo: ["fui", "fuiste", "fue", "fuimos", "fuisteis", "fueron"],
+        futuroIndicativo: ["iré", "irás", "irá", "iremos", "iréis", "irán"]
     },
     {
         infinitive: "tener",
-        presenteIndicativo: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"]
+        presenteIndicativo: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"],
+        preteritoIndicativo: ["tuve", "tuviste", "tuvo", "tuvimos", "tuvisteis", "tuvieron"],
+        futuroIndicativo: ["tendré", "tendrás", "tendrá", "tendremos", "tendréis", "tendrán"]
     },
     {
         infinitive: "hacer",
-        presenteIndicativo: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"]
+        presenteIndicativo: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"],
+        preteritoIndicativo: ["hice", "hiciste", "hizo", "hicimos", "hicisteis", "hicieron"],
+        futuroIndicativo: ["haré", "harás", "hará", "haremos", "haréis", "harán"]
     },
     {
         infinitive: "decir",
-        presenteIndicativo: ["digo", "dices", "dice", "decimos", "decís", "dicen"]
+        presenteIndicativo: ["digo", "dices", "dice", "decimos", "decís", "dicen"],
+        preteritoIndicativo: ["dije", "dijiste", "dijo", "dijimos", "dijisteis", "dijeron"],
+        futuroIndicativo: ["diré", "dirás", "dirá", "diremos", "diréis", "dirán"]
     },
     {
         infinitive: "poder",
-        presenteIndicativo: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"]
+        presenteIndicativo: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"],
+        preteritoIndicativo: ["pude", "pudiste", "pudo", "pudimos", "pudisteis", "pudieron"],
+        futuroIndicativo: ["podré", "podrás", "podrá", "podremos", "podréis", "podrán"]
     }
-    // ... (Se pueden agregar más verbos según sea necesario)
+];
+
+const tenses = [
+    { key: "presenteIndicativo", name: "Presente de Indicativo" },
+    { key: "preteritoIndicativo", name: "Pretérito Indefinido" },
+    { key: "futuroIndicativo", name: "Futuro Simple" }
 ];
 
 let currentVerbIndex = 0;
+let currentTenseIndex = 0;
 let score = 0;
 
 function loadVerb() {
-    const verb = verbs[currentVerbIndex];
-    document.getElementById('current-verb').textContent = verb.infinitive;
-    document.getElementById('current-tense').textContent = "Presente de Indicativo";
+    const verb = verbConjugations[currentVerbIndex];
+    const currentTense = tenses[currentTenseIndex];
     
-    // Limpiar inputs
-    document.getElementById('yo').value = "";
-    document.getElementById('tu').value = "";
-    document.getElementById('el').value = "";
-    document.getElementById('nosotros').value = "";
-    document.getElementById('vosotros').value = "";
-    document.getElementById('ellos').value = "";
+    document.getElementById('current-verb').textContent = verb.infinitive;
+    document.getElementById('current-tense').textContent = currentTense.name;
+    
+    // Clear inputs
+    ["yo", "tu", "el", "nosotros", "vosotros", "ellos"].forEach(pronoun => {
+        document.getElementById(pronoun).value = "";
+    });
     
     document.getElementById('feedback').innerHTML = "";
 }
 
 function checkAnswers() {
-    const verb = verbs[currentVerbIndex];
-    const inputs = [
-        document.getElementById('yo').value.toLowerCase(),
-        document.getElementById('tu').value.toLowerCase(),
-        document.getElementById('el').value.toLowerCase(),
-        document.getElementById('nosotros').value.toLowerCase(),
-        document.getElementById('vosotros').value.toLowerCase(),
-        document.getElementById('ellos').value.toLowerCase()
-    ];
+    const verb = verbConjugations[currentVerbIndex];
+    const currentTense = tenses[currentTenseIndex];
+    
+    const inputs = ["yo", "tu", "el", "nosotros", "vosotros", "ellos"].map(pronoun => 
+        document.getElementById(pronoun).value.toLowerCase()
+    );
+    
+    const correctConjugations = verb[currentTense.key];
     
     let correct = true;
     let feedback = "";
     
-    for(let i = 0; i < 6; i++) {
-        if(inputs[i] !== verb.presenteIndicativo[i]) {
+    inputs.forEach((input, index) => {
+        if(input !== correctConjugations[index]) {
             correct = false;
-            feedback += `<p class="incorrect">La forma correcta es: ${verb.presenteIndicativo[i]}</p>`;
+            feedback += `<p class="incorrect">La forma correcta es: ${correctConjugations[index]}</p>`;
         }
-    }
+    });
     
     if(correct) {
         score++;
@@ -197,20 +220,27 @@ function checkAnswers() {
     document.getElementById('score').textContent = score;
     document.getElementById('progress').style.width = `${(currentVerbIndex + 1) * 2}%`;
     
-    if(currentVerbIndex < verbs.length - 1) {
+    // Move to next tense or verb
+    currentTenseIndex++;
+    if(currentTenseIndex >= tenses.length) {
+        currentTenseIndex = 0;
         currentVerbIndex++;
+    }
+    
+    if(currentVerbIndex < verbConjugations.length) {
         setTimeout(loadVerb, 2000);
     } else {
         setTimeout(() => {
-            alert(`¡Juego terminado! Tu puntuación final es: ${score}/${verbs.length}`);
+            alert(`¡Juego terminado! Tu puntuación final es: ${score}/${verbConjugations.length * tenses.length}`);
             currentVerbIndex = 0;
+            currentTenseIndex = 0;
             score = 0;
             loadVerb();
         }, 2000);
     }
 }
 
-// Iniciar el juego
+// Start the game
 loadVerb();
 </script>
 </body>
