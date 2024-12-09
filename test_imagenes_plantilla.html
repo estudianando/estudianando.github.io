@@ -1,0 +1,246 @@
+<html><head><base href="." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f8ff;
+  }
+
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+  }
+
+  .screen {
+    display: none;
+  }
+
+  .screen.active {
+    display: block;
+  }
+
+  .image-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .main-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .option {
+    padding: 15px;
+    background-color: white;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .option:hover {
+    background-color: #e3f2fd;
+  }
+
+  .option.selected {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+
+  .nav-btn, .submit-btn {
+    padding: 15px 30px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-btn:hover, .submit-btn:hover {
+    background-color: #27ae60;
+  }
+
+  .nav-btn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+
+  .feedback {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    min-height: 24px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .progress {
+    height: 100%;
+    background-color: #3498db;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+  }
+</style>
+</head>
+<body>
+  <div class="progress-bar">
+    <div class="progress" style="width: 25%"></div>
+  </div>
+
+  <div class="screen active" data-screen="1">
+    <h1>Relaciona las frases con la imagen</h1>
+    <div class="image-container">
+		<img src="chica_despertandose.png" width="50%">
+
+    </div>
+    <div class="options-container">
+      <div class="option" onclick="selectOption(0, 1)">Buenas tardes</div>
+      <div class="option" onclick="selectOption(1, 1)">Buenas noches</div>
+      <div class="option" onclick="selectOption(2, 1)">Buenos días</div>
+      <div class="option" onclick="selectOption(3, 1)">¿Cómo te llamas?</div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="2">
+    <h1>Relaciona las frases con la imagen</h1>
+    <div class="image-container">
+		<img src="chico_comiendo_sandwich.png" width="50%">
+    </div>
+    <div class="options-container">
+      <div class="option" onclick="selectOption(0, 2)"> Buenas noches </div>
+      <div class="option" onclick="selectOption(1, 2)"> Buenas tardes </div>
+      <div class="option" onclick="selectOption(2, 2)"> ¿Cómo estás? </div>
+      <div class="option" onclick="selectOption(3, 2)"> ¿De dónde eres? </div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="3">
+    <h1>Relaciona las frases con la imagen</h1>
+    <div class="image-container">
+		<img src="personas_despidiendose.png" width="50%">
+    </div>
+    <div class="options-container">
+      <div class="option" onclick="selectOption(0, 3)"> Hasta luego</div>
+      <div class="option" onclick="selectOption(1, 3)"> Encantado de conocerte </div>
+      <div class="option" onclick="selectOption(2, 3)"> ¡Buen provecho! </div>
+      <div class="option" onclick="selectOption(3, 3)"> Buenas noches </div>
+    </div>
+  </div>
+
+  <div class="screen" data-screen="4">
+    <h1>Relaciona las frases con la imagen</h1>
+    <div class="image-container">
+		<img src="te_quiero.png" width="50%">
+    </div>
+    <div class="options-container">
+      <div class="option" onclick="selectOption(0, 4)"> Encantado de conocerte </div>
+      <div class="option" onclick="selectOption(1, 4)"> ¿Qué hora es?</div>
+      <div class="option" onclick="selectOption(2, 4)"> Te odio </div>
+      <div class="option" onclick="selectOption(3, 4)"> Te quiero </div>
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button class="nav-btn" onclick="previousScreen()" disabled>Anterior</button>
+    <button class="submit-btn" onclick="checkAnswer()">Comprobar respuesta</button>
+    <button class="nav-btn" onclick="nextScreen()">Siguiente</button>
+  </div>
+  <div class="feedback"></div>
+
+<script>
+let currentScreen = 1;
+const totalScreens = 4;
+let selectedOptions = {1: null, 2: null, 3: null, 4: null};
+const correctAnswers = {1: 2, 2: 1, 3: 0, 4: 3};
+
+function selectOption(index, screen) {
+    const options = document.querySelector(`.screen[data-screen="${screen}"] .options-container`).children;
+    Array.from(options).forEach(option => option.classList.remove('selected'));
+    options[index].classList.add('selected');
+    selectedOptions[screen] = index;
+}
+
+function updateProgressBar() {
+    const progress = document.querySelector('.progress');
+    progress.style.width = `${(currentScreen / totalScreens) * 100}%`;
+}
+
+function showScreen(screenNumber) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.querySelector(`.screen[data-screen="${screenNumber}"]`).classList.add('active');
+    
+    // Update navigation buttons
+    document.querySelector('button[onclick="previousScreen()"]').disabled = screenNumber === 1;
+    document.querySelector('button[onclick="nextScreen()"]').disabled = screenNumber === totalScreens;
+    
+    updateProgressBar();
+    document.querySelector('.feedback').textContent = '';
+}
+
+function nextScreen() {
+    if (currentScreen < totalScreens) {
+        currentScreen++;
+        showScreen(currentScreen);
+    }
+}
+
+function previousScreen() {
+    if (currentScreen > 1) {
+        currentScreen--;
+        showScreen(currentScreen);
+    }
+}
+
+function checkAnswer() {
+    const feedback = document.querySelector('.feedback');
+    
+    if (selectedOptions[currentScreen] === null) {
+        feedback.style.color = 'red';
+        feedback.textContent = 'Por favor, selecciona una opción';
+        return;
+    }
+
+    if (selectedOptions[currentScreen] === correctAnswers[currentScreen]) {
+        feedback.style.color = 'green';
+        feedback.textContent = '¡Correcto! ¡Bien hecho!';
+    } else {
+        feedback.style.color = 'red';
+        feedback.textContent = 'Incorrecto. Inténtalo de nuevo';
+    }
+}
+
+// Initialize first screen
+showScreen(1);
+</script>
+</body>
+</html>
