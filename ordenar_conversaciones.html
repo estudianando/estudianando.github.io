@@ -1,0 +1,236 @@
+<html><head><base href="." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ordena la Conversación</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f0f8ff;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .dialog-piece {
+        background: #e9ecef;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dialog-piece:hover {
+        transform: scale(1.02);
+        background: #d1e7dd;
+    }
+
+    .dialog-piece.selected {
+        background: #198754;
+        color: white;
+    }
+
+    .screen {
+        display: none;
+    }
+
+    .screen.active {
+        display: block;
+    }
+
+    .navigation {
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        border: none;
+        border-radius: 5px;
+        background: #0d6efd;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #0b5ed7;
+    }
+
+    button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .progress {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #198754;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .feedback {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+    }
+
+    .feedback.correct {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .feedback.incorrect {
+        background: #f8d7da;
+        color: #721c24;
+    }
+</style>
+</head>
+<body>
+    <div class="progress">Pantalla: <span id="currentScreen">1</span>/5</div>
+    
+    <div class="container">
+        <h1>Ordena la Conversación</h1>
+        <p>Ordena los diálogos haciendo clic en ellos en el orden correcto.</p>
+
+        <div id="screen1" class="screen active">
+            <div class="dialog-container">
+                <div class="dialog-piece" data-order="3">¿Qué te parece si vamos al cine?</div>
+                <div class="dialog-piece" data-order="1">¡Hola María!</div>
+                <div class="dialog-piece" data-order="4">¡Genial! ¿A qué hora nos encontramos?</div>
+                <div class="dialog-piece" data-order="2">¡Hola Juan! ¿Qué planes tienes para hoy?</div>
+                <div class="dialog-piece" data-order="5">A las 7 en el centro comercial.</div>
+            </div>
+        </div>
+
+        <div id="screen2" class="screen">
+            <div class="dialog-container">
+                <div class="dialog-piece" data-order="4">Claro, puedo ayudarte después de clase.</div>
+                <div class="dialog-piece" data-order="3">Necesito ayuda con mi tarea de matemáticas.</div>
+                <div class="dialog-piece" data-order="1">¿Puedo pedirte un favor?</div>
+                <div class="dialog-piece" data-order="2">Claro, puedes pedirme lo que quieras.</div>
+                <div class="dialog-piece" data-order="5">¡Gracias! Eres el mejor.</div>
+            </div>
+        </div>
+
+        <div id="screen3" class="screen">
+            <div class="dialog-container">
+                <div class="dialog-piece" data-order="2">Yo también tengo hambre. Hay un nuevo restaurante cerca.</div>
+                <div class="dialog-piece" data-order="4">Claro que quiero probarlo.</div>
+                <div class="dialog-piece" data-order="5">Vale allí quedamos</div>
+                <div class="dialog-piece" data-order="1">Tengo hambre, ¿tú no?</div>
+                <div class="dialog-piece" data-order="3">Guay, ¿vamos a probarlo?.</div>
+            </div>
+        </div>
+
+        <div id="screen4" class="screen">
+            <div class="dialog-container">
+                <div class="dialog-piece" data-order="3">Me gustaría ir</div>
+                <div class="dialog-piece" data-order="1">¿Cuándo es tu cumple?</div>
+                <div class="dialog-piece" data-order="4">Claro, estás invitado</div>
+                <div class="dialog-piece" data-order="2">Es el sábado a las 6</div>
+                <div class="dialog-piece" data-order="5">Gracias</div>
+            </div>
+        </div>
+
+        <div id="screen5" class="screen">
+            <div class="dialog-container">
+                <div class="dialog-piece" data-order="1">¿Qué tal estuvo tu viaje?</div>
+                <div class="dialog-piece" data-order="4">Claro, tengo un montón de fotos</div>
+                <div class="dialog-piece" data-order="2">Bien, aunque me encuentro algo cansado</div>
+                <div class="dialog-piece" data-order="3">¿Has hecho muchas fotos?</div>
+                <div class="dialog-piece" data-order="5">Guay, me gustaría verlas</div>
+            </div>
+        </div>
+
+        <div class="feedback"></div>
+
+        <div class="navigation">
+            <button id="checkButton">Verificar orden</button>
+            <button id="nextButton" disabled>Siguiente pantalla</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 1;
+        let selectedOrder = [];
+        const totalScreens = 5;
+
+        function initializeScreen() {
+            selectedOrder = [];
+            document.querySelectorAll('.dialog-piece').forEach(piece => {
+                piece.classList.remove('selected');
+            });
+            document.querySelector('.feedback').style.display = 'none';
+            document.getElementById('checkButton').disabled = false;
+            document.getElementById('nextButton').disabled = true;
+        }
+
+        function resetGame() {
+            currentScreen = 1;
+            updateScreen();
+        }
+
+        function updateScreen() {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(`screen${currentScreen}`).classList.add('active');
+            document.getElementById('currentScreen').textContent = currentScreen;
+            initializeScreen();
+        }
+
+        document.querySelectorAll('.dialog-piece').forEach(piece => {
+            piece.addEventListener('click', () => {
+                if (!piece.classList.contains('selected')) {
+                    piece.classList.add('selected');
+                    selectedOrder.push(parseInt(piece.dataset.order));
+                }
+            });
+        });
+
+        document.getElementById('checkButton').addEventListener('click', () => {
+            const feedback = document.querySelector('.feedback');
+            const isCorrect = selectedOrder.join(',') === '1,2,3,4,5';
+            
+            feedback.style.display = 'block';
+            feedback.classList.remove('correct', 'incorrect');
+            
+            if (isCorrect) {
+                feedback.classList.add('correct');
+                feedback.textContent = '¡Correcto! ¡Muy bien!';
+                document.getElementById('nextButton').disabled = false;
+                document.getElementById('checkButton').disabled = true;
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.textContent = 'Incorrecto. Volviendo al principio...';
+                setTimeout(() => {
+                    resetGame();
+                }, 1500);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (currentScreen < totalScreens) {
+                currentScreen++;
+                updateScreen();
+            }
+        });
+    </script>
+</body></html>
