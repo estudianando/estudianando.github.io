@@ -1,0 +1,179 @@
+<html><head><style>
+body {
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.word-container {
+    margin: 20px 0;
+}
+
+.image-container {
+    margin: 20px 0;
+}
+
+img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+input {
+    padding: 10px;
+    font-size: 1.2em;
+    border: 2px solid #fda085;
+    border-radius: 5px;
+    margin: 10px 0;
+    width: 200px;
+}
+
+button {
+    background: #fda085;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.feedback {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.correct {
+    color: #4CAF50;
+}
+
+.incorrect {
+    color: #f44336;
+}
+
+.progress {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+</style></head><body>
+<div class="container">
+    <h2>¿Cuál es el plural de... ?</h2>
+    <div class="word-container">
+        <h3 id="currentWord"></h3>
+    </div>
+    <div class="image-container" id="imageContainer"></div>
+    <input type="text" id="userInput" placeholder="Escribe el plural...">
+    <br>
+    <button onclick="checkAnswer()">Comprobar</button>
+    <div class="feedback" id="feedback"></div>
+    <div class="progress" id="progress"></div>
+</div>
+
+<script>
+const words = [
+    {
+        singular: 'estrella',
+        plural: 'estrellas',
+        image: 'estrella.png'
+    },
+    {
+        singular: 'mariposa',
+        plural: 'mariposas',
+        image: 'mariposas.png'
+    },
+    {
+        singular: 'perro',
+        plural: 'perros',
+        image: 'perro.png'
+    },
+    {
+        singular: 'reloj',
+        plural: 'relojes',
+        image: 'tiempo.png'
+    },
+    {
+        singular: 'pez',
+        plural: 'peces',
+        image: 'peces.png'
+    }
+];
+
+let currentIndex = 0;
+let score = 0;
+
+function showWord() {
+    document.getElementById('currentWord').textContent = words[currentIndex].singular;
+    document.getElementById('imageContainer').innerHTML = `<img src="${words[currentIndex].image}" alt="${words[currentIndex].singular}">`;
+    document.getElementById('userInput').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('progress').textContent = `Pregunta ${currentIndex + 1} de ${words.length}`;
+}
+
+function checkAnswer() {
+    const userInput = document.getElementById('userInput').value.toLowerCase().trim();
+    const correctAnswer = words[currentIndex].plural.toLowerCase();
+    const feedbackElement = document.getElementById('feedback');
+    
+    if (userInput === correctAnswer) {
+        feedbackElement.textContent = '¡Correcto!';
+        feedbackElement.className = 'feedback correct';
+        score++;
+        setTimeout(() => {
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                showWord();
+            } else {
+                showFinalScore();
+            }
+        }, 1000);
+    } else {
+        feedbackElement.textContent = '¡Intenta de nuevo!';
+        feedbackElement.className = 'feedback incorrect';
+    }
+}
+
+function showFinalScore() {
+    document.querySelector('.container').innerHTML = `
+        <h2>¡Juego terminado!</h2>
+        <p>Tu puntuación final: ${score} de ${words.length}</p>
+        <button onclick="restartGame()">Jugar de nuevo</button>
+    `;
+}
+
+function restartGame() {
+    currentIndex = 0;
+    score = 0;
+    location.reload();
+}
+
+// Iniciar el juego
+showWord();
+
+// Permitir el uso de la tecla Enter para enviar la respuesta
+document.getElementById('userInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        checkAnswer();
+    }
+});
+</script>
+</body></html>
