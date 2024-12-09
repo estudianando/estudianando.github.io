@@ -1,0 +1,391 @@
+<html><head>
+<meta charset="UTF-8">
+<title>Aprende vocabulario</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #f7f7f7;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  padding: 20px 0;
+  background: #58cc02;
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e5e5e5;
+  border-radius: 10px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  background: #ffd900;
+  transition: width 0.3s ease;
+}
+
+.exercise-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.word-display {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.word-image {
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.options-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.option-button {
+  padding: 15px;
+  border: 2px solid #e5e5e5;
+  border-radius: 10px;
+  background: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option-button:hover {
+  background: #f0f0f0;
+}
+
+.option-button.correct {
+  background: #d7ffb8;
+  border-color: #58cc02;
+}
+
+.option-button.incorrect {
+  background: #ffd1d1;
+  border-color: #ff4b4b;
+}
+
+.check-button {
+  width: 100%;
+  padding: 15px;
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.check-button:hover {
+  background: #46a102;
+}
+
+.check-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.hearts {
+  text-align: right;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.feedback {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  min-height: 27px;
+}
+
+.finish-container {
+  text-align: center;
+  margin-top: 20px;
+  display: none;
+}
+
+.restart-button {
+  padding: 15px 30px;
+  background: #58cc02;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 20px;
+}
+
+.restart-button:hover {
+  background: #46a102;
+}
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h2>Aprende de vocabulario</h2>
+    <p>de forma divertida</p>
+  </div>
+  
+  <div class="hearts">❤️❤️❤️</div>
+  
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+  
+   
+  <div class="exercise-container">
+    <h2 style="text-align:center;"> Relaciona la imagen con la palabra correcta: ️</h2>
+	
+    <div class="word-display" id="wordDisplay"></div>
+	<img class="word-image" id="wordImage">   
+    <div class="options-container" id="optionsContainer"></div>
+    <button class="check-button" id="checkButton" disabled>Comprobar</button>
+    <div class="feedback" id="feedback"></div>
+  </div>
+  
+  <div class="finish-container" id="finishContainer">
+    <h2>¡Has finalizado!</h2>
+    <p>Has acertado <span id="finalScore">0</span> de 10 palabras</p>
+    <button class="restart-button" id="restartButton">Reiniciar juego</button>
+  </div>
+</div>
+
+<script>
+const words = [
+  { 
+    en: 'house', 
+    es: 'casa',
+	imgSrc: 'casa.png'
+  },
+  { 
+    en: 'car', 
+    es: 'coche',
+	imgSrc: 'coche.png'
+  },
+  { 
+    en: 'dog', 
+    es: 'perro',
+	imgSrc: 'perro.png'
+  },
+  { 
+    en: 'cat', 
+    es: 'gato',
+	imgSrc: 'gato.png'
+  },
+  { 
+    en: 'book', 
+    es: 'libro',
+	imgSrc: 'libro.png'
+  },
+  { 
+    en: 'tree', 
+    es: 'árbol',
+	imgSrc: 'arbol.png'
+  },
+  { 
+    en: 'friend', 
+    es: 'amigo',
+	imgSrc: 'chico.png'
+  },
+  { 
+    en: 'water', 
+    es: 'agua',
+	imgSrc: 'agua.png'
+  },
+  { 
+    en: 'food', 
+    es: 'comida',
+	imgSrc: 'comida.png'
+  },
+  { 
+    en: 'time', 
+    es: 'tiempo',
+	imgSrc: 'tiempo.png'
+  }
+];
+
+let currentWord;
+let selectedOption = null;
+let hearts = 3;
+let progress = 0;
+let correctAnswers = 0;
+let usedWords = [];
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function getRandomOptions(correct) {
+  let options = [correct];
+  let availableWords = words.filter(word => word.es !== correct);
+  availableWords = shuffleArray(availableWords);
+  options.push(...availableWords.slice(0, 3).map(word => word.es));
+  return shuffleArray(options);
+}
+
+function updateHearts() {
+  document.querySelector('.hearts').textContent = '❤️'.repeat(hearts);
+}
+
+function updateProgress() {
+  const progressPercent = (correctAnswers / words.length) * 100;
+  document.getElementById('progress').style.width = `${progressPercent}%`;
+}
+
+function showFeedback(isCorrect) {
+  const feedback = document.getElementById('feedback');
+  if (isCorrect) {
+    feedback.style.color = '#58cc02';
+    feedback.textContent = '¡Correcto! 🎉';
+  } else {
+    feedback.style.color = '#ff4b4b';
+    feedback.textContent = `Incorrecto. La respuesta correcta era: ${currentWord.es}`;
+  }
+}
+
+function loadNewWord() {
+  const availableWords = words.filter(word => !usedWords.includes(word));
+  
+  if (availableWords.length === 0) {
+    // Show finish screen
+    document.querySelector('.exercise-container').style.display = 'none';
+    document.getElementById('finishContainer').style.display = 'block';
+    document.getElementById('finalScore').textContent = correctAnswers;
+    return;
+  }
+  
+  currentWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+  usedWords.push(currentWord);
+  
+ // document.getElementById('wordDisplay').textContent = `Traduce: "${currentWord.en}"`;
+  
+   // Update image
+    const wordImage = document.getElementById('wordImage');
+    wordImage.src = currentWord.imgSrc;
+ //   wordImage.alt = currentWord.en;
+  
+  const options = getRandomOptions(currentWord.es);
+  const optionsContainer = document.getElementById('optionsContainer');
+  optionsContainer.innerHTML = '';
+  
+  options.forEach(option => {
+    const button = document.createElement('button');
+    button.className = 'option-button';
+    button.textContent = option;
+    button.addEventListener('click', () => selectOption(button, option));
+    optionsContainer.appendChild(button);
+  });
+  
+  document.getElementById('checkButton').disabled = true;
+  document.getElementById('feedback').textContent = '';
+  selectedOption = null;
+}
+
+function restartGame() {
+  hearts = 3;
+  correctAnswers = 0;
+  usedWords = [];
+  updateHearts();
+  updateProgress();
+  document.querySelector('.exercise-container').style.display = 'block';
+  document.getElementById('finishContainer').style.display = 'none';
+  loadNewWord();
+}
+
+function selectOption(button, option) {
+  document.querySelectorAll('.option-button').forEach(btn => {
+    btn.classList.remove('selected');
+    btn.style.background = 'white';
+    btn.style.borderColor = '#e5e5e5';
+  });
+  
+  button.classList.add('selected');
+  button.style.background = '#e5e5e5';
+  selectedOption = option;
+  document.getElementById('checkButton').disabled = false;
+}
+
+function checkAnswer() {
+  const isCorrect = selectedOption === currentWord.es;
+  
+  document.querySelectorAll('.option-button').forEach(button => {
+    if (button.textContent === currentWord.es) {
+      button.classList.add('correct');
+    }
+    if (button.classList.contains('selected') && !isCorrect) {
+      button.classList.add('incorrect');
+    }
+    button.disabled = true;
+  });
+  
+  if (isCorrect) {
+    correctAnswers++;
+    updateProgress();
+  } else {
+    hearts--;
+    updateHearts();
+  }
+  
+  showFeedback(isCorrect);
+  document.getElementById('checkButton').disabled = true;
+  
+  setTimeout(() => {
+    if (hearts <= 0) {
+      alert('¡Game Over! Vuelve a intentarlo.');
+      restartGame();
+    } else {
+      loadNewWord();
+    }
+  }, 2000);
+}
+
+document.getElementById('checkButton').addEventListener('click', checkAnswer);
+document.getElementById('restartButton').addEventListener('click', restartGame);
+
+// Iniciar el juego
+loadNewWord();
+</script>
+</body></html>
