@@ -1,0 +1,150 @@
+<html><head><base href="." />
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f0f0f0;
+    }
+
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .draggable-button {
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: move;
+        transition: transform 0.2s;
+    }
+
+    .draggable-button:hover {
+        transform: scale(1.05);
+    }
+
+    .drop-zones {
+        display: flex;
+        gap: 20px;
+        margin-top: 50px;
+    }
+
+    .drop-zone {
+        width: 200px;
+        min-height: 300px;
+        border: 3px dashed #666;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .drop-zone h3 {
+        margin: 0;
+        padding: 10px;
+        color: #333;
+    }
+
+    .drop-zone.dragover {
+        background: rgba(76, 175, 80, 0.1);
+        border-color: #4CAF50;
+    }
+
+    .success-message {
+        color: #4CAF50;
+        font-weight: bold;
+        margin-top: 20px;
+        display: none;
+    }
+</style>
+</head>
+<body>
+    <h1>Clasifica las palabras</h1>
+    <div class="button-container" id="buttonContainer">
+        <button class="draggable-button" draggable="true">Hola</button>
+        <button class="draggable-button" draggable="true">Adiós</button>
+        <button class="draggable-button" draggable="true">Buenas noches</button>
+        <button class="draggable-button" draggable="true">Buenas tardes</button>
+        <button class="draggable-button" draggable="true">Que onda</button>
+        <button class="draggable-button" draggable="true">Hasta pronto</button>
+        <button class="draggable-button" draggable="true">Bienvenidos</button>
+        <button class="draggable-button" draggable="true">Buen día</button>
+        <button class="draggable-button" draggable="true">Que pasa</button>
+        <button class="draggable-button" draggable="true">Chao</button>
+    </div>
+
+    <div class="drop-zones">
+        <div class="drop-zone" id="saludos">
+            <h3>Saludos</h3>
+        </div>
+        <div class="drop-zone" id="despedidas">
+            <h3>Despedidas</h3>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        ¡Excelente trabajo! Has clasificado todas las palabras.
+    </div>
+
+<script>
+    const buttons = document.querySelectorAll('.draggable-button');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    let draggedItem = null;
+
+    buttons.forEach(button => {
+        button.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            setTimeout(() => this.style.opacity = '0.5', 0);
+        });
+
+        button.addEventListener('dragend', function(e) {
+            this.style.opacity = '1';
+        });
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        zone.addEventListener('dragleave', function(e) {
+            this.classList.remove('dragover');
+        });
+
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            if (draggedItem) {
+                this.appendChild(draggedItem);
+                draggedItem.style.opacity = '1';
+                
+                // Verificar si todas las palabras han sido clasificadas
+                const buttonContainer = document.getElementById('buttonContainer');
+                if (buttonContainer.children.length === 0) {
+                    document.getElementById('successMessage').style.display = 'block';
+                }
+            }
+        });
+    });
+
+    // Solución correcta (actualizada sin la categoría "ambos")
+    const correctClassification = {
+        saludos: ['Hola', 'Bienvenidos', 'Buen día', 'Que pasa', 'Buenas noches', 'Buenas tardes', 'Que onda'],
+        despedidas: ['Adiós', 'Hasta pronto', 'Chao', 'Buenas noches', 'Buenas tardes']
+    };
+</script>
+</body></html>
