@@ -1,0 +1,147 @@
+<html><head><base href="." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adivina el Número - Juego de Audio</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #1e90ff, #00bfff);
+        color: white;
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    button {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    #playButton {
+        background: #4CAF50;
+        margin-bottom: 1rem;
+    }
+
+    #score {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .feedback {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        min-height: 2rem;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adivina el Número</h1>
+        <p>Escucha el número y selecciona la opción correcta</p>
+        <button id="playButton">🔊 Reproducir Número</button>
+        <div id="score">Puntuación: 0</div>
+        <div class="options" id="options">
+            <!-- Las opciones se generarán dinámicamente -->
+        </div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+<script>
+let correctNumber;
+let score = 0;
+const synth = window.speechSynthesis;
+
+function generateRandomNumber() {
+    return Math.floor(Math.random() * 100) + 1;
+}
+
+function generateOptions(correctAnswer) {
+    let options = [correctAnswer];
+    while (options.length < 4) {
+        let newOption = Math.floor(Math.random() * 100) + 1;
+        if (!options.includes(newOption)) {
+            options.push(newOption);
+        }
+    }
+    return options.sort(() => Math.random() - 0.5);
+}
+
+function speakNumber(number) {
+    const utterance = new SpeechSynthesisUtterance(number.toString());
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    synth.speak(utterance);
+}
+
+function updateScore() {
+    document.getElementById('score').textContent = `Puntuación: ${score}`;
+}
+
+function checkAnswer(selectedNumber) {
+    const feedbackElement = document.getElementById('feedback');
+    if (selectedNumber === correctNumber) {
+        score += 10;
+        feedbackElement.textContent = '¡Correcto! +10 puntos';
+        feedbackElement.style.color = '#4CAF50';
+    } else {
+        feedbackElement.textContent = `Incorrecto. El número era ${correctNumber}`;
+        feedbackElement.style.color = '#ff4444';
+    }
+    updateScore();
+    setTimeout(newRound, 2000);
+}
+
+function newRound() {
+    correctNumber = generateRandomNumber();
+    const options = generateOptions(correctNumber);
+    
+    const optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = '';
+    
+    options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.onclick = () => checkAnswer(option);
+        optionsContainer.appendChild(button);
+    });
+
+    document.getElementById('feedback').textContent = '';
+}
+
+document.getElementById('playButton').addEventListener('click', () => {
+    speakNumber(correctNumber);
+});
+
+// Iniciar el primer round
+newRound();
+</script>
+</body></html>
