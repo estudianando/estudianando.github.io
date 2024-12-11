@@ -1,0 +1,431 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Proficiency Test  </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1> English Proficiency Test </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <button class="btn btn-primary" id="next-btn" style="width: 100%">Siguiente pregunta</button>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+      {
+		question: "All applicants must have __________ qualifications and at least three years' classroom experience.",
+        options: ["professional", "profess", "professionally", "profession"],
+        correct: 0
+	  },
+	  {	  
+		question: "With its outstanding service, Nagisa Hotel recorded its __________ profits ever over the last year.",
+        options: ["higher", "more highly", "most highly", "highest"],
+        correct: 3 
+	  },		
+	  {	
+		question: "Since Sunflower Corporation launched a new national advertising campaign this spring, its brand image has improved __________. ",
+        options: ["significant", "more significant", "significantly", "significance"],
+        correct: 2
+	  },		
+	  {			
+		question: "Managing __________ business, Ms. Martinez will rely on the experience she gained during several years as bridal consultant.",
+        options: ["she", "hers", "herself", "her own"],
+        correct: 3
+	  },		
+	  {		
+		question: "With 80 rooms on nine floors, the Savoy Mountain Hotel offers the least __________ option in the vicinity of the Savoy National Park.",
+        options: ["expenses", "expensively", "expense", "expensive"],
+        correct: 3
+	  },		
+	  {		
+		question: "No more vacancies are available for morning consultations so please consider coming __________ the afternoon.",
+        options: ["on", "in", "as", "with"],
+        correct: 1
+	  },		
+	  {		
+		question: "Before working as a reporter for KTLA, Christopher Parker was one of the __________ of the Chicago Times.",
+        options: ["corresponds", "corresponding", "correspondingly", "correspondents"],
+        correct: 3
+	  },		
+	  {		
+		question: "Due to increasing fuel prices, Skyfloat Airways __________ its airfares by three percent.",
+        options: ["raise", "raising", "has raised", "having raised"],
+        correct: 2
+	  },		
+	  {		
+		question: "Cairo Journal's revenues fell sharply last year, __________ it is expected to become profitable again in the next 12 months.",
+        options: ["nor", "but", "so", "also"],
+        correct: 1
+	  },		
+	  {		
+		question: "Besides scientists from several organizations, the team __________ researchers from more than a dozen universities in India.",
+        options: ["includes", "consists", "discusses", "relies"],
+        correct: 0
+	  },		
+	  {		
+		question: "At least one staff member must work in the office __________ 6 P.M. each night to take any last-minute orders from stores.",
+        options: ["by", "until", "at", "since"],
+        correct: 1
+	  },		
+	  {		
+		question: "__________ to gain approval from construction of a new retail outlet in the city center prompted the developers to look elsewhere for suitable locations.",
+        options: ["Failure", "To have failed", "Fails", "By failing"],
+        correct: 0
+	  },		
+	  {		
+		question: "__________ has been said about the painter's outstanding technique, but few people comment on the subjects of her paintings.",
+        options: ["Much", "Other", "Several", "Nobody"],
+        correct: 0
+	  },		
+	  {		
+		question: "Ms. Narita is best suited for the position, because she is well __________ with China and speaks fluent Mandarin.",
+        options: ["acquaint", "acquainting", "acquainted", "acquaintance"],
+        correct: 2
+	  },		
+	  {		
+		question: "Your e-mail address and __________ contact information will be retained by Nilebooks.com in order to make future purchases more convenient.",
+        options: ["other", "another", "others", "each other"],
+        correct: 0
+	  },		
+	  {		
+		question: "Mr. Clark's flight was delayed for __________ three hours because of a mechanical problem.",
+        options: ["within", "more than", "still", "now that"],
+        correct: 1
+	  },		
+	  {		
+		question: "Please be aware that information is automatically exchanged between your computer and our server __________ you access our Web site.",
+        options: ["as soon as", "on the other hand", "as well as", "instead of"],
+        correct: 0
+	  },		
+	  {		
+		question: "Isabella Winkler became a beneficiary of a corporate policy that __________ employees a five-week paid vacation after five years of service.",
+        options: ["retrieves", "grants", "donates", "requires"],
+        correct: 1
+	  },		
+	  {		
+		question: "Koppel Online neither recommends any linked content, __________ does it accept any liability for losses caused by the linked Web site.",
+        options: ["and", "which", "nor", "whether"],
+        correct: 2
+	  },		
+	  {		
+		question: "All boilers must be serviced __________, to ensure that they are working properly.",
+        options: ["regular", "regulate", "regularly", "regulator"],
+        correct: 2
+	  },		
+	  {		
+		question: "Kim's Oriental Restaurant __________ in the heart of Tokyo, within walking distance of Tokyo Sky Tower.",
+        options: ["situate", "situating", "is situated", "has situated"],
+        correct: 2
+	  },		
+	  {		
+		question: "Increased competition with the national chains could be to blame for the __________ in sales at family-owned stores.",
+        options: ["decreasingly", "to decrease", "decreased", "decrease"],
+        correct: 3
+	  },		
+	  {		
+		question: "By the time Ms. Eriksson returns from her vacation in Stockholm, the workers __________ the renovations of her house.",
+        options: ["completes", "has completed", "were completing", "will have completed"],
+        correct: 3
+	  },		
+	  {		
+		question: "The Entertainment Software Association represents companies that sell __________ video games.",
+        options: ["interact", "interactive", "interactively", "interaction"],
+        correct: 1
+	  },		
+	  {		
+		question: "At training workshops, it is often stated that __________ has to do their part to keep projects running smoothly.",
+        options: ["other", "another", "others", "everyone"],
+        correct: 3
+	  },		
+	  {		
+		question: "Over the past two decades Dreams Peak has __________ one of the leading marketing agencies for the gaming industry.",
+        options: ["turned", "become", "risen", "proceeded"],
+        correct: 1
+	  },		
+	  {		
+		question: "The new company __________ includes e-mail addresses and staff members' areas of expertise in addition to telephone numbers.",
+        options: ["direct", "directly", "directory", "direction"],
+        correct: 2
+	  },		
+	  {		
+		question: "Many of the company's __________ clients have been leaving for cheaper alternatives in recent years.",
+        options: ["establish", "established", "establishing", "establishes"],
+        correct: 1
+	  },		
+	  {		
+		question: "Dolphin Hotel is conveniently located __________ the Sherwood Central Station and a short walk for the heart of the city centre.",
+        options: ["opposite", "across", "next", "nearby"],
+        correct: 0
+	  },		
+	  {		
+		question: "The GHV Sahara earned the highest safety rating for any vehicle in its class __________ tested by writers from Motors Magazine.",
+        options: ["this", "are", "when", "from"],
+        correct: 2
+	  },		
+	  {		
+		question: "The event organizer apologized to Mr. Hasegawa for failing to include his name on the guest list, saying the omission was not __________. ",
+        options: ["deliberate", "deliberation", "deliberator", "deliberately"],
+        correct: 0
+	  },		
+	  {		
+		question: "The furniture on display in our main showroom is not __________ exposed to sunlight.",
+        options: ["direct", "directly", "direction", "directory"],
+        correct: 1
+	  },		
+	  {		
+		question: "There has been a huge negative reaction to a recently __________ plan to build high-rise hotels along the shoreline of George's Beach.",
+        options: ["adopt", "adopts", "adopting", "adopted"],
+        correct: 3
+	  },		
+	  {		
+		question: "Unfortunately, the factory's completion has been postponed by __________ two weeks due to trouble obtaining building materials.",
+        options: ["another", "several", "much", "other"],
+        correct: 0
+	  },		
+	  {		
+		question: "Mr. Kim opened a grocery store __________ sells imported food products from Korea and Japan.",
+        options: ["whose", "it", "that", "what"],
+        correct: 2
+	  },		
+	  {		
+		question: "The board of directors agrees with Mr. Gray that __________ deserves most of the credit for the successful advertising campaign.",
+        options: ["he", "him", "himself", "his"],
+        correct: 0
+	  },		
+	  {		
+		question: "Presidents of both Bear Airways and Panda Airlines __________ comment about the rumor of the merger.",
+        options: ["to withhold", "has withheld", "withholding", "withheld"],
+        correct: 3
+	  },		
+	  {		
+		question: "The office staff is encouraged to rely on e-mail and scheduling software __________ we can conserve paper.",
+        options: ["not only", "on behalf of", "while", "so that"],
+        correct: 3
+	  },		
+	  {		
+		question: "Mr. Cox credited his business success to __________ advice from a mentor 20 years earlier.",
+        options: ["help", "helpful", "helpfully", "helper"],
+        correct: 1
+	  },		
+	  {		
+		question: "__________ company policy, Max Weinberg obtained permission from a supervisor before requesting a technician to fix the air-conditioning.",
+        options: ["In accordance with", "As far as", "On the condition that", "In addition"],
+        correct: 0
+      }
+
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
