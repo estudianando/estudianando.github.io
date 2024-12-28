@@ -1,0 +1,233 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de vocabulario </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de vocabulario </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <button class="btn btn-primary" id="next-btn" style="width: 100%">Siguiente pregunta</button>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+   
+{ "question": "Ahora ________ a 11 grados de temperatura", "options": ["estamos", "estuvimos", "estábamos", "estaremos"], "correct": 0 }, { "question": "Suiza ________ más caro que otros países", "options": ["fue", "era", "estaban", "son"], "correct": 1 }, { "question": "En Suiza ___________ muchos lagos, montañas y praderas", "options": ["deberían", "podrían", "habían", "Ninguna es correcta"], "correct": 2 }, { "question": "Me _______ muchísimo Suiza. Era precioso", "options": ["encantó", "gustó", "odió", "no gustar"], "correct": 1 }, { "question": "Hoy ________ un poquito", "options": ["trabajaba", "trabajé", "trabajaré", "Ninguna es correcta"], "correct": 1 }, { "question": "Si siempre ___________ a una velocidad lenta, nunca hablaré como un español", "options": ["he hablado", "había hablado", "hablo", "hablaré"], "correct": 2 }, { "question": "¿Qué significa desenvolverse?", "options": ["manejar una situación muy bien", "volver a un lugar", "quitarse la ropa", "quitarse la manta"], "correct": 0 }, { "question": "¿Qué significa la palabra 'logros'?", "options": ["éxitos conseguidos con esfuerzo", "lo que no se ha conseguido", "sueños que aún no se han conseguido", "Ninguna es correcta"], "correct": 0 }, { "question": "Mi número de teléfono ___________ 947 37 48 59", "options": ["son los", "es el", "Las dos primeras son correctas dependiendo del contexto", "Ninguna es correcta"], "correct": 1 }
+	
+	];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
