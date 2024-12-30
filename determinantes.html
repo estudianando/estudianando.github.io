@@ -1,0 +1,630 @@
+<html><head></head><meta charset="UTF-8">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f0f8ff;
+        padding: 20px;
+    }
+
+    .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .word-container {
+        margin: 20px;
+        font-size: 24px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        margin: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: transform 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    .feedback {
+        font-size: 20px;
+        margin: 10px;
+        font-weight: bold;
+    }
+
+    .score {
+        font-size: 18px;
+        margin: 10px;
+    }
+
+    .image-container {
+        width: 200px;
+        height: 200px;
+        margin: 20px auto;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .game-over {
+        font-size: 24px;
+        color: #4CAF50;
+        margin: 20px;
+        font-weight: bold;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>¡Elige el determinante correcto!</h1>
+        <div class="score">Puntuación: <span id="score">0</span></div>
+        <div class="image-container" id="wordImage"></div>
+        <div class="word-container">
+            <span>_____ </span><span id="currentWord"></span>
+        </div>
+        <div class="buttons" id="buttonContainer">
+            <button onclick="checkAnswer('el')">El</button>
+            <button onclick="checkAnswer('la')">La</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+<script>
+const words = [
+{word: 'agua', article: 'el', image: 'no_disponible.jpg'},
+{word: 'casa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'persona', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tiempo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'vida', article: 'la', image: 'no_disponible.jpg'},
+{word: 'año', article: 'el', image: 'no_disponible.jpg'},
+{word: 'noche', article: 'la', image: 'no_disponible.jpg'},
+{word: 'día', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cosa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'hombre', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mujer', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mundo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mano', article: 'la', image: 'no_disponible.jpg'},
+{word: 'país', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciudad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'problema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'palabra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dinero', article: 'el', image: 'no_disponible.jpg'},
+{word: 'familia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'padre', article: 'el', image: 'no_disponible.jpg'},
+{word: 'madre', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amigo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'amiga', article: 'la', image: 'no_disponible.jpg'},
+{word: 'trabajo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'escuela', article: 'la', image: 'no_disponible.jpg'},
+{word: 'libro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'música', article: 'la', image: 'no_disponible.jpg'},
+{word: 'coche', article: 'el', image: 'no_disponible.jpg'},
+{word: 'carretera', article: 'la', image: 'no_disponible.jpg'},
+{word: 'perro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'verdad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gato', article: 'el', image: 'no_disponible.jpg'},
+{word: 'guerra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'niño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'niña', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ojo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'puerta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'corazón', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cabeza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pensamiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comida', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sistema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'razón', article: 'la', image: 'no_disponible.jpg'},
+{word: 'camino', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ley', article: 'la', image: 'no_disponible.jpg'},
+{word: 'momento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'iglesia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sol', article: 'el', image: 'no_disponible.jpg'},
+{word: 'luna', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amigo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'amiga', article: 'la', image: 'no_disponible.jpg'},
+{word: 'derecho', article: 'el', image: 'no_disponible.jpg'},
+{word: 'izquierda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'cuerpo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mente', article: 'la', image: 'no_disponible.jpg'},
+{word: 'doctor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'doctora', article: 'la', image: 'no_disponible.jpg'},
+{word: 'profesor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'profesora', article: 'la', image: 'no_disponible.jpg'},
+{word: 'jefe', article: 'el', image: 'no_disponible.jpg'},
+{word: 'jefa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gobierno', article: 'el', image: 'no_disponible.jpg'},
+{word: 'policía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'partido', article: 'el', image: 'no_disponible.jpg'},
+{word: 'fiesta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'futuro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'salud', article: 'la', image: 'no_disponible.jpg'},
+{word: 'presente', article: 'el', image: 'no_disponible.jpg'},
+{word: 'justicia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pasado', article: 'el', image: 'no_disponible.jpg'},
+{word: 'educación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'arte', article: 'el', image: 'no_disponible.jpg'},
+{word: 'lengua', article: 'la', image: 'no_disponible.jpg'},
+{word: 'número', article: 'el', image: 'no_disponible.jpg'},
+{word: 'señal', article: 'la', image: 'no_disponible.jpg'},
+{word: 'jefe', article: 'el', image: 'no_disponible.jpg'},
+{word: 'sociedad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'carácter', article: 'el', image: 'no_disponible.jpg'},
+{word: 'alegría', article: 'la', image: 'no_disponible.jpg'},
+{word: 'poder', article: 'el', image: 'no_disponible.jpg'},
+{word: 'fuerza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sentido', article: 'el', image: 'no_disponible.jpg'},
+{word: 'historia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'acuerdo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'energía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'montaña', article: 'la', image: 'no_disponible.jpg'},
+{word: 'río', article: 'el', image: 'no_disponible.jpg'},
+{word: 'semana', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mes', article: 'el', image: 'no_disponible.jpg'},
+{word: 'pregunta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'idioma', article: 'el', image: 'no_disponible.jpg'},
+{word: 'respuesta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'viaje', article: 'el', image: 'no_disponible.jpg'},
+{word: 'edad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'recuerdo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tamaño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'velocidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'agua', article: 'el', image: 'no_disponible.jpg'},
+{word: 'casa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'persona', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tiempo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'vida', article: 'la', image: 'no_disponible.jpg'},
+{word: 'año', article: 'el', image: 'no_disponible.jpg'},
+{word: 'noche', article: 'la', image: 'no_disponible.jpg'},
+{word: 'día', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cosa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'hombre', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mujer', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mundo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mano', article: 'la', image: 'no_disponible.jpg'},
+{word: 'país', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciudad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'problema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'palabra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dinero', article: 'el', image: 'no_disponible.jpg'},
+{word: 'familia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'padre', article: 'el', image: 'no_disponible.jpg'},
+{word: 'madre', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amigo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'amiga', article: 'la', image: 'no_disponible.jpg'},
+{word: 'trabajo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'escuela', article: 'la', image: 'no_disponible.jpg'},
+{word: 'libro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'música', article: 'la', image: 'no_disponible.jpg'},
+{word: 'coche', article: 'el', image: 'no_disponible.jpg'},
+{word: 'carretera', article: 'la', image: 'no_disponible.jpg'},
+{word: 'perro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'verdad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gato', article: 'el', image: 'no_disponible.jpg'},
+{word: 'guerra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'niño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'niña', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ojo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'puerta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'corazón', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cabeza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pensamiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comida', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sistema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'razón', article: 'la', image: 'no_disponible.jpg'},
+{word: 'camino', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ley', article: 'la', image: 'no_disponible.jpg'},
+{word: 'momento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'iglesia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sol', article: 'el', image: 'no_disponible.jpg'},
+{word: 'luna', article: 'la', image: 'no_disponible.jpg'},
+{word: 'derecho', article: 'el', image: 'no_disponible.jpg'},
+{word: 'izquierda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'cuerpo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mente', article: 'la', image: 'no_disponible.jpg'},
+{word: 'doctor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'doctora', article: 'la', image: 'no_disponible.jpg'},
+{word: 'profesor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'profesora', article: 'la', image: 'no_disponible.jpg'},
+{word: 'jefe', article: 'el', image: 'no_disponible.jpg'},
+{word: 'jefa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gobierno', article: 'el', image: 'no_disponible.jpg'},
+{word: 'policía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'partido', article: 'el', image: 'no_disponible.jpg'},
+{word: 'fiesta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'futuro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'salud', article: 'la', image: 'no_disponible.jpg'},
+{word: 'presente', article: 'el', image: 'no_disponible.jpg'},
+{word: 'justicia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pasado', article: 'el', image: 'no_disponible.jpg'},
+{word: 'educación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'arte', article: 'el', image: 'no_disponible.jpg'},
+{word: 'lengua', article: 'la', image: 'no_disponible.jpg'},
+{word: 'número', article: 'el', image: 'no_disponible.jpg'},
+{word: 'señal', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sociedad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'carácter', article: 'el', image: 'no_disponible.jpg'},
+{word: 'alegría', article: 'la', image: 'no_disponible.jpg'},
+{word: 'poder', article: 'el', image: 'no_disponible.jpg'},
+{word: 'fuerza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sentido', article: 'el', image: 'no_disponible.jpg'},
+{word: 'historia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'acuerdo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'energía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'montaña', article: 'la', image: 'no_disponible.jpg'},
+{word: 'río', article: 'el', image: 'no_disponible.jpg'},
+{word: 'semana', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mes', article: 'el', image: 'no_disponible.jpg'},
+{word: 'pregunta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'idioma', article: 'el', image: 'no_disponible.jpg'},
+{word: 'respuesta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'viaje', article: 'el', image: 'no_disponible.jpg'},
+{word: 'edad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'recuerdo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tamaño', article: 'el', image: 'no_dis ponible.jpg'},
+{word: 'velocidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'cielo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'tierra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'fuego', article: 'el', image: 'no_disponible.jpg'},
+{word: 'estrella', article: 'la', image: 'no_disponible.jpg'},
+{word: 'océano', article: 'el', image: 'no_disponible.jpg'},
+{word: 'playa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'bosque', article: 'el', image: 'no_disponible.jpg'},
+{word: 'viento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'lluvia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'planeta', article: 'el', image: 'no_disponible.jpg'},
+{word: 'galaxia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'universo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'memoria', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sueño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'realidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'deseo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'esperanza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'odio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'paz', article: 'la', image: 'no_disponible.jpg'},
+{word: 'conflicto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'solución', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dirección', article: 'la', image: 'no_disponible.jpg'},
+{word: 'destino', article: 'el', image: 'no_disponible.jpg'},
+{word: 'meta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'aventura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'riesgo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'oportunidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'desafío', article: 'el', image: 'no_disponible.jpg'},
+{word: 'victoria', article: 'la', image: 'no_disponible.jpg'},
+{word: 'derrota', article: 'la', image: 'no_disponible.jpg'},
+{word: 'esfuerzo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'dedicación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pasión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'talento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'creatividad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'baile', article: 'el', image: 'no_disponible.jpg'},
+{word: 'danza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'teatro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'literatura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'cine', article: 'el', image: 'no_disponible.jpg'},
+{word: 'fotografía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'diseño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'moda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'estilo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'belleza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'color', article: 'el', image: 'no_disponible.jpg'},
+{word: 'forma', article: 'la', image: 'no_disponible.jpg'},
+{word: 'espacio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'luz', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sombra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sonido', article: 'el', image: 'no_disponible.jpg'},
+{word: 'voz', article: 'la', image: 'no_disponible.jpg'},
+{word: 'silencio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'lenguaje', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comunicación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mensaje', article: 'el', image: 'no_disponible.jpg'},
+{word: 'información', article: 'la', image: 'no_disponible.jpg'},
+{word: 'conocimiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'sabiduría', article: 'la', image: 'no_disponible.jpg'},
+{word: 'aprendizaje', article: 'el', image: 'no_disponible.jpg'},
+{word: 'enseñanza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'maestro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'maestra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'alumno', article: 'el', image: 'no_disponible.jpg'},
+{word: 'alumna', article: 'la', image: 'no_disponible.jpg'},
+{word: 'estudiante', article: 'el', image: 'no_disponible.jpg'},
+{word: 'colegio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'universidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'lectura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'estudio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'investigación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'experimento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'laboratorio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'teoría', article: 'la', image: 'no_disponible.jpg'},
+{word: 'método', article: 'el', image: 'no_disponible.jpg'},
+{word: 'práctica', article: 'la', image: 'no_disponible.jpg'},
+{word: 'resultado', article: 'el', image: 'no_disponible.jpg'},
+{word: 'conclusión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'análisis', article: 'el', image: 'no_disponible.jpg'},
+{word: 'observación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dato', article: 'el', image: 'no_disponible.jpg'},
+{word: 'estadística', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gráfico', article: 'el', image: 'no_disponible.jpg'},
+{word: 'tabla', article: 'la', image: 'no_disponible.jpg'},
+{word: 'informe', article: 'el', image: 'no_disponible.jpg'},
+{word: 'presentación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'proyecto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'tarea', article: 'la', image: 'no_disponible.jpg'},
+{word: 'examen', article: 'el', image: 'no_disponible.jpg'},
+{word: 'evaluación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'habilidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'destreza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'motivación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'objetivo', article: 'el ', image: 'no_disponible.jpg'},
+{word: 'meta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'éxito', article: 'el', image: 'no_disponible.jpg'},
+{word: 'recompensa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'reconocimiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'satisfacción', article: 'la', image: 'no_disponible.jpg'},
+{word: 'orgullo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'felicidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'bienestar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ejercicio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'alimentación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'deporte', article: 'el', image: 'no_disponible.jpg'},
+{word: 'actividad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'juego', article: 'el', image: 'no_disponible.jpg'},
+{word: 'diversión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'entretenimiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'risa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'humor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'respeto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'confianza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'lealtad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'solidaridad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'apoyo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ayuda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'servicio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comunidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'grupo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'hogar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'barrio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cultura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tradición', article: 'la', image: 'no_disponible.jpg'},
+{word: 'patrimonio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'época', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ocasión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'evento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'celebración', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ritual', article: 'el', image: 'no_disponible.jpg'},
+{word: 'costumbre', article: 'la', image: 'no_disponible.jpg'},
+{word: 'religión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'fe', article: 'la', image: 'no_disponible.jpg'},
+{word: 'espiritualidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'culto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'creencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dogma', article: 'el', image: 'no_disponible.jpg'},
+{word: 'filosofía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ética', article: 'la', image: 'no_disponible.jpg'},
+{word: 'moral', article: 'la', image: 'no_disponible.jpg'},
+{word: 'valor', article: 'el', image: 'no disponible.jpg'},
+{word: 'virtud', article: 'la', image: 'no_disponible.jpg'},
+{word: 'vicio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'justicia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'libertad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'igualdad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'paz', article: 'la', image: 'no_disponible.jpg'},
+{word: 'guerra', article: 'la', image: 'no_disponible.jpg'},
+{word: 'conflicto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'lucha', article: 'la', image: 'no_disponible.jpg'},
+{word: 'resistencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'revolución', article: 'la', image: 'no_disponible.jpg'},
+{word: 'cambio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'transformación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'evolución', article: 'la', image: 'no_disponible.jpg'},
+{word: 'progreso', article: 'el', image: 'no_disponible.jpg'},
+{word: 'desarrollo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'innovación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tecnología', article: 'la', image: 'no_disponible.jpg'},
+{word: 'avance', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'investigación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'descubrimiento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'invención', article: 'la', image: 'no_disponible.jpg'},
+{word: 'invento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'creación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'diseño', article: 'el', image: 'no_disponible.jpg'},
+{word: 'construcción', article: 'la', image: 'no_disponible.jpg'},
+{word: 'edificio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'infraestructura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'transporte', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comunicación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'medio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'red', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sistema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'organización', article: 'la', image: 'no_disponible.jpg'},
+{word: 'trabajo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'empresa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'negocio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'economía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'mercado', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comercio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'industria', article: 'la', image: 'no_disponible.jpg'},
+{word: 'consumo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'producción', article: 'la', image: 'no_disponible.jpg'},
+{word: 'recurso', article: 'el', image: 'no_disponible.jpg'},
+{word: 'materia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'capital', article: 'el', image: 'no_disponible.jpg'},
+{word: 'inversión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ahorro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'gasto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'deuda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ingreso', article: 'el', image: 'no_disponible.jpg'},
+{word: 'riqueza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pobreza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'bienestar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'calidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'nivel', article: 'el', image: 'no_disponible.jpg'},
+{word: 'clase', article: 'la', image: 'no_disponible.jpg'},
+{word: 'estatus', article: 'el', image: 'no_disponible.jpg'},
+{word: 'jerarquía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'poder', article: 'el', image: 'no_disponible.jpg'},
+{word: 'autoridad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'liderazgo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'influencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'política', article: 'la', image: 'no_disponible.jpg'},
+{word: 'gobierno', article: 'el', image: 'no_disponible.jpg'},
+{word: 'democracia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'sistema', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ley', article: 'la', image: 'no_disponible.jpg'},
+{word: 'derecho', article: 'el', image: 'no_disponible.jpg'},
+{word: 'justicia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'libertad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'igualdad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dignidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'respeto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'tolerancia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'diversidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'inclusión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'equidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'racismo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'discriminación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'violencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'abuso', article: 'el', image: 'no_disponible.jpg'},
+{word: 'agresión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'acoso', article: 'el', image: 'no_disponible.jpg'},
+{word: 'explotación', article: 'la', image: 'no_disponible.jpg'},
+{word: 'opresión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'resistencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'lucha', article: 'la', image: 'no_disponible.jpg'},
+{word: 'defensa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'protección', article: 'la', image: 'no_disponible.jpg'},
+{word: 'seguridad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'riesgo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'amenaza', article: 'la', image: 'no_disponible.jpg'},
+{word: 'peligro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'crisis', article: 'la', image: 'no_disponible.jpg'},
+{word: 'desastre', article: 'el', image: 'no_disponible.jpg'},
+{word: 'emergencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ayuda', article: 'la', image: 'no_disponible.jpg'},
+{word: 'asistencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'socorro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'solidaridad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'compasión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'empatía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'amor', article: 'el', image: 'no_disponible.jpg'},
+{word: 'amistad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'apoyo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'comunidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'grupo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'familia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'hogar', article: 'el', image: 'no_disponible.jpg'},
+{word: 'casa', article: 'la', image: 'no_disponible.jpg'},
+{word: 'barrio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ciudad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'país', article: 'el', image: 'no_disponible.jpg'},
+{word: 'mundo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'cultura', article: 'la', image: 'no_disponible.jpg'},
+{word: 'tradición', article: 'la', image: 'no_disponible.jpg'},
+{word: 'patrimonio', article: 'el', image: 'no_disponible.jpg'},
+{word: 'historia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'pasado', article: 'el', image: 'no_disponible.jpg'},
+{word: 'presente', article: 'el', image: 'no_disponible.jpg'},
+{word: 'futuro', article: 'el', image: 'no_disponible.jpg'},
+{word: 'tiempo', article: 'el', image: 'no_disponible.jpg'},
+{word: 'época', article: 'la', image: 'no_disponible.jpg'},
+{word: 'momento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'ocasión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'evento', article: 'el', image: 'no_disponible.jpg'},
+{word: 'celebración', article: 'la', image: 'no_disponible.jpg'},
+{word: 'fiesta', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ritual', article: 'el', image: 'no_disponible.jpg'},
+{word: 'costumbre', article: 'la', image: 'no_disponible.jpg'},
+{word: 'religión', article: 'la', image: 'no_disponible.jpg'},
+{word: 'fe', article: 'la', image: 'no_disponible.jpg'},
+{word: 'espiritualidad', article: 'la', image: 'no_disponible.jpg'},
+{word: 'culto', article: 'el', image: 'no_disponible.jpg'},
+{word: 'creencia', article: 'la', image: 'no_disponible.jpg'},
+{word: 'dogma', article: 'el', image: 'no_disponible.jpg'},
+{word: 'filosofía', article: 'la', image: 'no_disponible.jpg'},
+{word: 'ética', article: 'la', image: 'no_disponible.jpg'},
+{word: 'moral', article: 'la', image: 'no_disponible.jpg'}
+];
+
+let currentWordIndex = 0;
+let score = 0;
+let gameFinished = false;
+
+function displayWord() {
+    if (currentWordIndex >= words.length) {
+        endGame();
+        return;
+    }
+    const wordObj = words[currentWordIndex];
+    document.getElementById('currentWord').textContent = wordObj.word;
+    document.getElementById('wordImage').innerHTML = `<img src="${wordObj.image}" alt="${wordObj.word}">`;
+    document.getElementById('feedback').textContent = '';
+}
+
+function endGame() {
+    gameFinished = true;
+    document.getElementById('wordImage').innerHTML = '';
+    document.getElementById('currentWord').textContent = '';
+    document.getElementById('buttonContainer').style.display = 'none';
+    document.getElementById('feedback').innerHTML = `<div class="game-over">¡Fin del juego!<br>Puntuación final: ${score}</div>`;
+}
+
+function checkAnswer(selectedArticle) {
+    if (gameFinished) return;
+    
+    const wordObj = words[currentWordIndex];
+    const feedback = document.getElementById('feedback');
+    
+    if (selectedArticle === wordObj.article) {
+        feedback.textContent = '¡Correcto!';
+        feedback.style.color = 'green';
+        score += 10;
+    } else {
+        feedback.textContent = `Incorrecto. Es "${wordObj.article} ${wordObj.word}"`;
+        feedback.style.color = 'red';
+    }
+    
+    document.getElementById('score').textContent = score;
+    
+    setTimeout(() => {
+        currentWordIndex++;
+        displayWord();
+    }, 1500);
+}
+
+displayWord();
+</script>
+</body></html>
