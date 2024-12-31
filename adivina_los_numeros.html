@@ -133,10 +133,12 @@
                 minOption.textContent = num;
                 minSelect.appendChild(minOption);
 
-                const maxOption = document.createElement('option');
-                maxOption.value = num;
-                maxOption.textContent = num;
-                maxSelect.appendChild(maxOption);
+                if (num >= 10) {
+                    const maxOption = document.createElement('option');
+                    maxOption.value = num;
+                    maxOption.textContent = num;
+                    maxSelect.appendChild(maxOption);
+                }
             });
             minSelect.value = min;
             maxSelect.value = max;
