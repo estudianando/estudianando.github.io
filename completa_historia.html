@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f5f5f5;
+  }
+
+  .story-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .title-container {
+    text-align: center;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    display: flex;
+    gap: 5px;
+  }
+
+  .audio-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+
+  select {
+    padding: 5px;
+    margin: 5px;
+  }
+
+  .correct {
+    background-color: #90EE90;
+  }
+
+  .incorrect {
+    background-color: #FFB6C1;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: #45a049;
+  }
+
+  .speaker-btn {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: #4CAF50;
+  }
+
+  .speaker-btn:hover {
+    background: none;
+    color: #45a049;
+  }
+
+  .speaker-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  h2 {
+    width: 100%;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="story-container">
+    <div class="title-container">
+      <h2>Completa la historia</h2>
+      <div class="audio-controls">
+        <button class="speaker-btn" onclick="toggleAudio()" title="Reproducir/Pausar audio">
+          <svg class="speaker-icon play-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg class="speaker-icon pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <p>
+      En un pueblo 
+      <select id="select1" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="olvidado">olvidado</option>
+        <option value="ha olvidado">ha olvidado</option>
+        <option value="olvidar">olvidar</option>
+        <option value="hola">hola</option>
+      </select>
+      , una anciana vivía sola en una cabaña. Se decía que 
+      <select id="select2" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="ha tenido">ha tenido</option>
+        <option value="tenía">tenía</option>
+        <option value="tener">tener</option>
+        <option value="tengo">tengo</option>
+      </select>
+      el poder de hablar con los muertos. Una noche, un joven escéptico decidió 
+      <select id="select3" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="visito">visito</option>
+        <option value="visitarla">visitarla</option>
+        <option value="visitar">visitar</option>
+        <option value="visitando">visitando</option>
+      </select> , burlándose de las leyendas. Al entrar, la anciana lo miró con ojos penetrantes y le 
+      <select id="select4" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="he advertido">he advertido</option>
+        <option value="advirtió">advirtió</option>
+        <option value="había advertido">había advertido</option>
+        <option value="habré advertido">habré advertido</option>
+      </select>
+      : "No todos los secretos deben ser revelados".
+    </p>
+    <p>
+      Desafiando su advertencia, el joven 
+      <select id="select5" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="preguntas">preguntas</option>
+        <option value="pregunto">pregunto</option>
+        <option value="preguntó">preguntó</option>
+        <option value="pregunta">pregunta</option>
+      </select>
+      por su difunto abuelo. La anciana 
+      <select id="select6" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="murmulla">murmulla</option>
+        <option value="murmullado">murmullado</option>
+        <option value="murmuró">murmuró</option>
+        <option value="murmullo">murmullo</option>
+      </select>
+      un hechizo y, de repente, el aire se volvió helado. Una figura oscura 
+      <select id="select7" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="estuvo emergido">estuvo emergido</option>
+        <option value="emerge">emerge</option>
+        <option value="emergió">emergió</option>
+        <option value="emerger">emergir</option>
+      </select>
+      de la sombra, susurrando el nombre del joven. Él intentó 
+      <select id="select8" onchange="checkAllSelected()">
+        <option value="">Selecciona...</option>
+        <option value="escapaba">escapaba</option>
+        <option value="escapando">escapando</option>
+        <option value="escapar">escapar</option>
+        <option value="escapó">escapó</option>
+      </select>
+      , pero la puerta se cerró. Nunca más se le volvió a ver.
+    </p>
+    <button id="checkButton" onclick="checkAnswers()" disabled>Verificar respuestas</button>
+  </div>
+
+  <audio id="audio" src="audio_historia.mp3" preload="auto"></audio>
+
+  <script>
+    const correctAnswers = {
+      select1: "olvidado",
+      select2: "tenía",
+      select3: "visitarla",
+      select4: "advirtió",
+      select5: "preguntó",
+      select6: "murmuró",
+      select7: "emergió",
+      select8: "escapar"
+    };
+
+    let isPlaying = false;
+    const audio = document.getElementById('audio');
+
+    function checkAllSelected() {
+      const checkButton = document.getElementById('checkButton');
+      const allSelected = [...Array(8)].every((_, i) => 
+        document.getElementById(`select${i + 1}`).value !== ""
+      );
+      checkButton.disabled = !allSelected;
+    }
+
+    function checkAnswers() {
+      for (let i = 1; i <= 8; i++) {
+        const select = document.getElementById(`select${i}`);
+        if (select.value === correctAnswers[`select${i}`]) {
+          select.classList.add('correct');
+          select.classList.remove('incorrect');
+        } else {
+          select.classList.add('incorrect');
+          select.classList.remove('correct');
+        }
+      }
+    }
+
+    function toggleAudio() {
+      if (!isPlaying) {
+        startAudio();
+      } else {
+        pauseAudio();
+      }
+      updatePlayPauseIcon();
+    }
+
+    function startAudio() {
+      audio.play();
+      isPlaying = true;
+      audio.onended = function() {
+        isPlaying = false;
+        updatePlayPauseIcon();
+      };
+    }
+
+    function pauseAudio() {
+      audio.pause();
+      isPlaying = false;
+    }
+
+    function updatePlayPauseIcon() {
+      const playIcon = document.querySelector('.play-icon');
+      const pauseIcon = document.querySelector('. pause-icon');
+      if (isPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+      } else {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+      }
+    }
+
+    for (let i = 1; i <= 8; i++) {
+      document.getElementById(`select${i}`).addEventListener('change', function() {
+        this.classList.remove('correct', 'incorrect');
+      });
+    }
+  </script>
+</body>
+</html>
