@@ -1,0 +1,317 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de vocabulario </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de vocabulario </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <button class="btn btn-primary" id="next-btn" style="width: 100%">Siguiente pregunta</button>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+{
+		"question": "Hoy hizo bastante frío por Taichung porque viene la corriente ______ hoy.",
+		"options": ["caliente", "fría", "templada", "helada"],
+		"correct": 1
+	},
+	{
+		"question": "La temperatura baja y se puede ______ varios días.",
+		"options": ["mantener", "mantenerte", "mantengo", "mantendré"],
+		"correct": 0
+	},
+	{
+		"question": "Normalmente voy a correr al parque y _______ dominadas, fondos y flexiones",
+		"options": ["haría", "hacer", "hago", "haciendo"],
+		"correct": 2
+	},
+	{
+		"question": "Me sorprendió que ______ tanta gente en el brunch donde fui.",
+		"options": ["hubiera", "hay", "hubo", "había habido"],
+		"correct": 0
+	},
+	{
+		"question": "Normalmente, en España no se ______ la realidad de Taiwán.",
+		"options": ["sabe", "conocía", "supo", "sabía"],
+		"correct": 0
+	},
+	{
+		"question": "La temporada 1 fue ______ hace 3 años.",
+		"options": ["publicado", "publicando", "publicada", "publicar"],
+		"correct": 2
+	},
+	{
+		"question": "Este video es de los países occidentales porque a mí no me parece que _______ manipulado.",
+		"options": ["esté", "estar", "es", "ser"],
+		"correct": 0
+	},
+	{
+		"question": "La ubicación de Taiwán y de Ucrania no ____ tan similar .",
+		"options": ["estar", "es", "ser", "ninguna es correcta"],
+		"correct": 1
+	},
+	{
+		"question": "La verdad es que tiene fragatas cerca de Taiwán, ______ a China.",
+		"options": ["vigilando", "vigilar", "vigila", "vigilante"],
+		"correct": 0
+	},
+	{
+		"question": "Ellos ______ el referéndum ilegalmente porque para hacerlo hay que seguir unos pasos.",
+		"options": ["pusieron", "poner", "ponían", "ninguna es correcta"],
+		"correct": 0
+	},
+	{
+		"question": "Hay mucha ______ con las aguas territoriales.",
+		"options": ["paz", "disputa", "tranquilidad", "armonía"],
+		"correct": 1
+	},
+	{
+		"question": "La gente está mirando más la noticia ______ que la importante.",
+		"options": ["importante", "chorra", "seria", "relevante"],
+		"correct": 1
+	},
+	{
+		"question": "La razón de que es imposible que China ______ Taiwán es por el coste que es muy grande.",
+		"options": ["invadir", "invadió", "invada", "invadiendo"],
+		"correct": 2
+	},
+	{
+		"question": "La serie 'Juego del Calamar' fue ______ hace 3 años.",
+		"options": ["publicado", "publicando", "publicada", "publicar"],
+		"correct": 2
+	},
+	{
+		"question": "El acento argentino es como una mezcla entre español e ______.",
+		"options": ["inglés", "italiano", "francés", "alemán"],
+		"correct": 1
+	},
+	{
+		"question": "La gente ______ que Taiwán es una provincia o una comunidad autónoma.",
+		"options": ["piensa", "pensó", "pensar", "pensando"],
+		"correct": 0
+	},
+	{
+		"question": "¿Crees que KMT quiere una ______ con China?",
+		"options": ["anexión", "anexar", "anexo", "anexionar"],
+		"correct": 0
+	}
+
+
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
