@@ -1,0 +1,824 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aprender Español - Ordena las palabras </title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.source-container {
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+}
+
+.target-container {
+  background: #fff;
+  border: 2px dashed #4CAF50;
+}
+
+.word {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s, all 0.3s ease;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+.progress {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.area-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: -10px;
+}
+
+.word {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<center><h1>¡Ordena las palabras!</h1></center>
+<div class="word-area">
+  <div class="area-label">Palabras disponibles:</div>
+  <div id="sourceContainer" class="word-container source-container"></div>
+  <div class="area-label">Ordena las palabras aquí:</div>
+  <div id="targetContainer" class="word-container target-container"></div>
+</div>
+<div class="options">
+  <button id="speakBtn">🔊 Escuchar</button>
+  <button id="checkBtn">Comprobar</button>
+</div>
+<div class="progress" id="progress"></div>
+<div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const phrases = [
+"He trabajado y he estudiado español",
+
+"El texto está bastante bien",
+
+"Pero algunas estructuras suenan un poco forzadas o no parecen muy naturales",
+
+"Pero todo se entiende",
+
+"El concierto inolvidable",
+
+"Hablando de eventos, me acuerdo de que asistí a un concierto de música clásica, que es la única experiencia que tengo",
+
+"¿Me preguntaste cuánto costó la entrada? No lo recuerdo",
+
+"Quizás olvidé hacer una foto de la entrada",
+
+"Pero, recuerdo que compré dos entradas",
+
+"Antes de comenzar el espectáculo, hubo un problema, ya que no pude encontrar nuestros asientos porque la imagen era difícil de entender",
+
+"En consecuencia, el personal nos ayudó y pudimos sentarnos",
+
+"La interpretación esa noche fue espectacular",
+
+"Pero no se veía bien la orquesta debido a que las entradas que compré eran más baratas",
+
+"Lo peor de todo fue que nos quedamos dormidos durante el concierto, debido a que esa misma mañana acabábamos de llegar a Viena y habíamos hecho tres escalas",
+
+"Por suerte, después del intermedio, ya estábamos despiertos",
+
+"La pieza de encore de esa noche fue Bolero",
+
+"Es una composición aparentemente simple pero increíblemente ingeniosa y espectacular, lo que me dejó muy fascinado",
+
+"En conclusión, fue el mejor concierto de mi vida",
+
+"¿Tienes tiempo ahora?",
+
+"¿Para qué?",
+
+"Llamé a la clínica y me dijeron que ya tienen la vacuna contra el COVID-19",
+
+"Vamos a vacunarnos",
+
+"Rápido. He estado esperando mucho tiempo",
+
+"Usamos escuchar cuando vamos por la calle y oímos a gente hablar",
+
+"Me duele la cabeza y todo el cuerpo",
+
+"Probablemente sean los efectos secundarios de la vacuna",
+
+"Yo también me sentí un poco mal anoche",
+
+"Creo que también tengo un poco de fiebre",
+
+"Parece que necesito acostarme y descansar un rato",
+
+"¿Te vacunaste contra el COVID-19?",
+
+"¿Te pusiste la vacuna del COVID-19?",
+
+"Yo me puse solo una vacuna",
+
+"En España hay gente que se puso hasta 4 vacunas",
+
+"Pero a mí me dio miedo",
+
+"¿Sabes por qué?",
+
+"Porque un chico se desmayó",
+
+"Es como quedarse dormido pero grave",
+
+"En Taiwán realmente el COVID no llegó a ser grave",
+
+"No había muchos casos de COVID",
+
+"Al principio sí. Pero luego sí que fue más grave",
+
+"En España fue super serio",
+
+"Fue un desastre nacional",
+
+"Como en Italia",
+
+"Sí que las noticias decían que a la gente no le gusta llevar mascarilla",
+
+"Pero en Taiwán la gente está acostumbrada a llevar mascarilla",
+
+"Incluso haciendo deporte, la gente lleva mascarilla",
+
+"Y ahora vamos a terminar la clase de hoy",
+
+"Esto ha sido todo por hoy.",
+
+"Nos vemos el próximo día",
+
+"Nos vemos en la próxima clase",
+
+"Si no me acostumbro a escuchar a una velocidad normal, nunca podré comunicarme en español con fluidez",
+
+"En España, las uvas pequeñas que se preparan para las doce campanadas me parecen que tienen sabores dulces y ácidos",
+
+"Los medios de comunicación informan sobre la tradición de comer las 12 uvas en España",
+
+"A los taiwaneses les gustan algunas curiosidades",
+
+"He cenado con mi familia y hemos celebrado el cumpleaños de nuestro padre",
+
+"Feliz año nuevo",
+
+"¿Tienes algún plan para el año nuevo?",
+
+"No sé si conoces la tradición en España de comer 12 uvas",
+
+"En España comemos 12 uvas en la cuenta atrás",
+
+"A veces la uva es muy grande y con las prisas, la gente se atraganta",
+
+"Mis cuñados se van a Taipei porque hay fuegos artificiales",
+
+"He visto, pero no entendía",
+
+"Así que cuando vaya a comprar algo en España, el contenido de la clase será muy útil",
+
+"En un pequeño pueblo, la niebla cubría las calles al amanecer",
+
+"Clara, una joven soñadora, encontró un viejo diario en el desván de su abuela",
+
+"Al abrirlo, las palabras cobraron vida, revelando secretos de un amor perdido",
+
+"Intrigada, decidió seguir las pistas que el diario ofrecía",
+
+"Caminó por senderos olvidados, visitó lugares que una vez fueron mágicos",
+
+"Cada página la guiaba, hasta que llegó a un antiguo roble, donde encontró una carta escondida",
+
+"Era de su abuela, hablando de un amor que nunca se apagó",
+
+"Clara sonrió, sintiendo que el pasado y el presente se entrelazaban",
+
+"Decidió escribir su propia historia de amor, inspirada por la valentía de su abuela",
+
+"Así , en ese pueblo envuelto en niebla, comenzó una nueva aventura, donde los recuerdos y los sueños se unían en un solo latido",
+
+"Ha sido un buen día. He aprendido español mucho",
+
+"Has estado repasando y estudiando",
+
+"Me dijiste que tenías clase con otro profesor",
+
+"Una vez a la semana",
+
+"Los viernes",
+
+"Normalmente veo que usas mucho la palabra personas",
+
+"Es correcto",
+
+"Utilizando la palabra gente queda más natural",
+
+"Si utilizas personas, entonces tienes que usar el verbo en plural",
+
+"¿Conoces la palabra campanada?",
+
+"Pero en España, en las plazas hay un reloj grande",
+
+"En cada segundo suena una campanada",
+
+"Como lo has celebrado con tu familia, entonces sería más correcto decir: hemos celebrado",
+
+"Si no me acostumbro a escuchar a una velocidad normal, nunca podré comunicarme en español con fluidez",
+
+"En España, las uvas pequeñas que se preparan para las doce campanadas me parecen que tienen sabores dulces y ácidos",
+
+"Los medios de comunicación informan sobre la tradición de comer las 12 uvas en España",
+
+"A los taiwaneses les gustan algunas curiosidades",
+
+"He cenado con mi familia y hemos celebrado el cumpleaños de nuestro padre",
+
+"Feliz año nuevo",
+
+"¿Tienes algún plan para el año nuevo?",
+
+"No sé si conoces la tradición en España de comer 12 uvas",
+
+"En España comemos 12 uvas en la cuenta atrás",
+
+"A veces la uva es muy grande y con las prisas, la gente se atraganta",
+
+"Mis cuñados se van a Taipei porque hay fuegos artificiales",
+
+"He visto, pero no entendía",
+
+"Así que cuando vaya a comprar algo en España, el contenido de la clase será muy útil",
+
+"En un pequeño pueblo, la niebla cubría las calles al amanecer",
+
+"Clara, una joven soñadora, encontró un viejo diario en el desván de su abuela",
+
+"Al abrirlo, las palabras cobraron vida, revelando secretos de un amor perdido",
+
+"Intrigada, decidió seguir las pistas que el diario ofrecía",
+
+"Caminó por senderos olvidados, visitó lugares que una vez fueron mágicos",
+
+"Cada página la guiaba, hasta que llegó a un antiguo roble, donde encontró una carta escondida",
+
+"Era de su abuela, hablando de un amor que nunca se apagó",
+
+"Clara sonrió, sintiendo que el pasado y el presente se entrelazaban",
+
+"Decidió escribir su propia historia de amor, inspirada por la valentía de su abuela",
+
+"Así, en ese pueblo envuelto en niebla, comenzó una nueva aventura, donde los recuerdos y los sueños se unían en un solo latido",
+
+"Esto sería todo por la clase de hoy",
+
+"Son las 10 y media",
+
+"Así que vamos a terminar la clase hoy",
+
+"Gracias por prepararme los artículos",
+
+"Gracias porque preparaste los artículos",
+
+"En un pequeño pueblo, la niebla cubría las calles al amanecer",
+
+"Como siempre la clase de hoy ha sido muy interesante",
+
+"Gracias Antonio",
+
+"Nos vemos mañana",
+
+"Feliz año nuevo",
+
+"¿Tienes algún plan para el año nuevo?",
+
+"No, pero mañana mi familia y yo vamos a cenar para celebrar el cumpleaños de nuestros padres",
+
+"¿Y tú? ¿Cómo celebrarás el año nuevo?",
+
+"En España comemos 12 uvas en la cuenta atrás",
+
+"Si las uvas son muy grandes, la gente se atraganta",
+
+"Lo vamos a hacer aquí con mi familia de Taiwán",
+
+"Con mi esposa y mi suegra",
+
+"Porque mis cuñados se van a Taipei",
+
+"Así que ellos están en Taipei ahora",
+
+"Yo ahora mismo estoy en Taichung con mi esposa y mi suegra",
+
+"Y aquí comeremos las uvas y luego saldremos un rato",
+
+"Y después a unas dos horas vosotros vais a contar desde 10 a 0",
+
+"Es complicado porque tenemos que comer 12 uvas en los últimos 12 segundos",
+
+"Pero en la cuenta atrás, solo hay para contar 10 segundos",
+
+"Hay dos uvas que tendremos que comérnoslas después",
+
+"Así que cuando vaya a comprar algo en España, el contenido de la clase de hoy será muy útil",
+
+"Lo he aprendido pero no puedo usarlo sin problemas",
+
+"El subjuntivo es un poco difícil para los extranjeros",
+
+"Pero como los números, tengo que practicar mucho",
+
+"Gracias por todo",
+
+"Gracias a ti",
+
+"Voy a hablar de cómo aprendí",
+
+"Yo uso el software Anki",
+
+"Vas por buen camino",
+
+"Que tengas un buen fin de año",
+
+"Feliz año nuevo",
+
+"Y que lo pases muy bien",
+
+"Nos vemos en el nuevo año 2025",
+
+"Me comentaste sobre unos números que tenías preparados",
+
+"Quiero practicarlos",
+
+"Veo que tienes tanto los números como también las palabras escritas",
+
+"Puedo contar desde 0 a 100 y desde 100 a 200",
+
+"Pero no puedo escuchar y entender el número que acabo de escuchar",
+
+"Me parece que tengo que practicar",
+
+"Necesito tiempo para saber cuál es el número",
+
+"Los números tienen la misma pronunciación en cada idioma",
+
+"Así que los números me parecen muy fáciles pero en verdad no",
+
+"Son muy difíciles",
+
+"En japonés y en chino, los números tienen la misma lógica",
+
+"Así que vamos a practicar",
+
+"Pero la razón es que no he practicado mucho",
+
+"Todo el mundo usamos los mismos números",
+
+"Pero cuando llegaron al río y vieron que no había ni una tabla ni una barquita para cruzarlos creyeron que no lo lograrían",
+
+"Menos mal que por allí pasó un gentil pato y les ayudó amablemente a cruzar el río",
+
+"Al otro lado de la orilla, continuaron corriendo hasta que vieron a lo lejos la casa de sus padres",
+
+"En ese instante supieron que vivirían el resto de sus días felices los cuatro y sin pasar penuria alguna",
+
+"Los números de hoy",
+
+"Mil doscientos treinta y cuatro",
+
+"Dos mil trescientos cuarenta y cinco",
+
+"Tres mil cuatrocientos cincuenta y seis",
+
+"Cuatro mil quinientos sesenta y siete",
+
+"Cinco mil seiscientos setenta y ocho",
+
+"Seis mil setecientos ochenta y nueve",
+
+"Cuatro mil trescientos veintiuno",
+
+"Cinco mil cuatrocientos treinta y dos",
+
+"Seis mil quinientos cuarenta y tres",
+
+"Siete mil seiscientos cincuenta y cuatro",
+
+"Ocho mil setecientos sesenta y cinco",
+
+"Nueve mil ochocientos setenta y seis",
+
+"Mil ciento once",
+
+"Dos mil doscientos veintidós",
+
+"Tres mil trescientos treinta y tres",
+
+"Cuatro mil cuatrocientos cuarenta y cuatro",
+
+"Cinco mil quinientos cincuenta y cinco",
+
+"Seis mil seiscientos sesenta y seis",
+
+"Siete mil setecientos setenta y siete",
+
+"Ocho mil ochocientos ochenta y ocho",
+
+"Nueve mil novecientos noventa y nueve",
+
+"Diez mil",
+
+"Son las 10 y veinticinco",
+
+"Vamos a terminar la clase de hoy",
+
+"Hoy hace un poco frío por Taichung",
+
+"También en Taipéi, en concreto en New Taipéi hace frío",
+
+"Allí en New Taipéi puede que incluso más frío que en Taichung",
+
+"Si, la verdad estamos a 11 grados",
+
+"Me encantó Suiza",
+
+"Me gustó muchísimo",
+
+"Hoy trabajé un poquito",
+
+"Más que nada para que te acostumbres a la velocidad",
+
+"Si siempre he hecho a una velocidad más despacio nunca hablaré con español como un nativo",
+
+"En la clase de hoy había preparado una situación de una entrevista para ver cómo te desenvuelves con los diferentes tiempos verbales",
+
+"Hola señor Antonio",
+
+"Hemos visto su Currículum y estamos muy impresionados por sus logros",
+
+"Por eso hemos decidido llamarle para una entrevista",
+
+"Gracias por asistir",
+
+"¿Conoces también el chino simplificado?",
+
+"Sí, también conozco el chino simplificado pero no puedo escribirlo",
+
+"¿Cuál es tu número de teléfono?",
+
+"¿Cuánto vale el kilo de manzanas?",
+
+"En España cuando se compran las manzanas se usan kg",
+
+"Lo que quiero hablar en inglés, decimos count by kg",
+
+"¿Por qué te gusta trabajar de traductor e intérprete?",
+
+"Porque estoy trabajando como intérprete",
+
+"Perdón, como la clase de hoy va a terminar, ¿me podrías enviar los textos que has escrito, por favor?",
+
+"Espero poder hacerlo",
+
+"Antonio, esto ha sido todo por hoy",
+
+"Gracias Antonio",
+
+"Como siempre la clase de hoy ha estado muy bien",
+
+"Ha sido una buena clase",
+
+"En 2017, mi esposa y yo fuimos a Europa para celebrar nuestra luna de miel y visitar cinco países : Austria, Chequia, Alemania, Suiza e Italia",
+
+"Durante ese viaje, visitamos muchos monumentos famosos como palacios, museos, pueblos termales, etcétera",
+
+"Además, nos gustaba recorrer supermercados en cada ciudad",
+
+"En Europa, las uvas, los pimientos y los vinos eran más baratos que en Taiwán, y eso me daba envidia",
+
+"Cuando cruzábamos los pasos de cebra, los conductores detenían sus coches para nosotros",
+
+"Pero en Taiwán, los conductores normalmente no se detenían para los peatones hasta que hace unos meses el gobierno decidió mejorar este problema",
+
+"Así que los suizos de Zúrich me parecieron muy amables",
+
+"Si fuera millonario, me trasladaría allí",
+
+"Hoy hice algo de trabajo",
+
+"Como siempre cené con mi esposa",
+
+"Mi esposa es de Taiwán y es vegetariana",
+
+"Yo también soy vegetariano y mi esposa también",
+
+"Si mi esposa fuera mexicana hablaría español muy bien",
+
+"Y luego voy a enviarte un artículo que he escrito",
+
+"El origen de ese artículo es",
+
+"Con muy malos modos despertó a su hermana y le dijo que fuese a por agua para preparar algo de comer",
+
+"La pequeña Gretel se dio cuenta entonces de que no era una vieja, sino una malvada bruja",
+
+"Pasaban los días y la bruja se impacientaba porque no veía engordar a Hansel",
+
+"De modo que un día la bruja se cansó y decidió no esperar más",
+
+"La niña se imaginó algo terrible, y supo que en cuanto se despistara la bruja la arrojaría dentro del horno",
+
+"Sin embargo, este método no es adecuado para un traductor que domine el japonés",
+
+"En Amazing Talker no puedes enviar mucha cantidad de texto",
+
+"Así que los niños anduvieron perdidos por el bosque hasta que estuvieron exhaustos y no pudieron dar un paso más del hambre que tenían",
+
+"Justo entonces, se encontraron con una casa de ensueño hecha de pan y cubierta de bizcocho y cuyas ventanas eran de azúcar",
+
+"Tenían tanta hambre, que enseguida se lanzaron a comer sobre ella",
+
+"De repente se abrió la puerta de la casa y salió de ella una vieja que parecía amable",
+
+"Hola niños, ¿qué hacéis aquí? ¿Acaso tenéis hambre?",
+
+"Los pobres niños asintieron con la cabeza",
+
+"Anda, entrad dentro y os prepararé algo muy rico",
+
+"La vieja les dio de comer y les ofreció una cama en la que dormir",
+
+"Pero pese a su bondad, había algo raro en ella",
+
+"Por la mañana temprano, cogió a Hansel y lo encerró en el establo mientras el pobre no dejaba de gritar",
+
+"Después de mis estudios de turismo, no sabía qué hacer",
+
+"Decidí visitar México, y aquí conocí a la que ahora es mi mujer",
+
+"Al final, su familia me aceptó y abrimos un restaurante de comida española, en México",
+
+"Yo tenía mucho miedo, pero lo curioso es que tuvimos mucho éxito",
+
+"¿Entiendes todo el texto del cuento?",
+
+"Así que entiendo un poco",
+
+"Por ejemplo, he aprendido que los niños le oyeron",
+
+"Es una acción totalmente terminada porque estamos hablando de tu niñez",
+
+"Si hubieras tenido cualquier tipo de videoconsola cuando eras pequeño, ¿Cuál hubieras elegido?",
+
+"Me gustaría que me lo corrijas",
+
+"Cuando tengo tiempo libre, me encanta ver series coreanas",
+
+"Las series coreanas son interesantes y tienen una gran variedad de historias",
+
+"Uno de los géneros más populares es el romance",
+
+"Ya que estoy aprendiendo español, me alegra ver las series dobladas en español y con subtítulos en chino que me permiten entender las historias claramente",
+
+"De esta manera, puedo estudiar español mientras disfruto de las series",
+
+"Los niños, que no podían dormir del hambre que tenían, oyeron toda la conversación y comenzaron a llorar en cuanto supieron el final que les esperaba"
+];
+
+// Crear array de índices y mezclarlo
+let phraseIndices = [...Array(phrases.length).keys()];
+let currentPhraseIndex = 0;
+let currentWords = [];
+
+function shuffleArray(array) {
+const newArray = [...array];
+for (let i = newArray.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+}
+return newArray;
+}
+
+// Mezclar los índices al inicio
+phraseIndices = shuffleArray(phraseIndices);
+
+function displayPhrase() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+sourceContainer.innerHTML = '';
+targetContainer.innerHTML = '';
+
+// Usar el índice aleatorio para seleccionar la frase
+const randomPhrase = phrases[phraseIndices[currentPhraseIndex]];
+currentWords = randomPhrase.split(' ');
+const shuffledWords = shuffleArray(currentWords);
+
+shuffledWords.forEach((word, index) => {
+  const wordElement = createElement(word);
+  wordElement.style.animationDelay = `${index * 0.1}s`;
+  sourceContainer.appendChild(wordElement);
+});
+
+document.getElementById('progress').textContent = 
+  `Frase ${currentPhraseIndex + 1} de ${phrases.length}`;
+}
+
+function createElement(word) {
+const wordElement = document.createElement('div');
+wordElement.className = 'word';
+wordElement.textContent = word;
+wordElement.draggable = true;
+return wordElement;
+}
+
+function speak(text) {
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = 'es-ES';
+speechSynthesis.speak(utterance);
+}
+
+function returnWordsToSource() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+const words = Array.from(targetContainer.getElementsByClassName('word'));
+
+words.forEach((word, index) => {
+  word.style.opacity = '0';
+  setTimeout(() => {
+    word.style.opacity = '1';
+    sourceContainer.appendChild(word);
+  }, 300 + (index * 100));
+});
+}
+
+function checkOrder() {
+const targetContainer = document.getElementById('targetContainer');
+const currentWordsInDOM = Array.from(targetContainer.getElementsByClassName('word'))
+  .map(word => word.textContent);
+
+if (currentWordsInDOM.length !== currentWords.length) {
+  const feedback = document.getElementById('feedback');
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Mueve todas las palabras al área de ordenación';
+  return;
+}
+
+const isCorrect = currentWords.join(' ') === currentWordsInDOM.join(' ');
+const feedback = document.getElementById('feedback');
+
+if (isCorrect) {
+  feedback.style.color = '#4CAF50';
+  feedback.textContent = '¡Correcto!';
+  
+  setTimeout(() => {
+    if (currentPhraseIndex < phrases.length - 1) {
+      currentPhraseIndex++;
+      displayPhrase();
+      feedback.textContent = '';
+    } else {
+      feedback.textContent = '¡Has completado todas las frases!';
+      document.getElementById('checkBtn').disabled = true;
+    }
+  }, 1500);
+} else {
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Inténtalo de nuevo';
+  setTimeout(returnWordsToSource, 1000);
+}
+}
+
+// Event Listeners
+document.getElementById('speakBtn').addEventListener('click', () => {
+speak(phrases[phraseIndices[currentPhraseIndex]]);
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkOrder);
+
+// Drag and Drop functionality
+let draggedElement = null;
+
+document.addEventListener('dragstart', (e) => {
+if (e.target.className === 'word') {
+  draggedElement = e.target;
+  e.target.style.opacity = '0.5';
+}
+});
+
+document.addEventListener('dragend', (e) => {
+if (e.target.className === 'word') {
+  e.target.style.opacity = '1';
+}
+});
+
+document.addEventListener('dragover', (e) => {
+e.preventDefault();
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = '#e8f5e9';
+}
+});
+
+document.addEventListener('dragleave', (e) => {
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = e.target.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+}
+});
+
+document.addEventListener('drop', (e) => {
+e.preventDefault();
+const container = e.target.closest('.word-container');
+if (container) {
+  container.style.background = container.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+  container.appendChild(draggedElement);
+}
+});
+
+// Initialize the first phrase
+displayPhrase();
+</script>
+</body>
+</html>
