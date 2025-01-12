@@ -562,6 +562,7 @@ const englishPhrases = [
 
 let currentPhraseIndex = 0;
 let currentWords = [];
+let shuffledIndices = [];
 
 function displayPhrase() {
   const sourceContainer = document.getElementById('sourceContainer');
@@ -573,7 +574,7 @@ function displayPhrase() {
   translationDiv.style.display = 'none';
 
   // Use current index to select the phrase
-  const currentPhrase = spanishPhrases[currentPhraseIndex];
+  const currentPhrase = spanishPhrases[shuffledIndices[currentPhraseIndex]];
   currentWords = currentPhrase.split(' ');
   const shuffledWords = shuffleArray([...currentWords]);
 
@@ -644,7 +645,7 @@ function checkOrder() {
     feedback.textContent = '¡Correcto!';
     
     setTimeout(() => {
-      if (currentPhraseIndex < spanishPhrases.length - 1) {
+      if (currentPhraseIndex < shuffledIndices.length - 1) {
         currentPhraseIndex++;
         displayPhrase();
         feedback.textContent = '';
@@ -666,7 +667,7 @@ function toggleTranslation() {
   
   if (translationDiv.style.display === 'none') {
     translationDiv.style.display = 'block';
-    translationDiv.textContent = englishPhrases[currentPhraseIndex];
+    translationDiv.textContent = englishPhrases[shuffledIndices[currentPhraseIndex]];
     translateBtn.textContent = 'Ocultar traducción';
   } else {
     translationDiv.style.display = 'none';
@@ -676,7 +677,7 @@ function toggleTranslation() {
 
 // Event Listeners
 document.getElementById('speakBtn').addEventListener('click', () => {
-  speak(spanishPhrases[currentPhraseIndex]);
+  speak(spanishPhrases[shuffledIndices[currentPhraseIndex]]);
 });
 
 document.getElementById('checkBtn').addEventListener('click', checkOrder);
@@ -720,8 +721,14 @@ document.addEventListener('drop', (e) => {
   }
 });
 
-// Initialize the first phrase
+// Example phrases and translations
+//const spanishPhrases = ['Buenos días', '¿Cómo estás?'];
+//const englishPhrases = ['Good morning', 'How are you?'];
+
+// Initialize the shuffled indices and the first phrase
+shuffledIndices = shuffleArray([...spanishPhrases.keys()]);
 displayPhrase();
+
 </script>
 </body>
 </html>
