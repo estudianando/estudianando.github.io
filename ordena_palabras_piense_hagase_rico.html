@@ -669,7 +669,10 @@ function createElement(word) {
 
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-GB'; // Cambia 'en-GB' a 'en-US' para inglés estadounidense
+  utterance.lang = 'en-US'; // Cambia 'en-US' a 'en-GB' para inglés britanico
+
+  const voices = speechSynthesis.getVoices(); // Get the list of available voices
+  utterance.voice = voices[2]; // Change the index to select a different voice
   speechSynthesis.speak(utterance);
 }
 
