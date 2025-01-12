@@ -669,7 +669,7 @@ function createElement(word) {
 
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-EN';
+  utterance.lang = 'en-GB'; // Cambia 'en-GB' a 'en-US' para inglés estadounidense
   speechSynthesis.speak(utterance);
 }
 
