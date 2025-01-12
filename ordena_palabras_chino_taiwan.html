@@ -1,0 +1,727 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aprender Español - Ordena las palabras</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.source-container {
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+}
+
+.target-container {
+  background: #fff;
+  border: 2px dashed #4CAF50;
+}
+
+.word {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s, all 0.3s ease;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+.progress {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.translation {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  display: none;
+}
+
+.area-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: -10px;
+}
+
+.word {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<center><h1>¡Ordena las palabras!</h1></center>
+<div class="word-area">
+  <div class="area-label">Palabras disponibles:</div>
+  <div id="sourceContainer" class="word-container source-container"></div>
+  <div class="area-label">Ordena las palabras aquí:</div>
+  <div id="targetContainer" class="word-container target-container"></div>
+</div>
+<div class="options">
+  <button id="speakBtn">🔊 Escuchar</button>
+  <button id="checkBtn">Comprobar</button>
+  <button id="translateBtn">Ver traducción</button>
+</div>
+<div class="translation" id="translation"></div>
+<div class="progress" id="progress"></div>
+<div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const spanishPhrases = [
+"你 好 嗎 ？",  
+"您 早 ， 王 先 生",  
+"我 很 好 ， 謝 謝 您",  
+"王 太 太 好 嗎 ？",  
+"她 很 好 ， 謝 謝",  
+"我 太 太 很 好 ， 謝 謝",  
+"我 先 生 很 好 ， 謝 謝",  
+"您 太 太 好 嗎 ？",  
+"您 忙 嗎 ？",  
+"我 很 忙 您 呢 ？",  
+"我 不 忙 。",  
+"您 太 太 忙 不 忙 ？",  
+"她 也 不 忙 ， 我 們 都 不 太 忙 。",  
+"你 很 忙 ， 李 先 生 呢 ？",  
+"你 們",  
+"我 們",  
+"他 們",  
+"她 們",  
+"我 們 都 好 。",  
+"你 們 都 好 嗎 ？",  
+"不 客 氣",  
+"對 不 起",  
+"沒 關 係",  
+"你 叫 什 麼 名 字 ？",  
+"在 哪 裡 ？",  
+"我 叫 什 麼 名 字 ？",  
+"她 叫 什 麼 名 字 ？",  
+"我 們 叫 什 麼 名 字 ？",  
+"你 們 叫 什 麼 名 字 ？",  
+"她 們 叫 什 麼 名 字 ？",  
+"他 們 叫 什 麼 名 字 ？",  
+"我 叫 Nando",  
+"我 是 Nando",  
+"她 叫 Ana",  
+"他 叫 Fernando",  
+"你 叫 Carlos",  
+"你 幾 歲 了",  
+"我 四 十 歲",  
+"我 二 十 歲 了",  
+"咖 啡 茶 和 水",  
+"你 要 什 麼 飲 料",  
+"你 從 哪 裡 來 ？",  
+"我 從 西 班 牙 來 。",  
+"我 是 西 班 牙 人",  
+"多 少 錢 ？",  
+"很 高 興 認 識 你",  
+"我 要 綠 茶",  
+"我 要 紅 茶",  
+"廁 所 在 哪 裡 ？",  
+"在 那 邊",  
+"我 要 一 杯 珍 珠 奶 茶",  
+"這 是 茶",  
+"你 們 有 什 麼 飲 料 ？",  
+"太 好 了 ！",  
+"請 問 ， 你 貴 姓 ？",  
+"美 國",  
+"洗 手 間",  
+"我 是 美 國 人",  
+"您 怎 麼 樣 ？",  
+"姓",  
+"你 要 什 麼 ？",  
+"你 是 哪 國 人 ？",  
+"我 姓 ...",  
+"外 國 人",  
+"是",  
+"笨 蛋",  
+"我 是 笨 蛋",  
+"我 要 一 杯 珍 珠 奶 茶",  
+"我 要 一 杯 冰 咖 啡",  
+"麵 包",  
+"我 要 吃 麵 包",  
+"巧 克 力",  
+"我 要 喝 巧 克 力",  
+"進 來",  
+"睡 覺",  
+"拿 鐵 咖 啡",  
+"美 式",  
+"熱",  
+"菜 單",  
+"一 個 杯 子",  
+"一 杯 熱 咖 啡",  
+"大 杯",  
+"中 杯",  
+"小 杯",  
+"正 常 冰",  
+"少 冰",  
+"微 冰",  
+"去 冰",  
+"全 糖",  
+"少 糖",  
+"半 糖",  
+"微 糖",  
+"無 糖",  
+"我 要 一 杯 烏 龍 茶 ， 大 杯 ， 少 冰 ， 無 糖",  
+"我 是 西 班 牙 人",  
+"我 四 十 歲",  
+"我 二 十 歲 了",  
+"很 高 興 認 識 你",  
+"多 少 錢 ？",  
+"咖 啡 、 茶 和 水 你 幾 歲 了 ？",  
+"這 是 茶",  
+"我 要 綠 茶",  
+"我 要 紅 茶",  
+"我 要 珍 珠 奶 茶",  
+"廁 所 在 哪 裡 ？",  
+"太 好 了 ！",  
+"你 們 有 什 麼 飲 料 ？",  
+"請 問 貴 姓 ？",  
+"美 國",  
+"洗 手 間",  
+"我 是 美 國 人",  
+"您 怎 麼 樣 ？",  
+"姓",  
+"你 要 什 麼 ？",  
+"你 是 哪 國 人 ？",  
+"我 姓 ...",  
+"外 國 人",  
+"沒 有 了",  
+"天 氣 好 熱",  
+"快 點 快 點",  
+"走 走 走",  
+"我 們 去 公 園",  
+"我 們 去 吃 飯",  
+"慢 慢 的",  
+"好 累",  
+"很 多 蔬 菜",  
+"好 可 愛",  
+"生 日 快 樂",  
+"超 市",  
+"水 果",  
+"在 那 邊",  
+"我 要 去 運 動",  
+"我 們 去 做",  
+"好 燙",  
+"祝 你 有 美 好 的 一 天",  
+"歡 迎",  
+"我 在 喝 咖 啡",  
+"松 鼠",  
+"狗 狗",  
+"貓",  
+"我 會 說 一 定 點 中 文",  
+"我 們 去 做",  
+"好 燙",  
+"祝 你 有 美 好 的 一 天",  
+"桌 子",  
+"椅 子",  
+"包 包",  
+"電 腦",  
+"地 上",  
+"房 間",  
+"廚 房",  
+"鞋 子",  
+"衣 服",  
+"三 明 治",  
+"曬 太 陽",  
+"麵 包",  
+"包 包",  
+"地 上",  
+"廚 房",  
+"房 間",  
+"曬 太 陽",  
+"桌 子",  
+"椅 子",  
+"衣 服",  
+"電 腦",  
+"鞋 子",  
+"你 的 手 機",  
+"我 幫 你",  
+"買 豆 花",  
+"我 喜 歡 吃 吐 司",  
+"他 喜 歡 按 摩",  
+"結 帳",  
+"點 菜",  
+"我 在 做 功 課",  
+"你 說 什 麼",  
+"我 看 電 影",  
+"他 喜 歡 按 摩",  
+"你 的 手 機",  
+"你 說 什 麼",  
+"我 喜 歡 吃 吐 司",  
+"我 在 做 功 課",  
+"我 幫 你",  
+"我 看 電 影",  
+"結 帳",  
+"買 豆 花",  
+"這 是 愉 快 的 一 天",  
+"太 陽",  
+"我 不 喜 歡 太 陽",  
+"不 要 吃 草 草",  
+"便 當 盒",  
+"地 圖",  
+"毛 巾",  
+"海 灘",  
+"冰 塊",  
+"太 陽 眼 鏡",  
+"不 要 吃 草 草",  
+"便 當 盒",  
+"冰 塊",  
+"地 圖",  
+"太 陽",  
+"太 陽 眼 鏡",  
+"毛 巾",  
+"海 灘",  
+"這 是 愉 快 的 一 天"
+];
+
+const englishPhrases = [
+"¿Cómo estás?",  
+"Buenos días, señor Wang",  
+"Estoy bien, gracias",  
+"¿Cómo está la señora Wang?",  
+"Está muy bien, gracias",  
+"Mi esposa está muy bien, gracias",  
+"Mi esposo está muy bien, gracias",  
+"¿Cómo está su esposa?",  
+"¿Está usted ocupado?",  
+"Estoy muy ocupado, ¿y usted?",  
+"No estoy ocupado.",  
+"¿Está su esposa ocupada?",  
+"Ella tampoco está ocupada, todos nosotros no estamos muy ocupados.",  
+"¿Estás muy ocupado, señor Li?",  
+"Ustedes",  
+"Nosotros",  
+"Ellos",  
+"Ellas",  
+"Todos nosotros estamos bien.",  
+"¿Están todos ustedes bien?",  
+"De nada",  
+"Lo siento",  
+"Está bien",  
+"¿Cómo te llamas?",  
+"¿Dónde está?",  
+"¿Cómo me llamo?",  
+"¿Cómo se llama ella?",  
+"¿Cómo nos llamamos nosotros?",  
+"¿Cómo se llaman ustedes?",  
+"¿Cómo se llaman ellas?",  
+"¿Cómo se llaman ellos?",  
+"Me llamo Nando",  
+"Soy Nando",  
+"Se llama Ana",  
+"Se llama Fernando",  
+"Te llamas Carlos",  
+"¿Cuántos años tienes?",  
+"Tengo cuarenta años",  
+"Ya tengo veinte años",  
+"Café, té y agua",  
+"¿Qué bebida quieres?",  
+"¿De dónde eres?",  
+"Soy de España.",  
+"Soy español",  
+"¿Cuánto cuesta?",  
+"Encantado de conocerte",  
+"Quiero té verde",  
+"Quiero té negro",  
+"¿Dónde está el baño?",  
+"Está por allá",  
+"Quiero una taza de té de perlas",  
+"Esto es té",  
+"¿Qué bebidas tienen?",  
+"¡Perfecto!",  
+"Disculpe, ¿cuál es su apellido?",  
+"Estados Unidos",  
+"Baño",  
+"Soy estadounidense",  
+"¿Cómo está usted?",  
+"Apellido",  
+"¿Qué quieres?",  
+"¿De qué país eres?",  
+"Mi apellido es ...",  
+"Extranjero",  
+"Es",  
+"Tonto",  
+"Soy tonto",  
+"Quiero una taza de té de perlas",  
+"Quiero una taza de café helado",  
+"Pan",  
+"Quiero comer pan",  
+"Chocolate",  
+"Quiero beber chocolate",  
+"Entrar",  
+"Dormir",  
+"Café americano",  
+"Caliente",  
+"Menú",  
+"Una taza",  
+"Una taza de café caliente",  
+"Vaso grande",  
+"Vaso mediano",  
+"Vaso pequeño",  
+"Con hielo normal",  
+"Un poco de hielo",  
+"Un poquito de hielo",  
+"Sin hielo",  
+"100% de azúcar",  
+"Un poco de azúcar",  
+"Mitad de azúcar",  
+"Un poquito de azúcar",  
+"Sin azúcar",  
+"Quiero una taza de té oolong, grande, con poco hielo, sin azúcar",  
+"Soy español",  
+"Tengo cuarenta años",  
+"Ya tengo veinte años",  
+"Encantado de conocerte",  
+"¿Cuánto cuesta?",  
+"Café, té y agua",  
+"¿Cuántos años tienes?",  
+"Esto es té",  
+"Quiero té verde",  
+"Quiero té negro",  
+"Quiero té de perlas",  
+"¿Dónde está el baño?",  
+"¡Perfecto!",  
+"¿Qué bebidas tienen?",  
+"Disculpe, ¿cuál es su apellido?",  
+"Estados Unidos",  
+"Baño",  
+"Soy estadounidense",  
+"¿Cómo está usted?",  
+"Apellido",  
+"¿Qué quieres?",  
+"¿De qué país eres?",  
+"Mi apellido es ...",  
+"Extranjero",  
+"No hay más",  
+"El clima está muy caliente",  
+"Date prisa, date prisa",  
+"Vamos, vamos, vamos",  
+"Vamos al parque",  
+"Vamos a comer",  
+"Poco a poco",  
+"Tan cansado",  
+"Mucha verdura",  
+"Qué lindo",  
+"Feliz cumpleaños",  
+"Supermercado",  
+"Fruta",  
+"Por allá",  
+"Voy a hacer ejercicio",  
+"Vamos a hacer",  
+"Está caliente",  
+"Que tengas un buen día",  
+"Bienvenido",  
+"Estoy bebiendo café",  
+"Ardilla",  
+"Perro",  
+"Gato",  
+"Habla un poco de chino",  
+"Vamos a hacer",  
+"Está caliente",  
+"Que tengas un buen día",  
+"Mesa",  
+"Silla",  
+"Bolso ",  
+"Computadora",  
+"En el suelo",  
+"Cuarto",  
+"Cocina",  
+"Zapatos",  
+"Ropa",  
+"Sándwich",  
+"Tomando el sol",  
+"Pan",  
+"Bolso",  
+"En el suelo",  
+"Cocina",  
+"Cuarto",  
+"Tomando el sol",  
+"Mesa",  
+"Silla",  
+"Ropa",  
+"Computadora",  
+"Zapatos",  
+"Tu teléfono",  
+"Te ayudo",  
+"Comprar tofu",  
+"Me gusta comer tostadas",  
+"A él le gusta el masaje",  
+"Cuenta",  
+"Ordenar",  
+"Estoy haciendo tarea",  
+"¿Qué dijiste?",  
+"Estoy viendo una película",  
+"A él le gusta el masaje",  
+"Tu teléfono",  
+"¿Qué dijiste?",  
+"Me gusta comer tostadas",  
+"Estoy haciendo tarea",  
+"Te ayudo",  
+"Estoy viendo una película",  
+"Cuenta",  
+"Comprar tofu",  
+"Es un día agradable",  
+"Sol",  
+"No me gusta el sol",  
+"No comer hierba",  
+"Comida para llevar",  
+"Mapa",  
+"Toalla",  
+"Playa",  
+"Hielo",  
+"Anteojos de sol",  
+"No comer hierba",  
+"Comida para llevar",  
+"Hielo",  
+"Mapa",  
+"Sol",  
+"Anteojos de sol",  
+"Toalla",  
+"Playa",  
+"Es un día agradable"
+];
+
+let currentPhraseIndex = 0;
+let currentWords = [];
+
+function displayPhrase() {
+  const sourceContainer = document.getElementById('sourceContainer');
+  const targetContainer = document.getElementById('targetContainer');
+  const translationDiv = document.getElementById('translation');
+  
+  sourceContainer.innerHTML = '';
+  targetContainer.innerHTML = '';
+  translationDiv.style.display = 'none';
+
+  // Use current index to select the phrase
+  const currentPhrase = spanishPhrases[currentPhraseIndex];
+  currentWords = currentPhrase.split(' ');
+  const shuffledWords = shuffleArray([...currentWords]);
+
+  shuffledWords.forEach((word, index) => {
+    const wordElement = createElement(word);
+    wordElement.style.animationDelay = `${index * 0.1}s`;
+    sourceContainer.appendChild(wordElement);
+  });
+
+  document.getElementById('progress').textContent = 
+    `Frase ${currentPhraseIndex + 1} de ${spanishPhrases.length}`;
+}
+
+function shuffleArray(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
+function createElement(word) {
+  const wordElement = document.createElement('div');
+  wordElement.className = 'word';
+  wordElement.textContent = word;
+  wordElement.draggable = true;
+  return wordElement;
+}
+
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-TW'; // Cambia 'zh-TW' a 'en-US' para inglés de estados unidos
+  speechSynthesis.speak(utterance);
+}
+
+function returnWordsToSource() {
+  const sourceContainer = document.getElementById('sourceContainer');
+  const targetContainer = document.getElementById('targetContainer');
+  const words = Array.from(targetContainer.getElementsByClassName('word'));
+
+  words.forEach((word, index) => {
+    word.style.opacity = '0';
+    setTimeout(() => {
+      word.style.opacity = '1';
+      sourceContainer.appendChild(word);
+    }, 300 + (index * 100));
+  });
+}
+
+function checkOrder() {
+  const targetContainer = document.getElementById('targetContainer');
+  const currentWordsInDOM = Array.from(targetContainer.getElementsByClassName('word'))
+    .map(word => word.textContent);
+
+  if (currentWordsInDOM.length !== currentWords.length) {
+    const feedback = document.getElementById('feedback');
+    feedback.style.color = '#f44336';
+    feedback.textContent = 'Mueve todas las palabras al área de ordenación';
+    return;
+  }
+
+  const isCorrect = currentWords.join(' ') === currentWordsInDOM.join(' ');
+  const feedback = document.getElementById('feedback');
+
+  if (isCorrect) {
+    feedback.style.color = '#4CAF50';
+    feedback.textContent = '¡Correcto!';
+    
+    setTimeout(() => {
+      if (currentPhraseIndex < spanishPhrases.length - 1) {
+        currentPhraseIndex++;
+        displayPhrase();
+        feedback.textContent = '';
+      } else {
+        feedback.textContent = '¡Has completado todas las frases!';
+        document.getElementById('checkBtn').disabled = true;
+      }
+    }, 1500);
+  } else {
+    feedback.style.color = '#f44336';
+    feedback.textContent = 'Inténtalo de nuevo';
+    setTimeout(returnWordsToSource, 1000);
+  }
+}
+
+function toggleTranslation() {
+  const translationDiv = document.getElementById('translation');
+  const translateBtn = document.getElementById('translateBtn');
+  
+  if (translationDiv.style.display === 'none') {
+    translationDiv.style.display = 'block';
+    translationDiv.textContent = englishPhrases[currentPhraseIndex];
+    translateBtn.textContent = 'Ocultar traducción';
+  } else {
+    translationDiv.style.display = 'none';
+    translateBtn.textContent = 'Ver traducción';
+  }
+}
+
+// Event Listeners
+document.getElementById('speakBtn').addEventListener('click', () => {
+  speak(spanishPhrases[currentPhraseIndex]);
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkOrder);
+document.getElementById('translateBtn').addEventListener('click', toggleTranslation);
+
+// Drag and Drop functionality
+let draggedElement = null;
+
+document.addEventListener('dragstart', (e) => {
+  if (e.target.className === 'word') {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.5';
+  }
+});
+
+document.addEventListener('dragend', (e) => {
+  if (e.target.className === 'word') {
+    e.target.style.opacity = '1';
+  }
+});
+
+document.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  if (e.target.className.includes('word-container')) {
+    e.target.style.background = '#e8f5e9';
+  }
+});
+
+document.addEventListener('dragleave', (e) => {
+  if (e.target.className.includes('word-container')) {
+    e.target.style.background = e.target.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+  }
+});
+
+document.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const container = e.target.closest('.word-container');
+  if (container) {
+    container.style.background = container.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+    container.appendChild(draggedElement);
+  }
+});
+
+// Initialize the first phrase
+displayPhrase();
+</script>
+</body>
+</html>
