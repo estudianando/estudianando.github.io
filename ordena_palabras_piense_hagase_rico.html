@@ -1,0 +1,790 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aprender Español - Ordena las palabras</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.source-container {
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+}
+
+.target-container {
+  background: #fff;
+  border: 2px dashed #4CAF50;
+}
+
+.word {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s, all 0.3s ease;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+.progress {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.translation {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  display: none;
+}
+
+.area-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: -10px;
+}
+
+.word {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<center><h1>¡Ordena las palabras!</h1></center>
+<div class="word-area">
+  <div class="area-label">Palabras disponibles:</div>
+  <div id="sourceContainer" class="word-container source-container"></div>
+  <div class="area-label">Ordena las palabras aquí:</div>
+  <div id="targetContainer" class="word-container target-container"></div>
+</div>
+<div class="options">
+  <button id="speakBtn">🔊 Escuchar</button>
+  <button id="checkBtn">Comprobar</button>
+  <button id="translateBtn">Ver traducción</button>
+</div>
+<div class="translation" id="translation"></div>
+<div class="progress" id="progress"></div>
+<div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const spanishPhrases = [
+ "Want to achieve more?",  
+"Change your mindset.",  
+"Your power resides in the depths of your being.",  
+"Too many people create an idea, believe it will work, and then encounter an obstacle.",  
+"It might be something small and generally relatively insignificant, but still, they forget about it and give up.",  
+"If this is something you've done in the past, don't be discouraged: you're among the majority.",  
+"What matters is that you change your way of doing things from this moment forward.",  
+"In the pursuit of wealth, most people fall by the wayside.",  
+"Why?",  
+"They haven't developed the right mindset to achieve their goals.",  
+"Think and Grow Rich can be what revolutionizes your life.",  
+"Forget about procrastinating.",  
+"Stop being afraid: failure is over.",  
+"Simply trust and have blind faith that you will achieve your goal.",  
+"Want to know the most ironic part?",  
+"You'll achieve anything you desire by following the steps in this summary!",  
+"Have confidence in your idea.",  
+"If things get worse, prepare to persist.",  
+"Think and Grow Rich was originally published almost sixty-five years ago.",  
+"The current version applies to our times.",  
+"These same ideas have influenced many famous figures, such as John D. Rockefeller, Theodore Roosevelt, Alexander Graham Bell, and Thomas Edison; and they can do the same for you!",  
+"You need to develop the mental tools and determination necessary not to give up when things get tough.",  
+"It's all in your mind.",  
+"Success comes to those who are conscious of success.",  
+"Failure comes to those who allow themselves to be conscious of failure.",  
+"Unwavering desire is a crucial step for success.",  
+"The first step to developing the right mindset is to desire it.",  
+"It shouldn't be just any impulse, but a solid and unwavering motivation, no matter what happens.",  
+"You probably gave up in the past when things got a little tough, but how could you have known if success was near?",  
+"If you realize and harness the potential of a burning desire, no obstacle will impede your progress.",  
+"During the gold rush, a large family discovered a reserve but didn't have the necessary machinery to extract it.",  
+"They developed a plan to obtain the machinery and started digging.",  
+"They realized they had one of the best mines in Colorado, and everything was fantastic for a brief period.",  
+"Then, unexpectedly, they couldn't find the gold; it had dried up and disappeared.",  
+"Shortly after, they gave up and sold their machinery to cut losses.",  
+"They didn't know that if they had kept digging one more meter, they would have found the gold, affected by a simple fault.",  
+"Another family found that gold and obtained the riches that the first family would have achieved if they hadn't given up.",  
+"This scenario that seems so familiar to us has a solution: you can change your mindset and develop an unwavering desire to achieve your goal.",  
+"This way, you'll be much less likely to give up.",  
+"Edwin C. Barnes is an excellent example of this.",  
+"He had a burning desire to work with Thomas Edison.",  
+"He didn't stop until he made that desire a reality and worked with him for over thirty years.",  
+"So, how do you develop an unwavering desire?",  
+"By controlling your thoughts.",  
+"Tell yourself what you want; the more specific, the better, and create a defined plan.",  
+"Write down all the details and read them aloud twice a day.",  
+"In no time, your desire will grow to levels that no obstacle can tear down.",  
+"Did you know?",  
+"The human brain is capable of much more than we believe.",  
+"Scientists are still trying to decipher it all.",  
+"It's believed that the striatum and orbitofrontal cortex are related to motivation.",  
+"Faith is intangible but is a powerful force.",  
+"Many people doubt faith, probably because it cannot be seen.",  
+"It's not visible or tangible; it's a feeling and a sense of comfort.",  
+"However, it can be controlled and created through something called autosuggestion, which means you can create a powerful sense of conviction by telling yourself what you want to believe.",  
+"Using visualization and affirmations sends clear instructions to your subconscious.",  
+"From there, create a plan and execute it carefully.",  
+"Faith and desire will help you solve any possible problem.",  
+"People who first come into contact with specific criminal activity, such as theft or drugs, hate it at first.",  
+"However, when they're in contact with it for an extended period, they get used to it.",  
+"If that individual lives near that crime long enough, they will be influenced by it.",  
+"All of this is due to repetition that sneaks into the subconscious.",  
+"In fact, you're training your mind!",  
+"Use autosuggestion to have more faith by talking to yourself daily.",  
+"Tell yourself what you want and demand perseverance and action from yourself.",  
+"Remind yourself that you will develop confidence and that you won't stop trying to achieve your goal.",  
+"It's your manifesto.",  
+"Through this, you'll also understand that you can't succeed if your actions negatively affect others.",  
+"Make your intentions clear.",  
+"You must believe in your idea and be willing to maintain it, even when things get tough.",  
+"This mantra is a promise you make to yourself about what you'll do to get where you want to be.",  
+"In addition to this unwritten manifesto, you must already visualize achieving what you want: what does it feel like?",  
+"What does it look like?",  
+"All of this will help influence your subconscious and develop that invisible faith.",  
+"It will also motivate you to move forward with your ambitions.",  
+"It's easy to postpone things when you don't have a clear vision.",  
+"Enjoying achievements sounds great in theory, but can you imagine how magnificent it would be in practice?",  
+"The key to success lies in specializing your knowledge.",  
+"We have the false belief that 'knowledge is power,' but what good is it to saturate the brain with random information that will never be useful?",  
+"In fact, it's better to specialize knowledge, focusing on areas that will be most useful to you and will inspire your actions and future plans.",  
+"There are two types of knowledge, and both are powerful: general and specialized.",  
+"Specialized information will help you take big steps in your specific niche.",  
+"When the brain is saturated with too much information, you might feel overwhelmed, exhausted, and sometimes stressed.",  
+"Your attention can become scattered and chaotic, which influences your performance and skills in general.",  
+"By helping your brain by choosing a niche and studying it as thoroughly as possible, you'll give your journey a destination to dedicate your greatest efforts to.",  
+"Of course, it would be nice to know everything about the world, but it's an unrealistic goal that could hinder your ambitions.",  
+"Your main objective should be to acquire as much knowledge as possible about your chosen field.",  
+"Mastery is the key to success.",  
+"Read about what interests you and learn more.",  
+"Ask questions and seek answers.",  
+"The more specialized you become, the more successful you'll be.",  
+"Learning doesn't bring you wealth; it simply conditions your plan and, therefore, your actions.",  
+"Henry Ford pointed out this idea very clearly.",  
+"He questioned his general knowledge or lack thereof; he wondered why he would bother crowding his brain when he had other people who could tell him everything he needed to know.",  
+"Ford may not have been the most academically educated person in the world.",  
+"Still, he made sure that what he learned was specialized in his niche and made firm decisions based on it.",  
+"Did you know?",  
+"It's believed that the right side of the brain is responsible for creative thoughts.",  
+"It deals with abstract ideas, imagination, context, and emotions.",  
+"The left side of the brain, sometimes called logical, deals with reasoning, information analysis, reading, and verbal expression.",  
+"If you can imagine something, you can achieve it.",  
+"It's all in your mind.",  
+"As children, we always heard that we should have imagination and dreams, but somehow, when we grow up, we stop doing it.",  
+"If you want to achieve your dreams in adulthood, you must continue imagining, but focusing more clearly on it.",  
+"Imagination isn't useless when you reach adolescence; focus your creative abilities on areas that are related to your goals.",  
+"Your imagination is where ideas occur to you and you make your plans.",  
+"There's a saying that assures you can create anything the human mind can imagine.",  
+"This is proven when you think about enormous technological advances: who would have dreamed we could talk to people on the other side of the world simply using a computer?",  
+"Who would have dreamed we would regularly send people to outer space?",  
+"All these ideas were created in someone's mind.",  
+"There are two types of imagination: synthetic, which allows you to reaffirm existing knowledge, and creative, which encourages you to dream up new ideas and plans.",  
+"It's essential to use the correct one.",  
+"Thinking synthetically doesn't really consist of inventing anything new, but simply reaffirming what you already know.",  
+"On the other hand, creative thinking is powerful; it's where the brain communicates with something called infinite intelligence.",  
+"Infinite intelligence allows you to focus on your final plan, taking you where you want to go.",  
+"Through it, you experience those hunches or flashes of ideas that don't seem to make much sense or reason.",  
+"If you put those ideas and hunches into a plan, it must be defined and organized.",  
+"The more solid and organized it is, the more likely your goal will succeed.",  
+"However, you can't do it alone; you need to create a team of people with whom you can exchange ideas, get advice, and a new perspective.",  
+"Napoleon Hill calls them his 'Mastermind Alliance.'",  
+"You must choose these people carefully and ensure harmony and equality among all, with regular meetings to advance the plan.",  
+"Did you know?",  
+"Thomas Edison failed about 10,000 times before coming up with the famous invention of the light bulb.",  
+"Be a leader and develop a firm plan to be able to progress.",  
+"The key to creating a solid plan lies in good organization.",  
+"That's what defines your path to success.",  
+"Your plan shouldn't be confusing or chaotic.",  
+"It's much easier to procrastinate when you don't have a well-defined plan.",  
+"Question your general knowledge or lack thereof; ask yourself why you would bother saturating your brain when you have other people who could tell you everything you need to know about specific topics.",  
+"It's also beneficial to have several plans for different occasions.",  
+"Many things can go off track, and you'll feel much more at ease if you plan for possible obstacles.",  
+"Another key element for success is the people you work with.",  
+"No human being is an island.",  
+"With a good support group, you'll go very far.",  
+"You must also have good interpersonal skills to generate a welcoming atmosphere in the group.",  
+"The people you work with should feel inspired and motivated to create.",  
+"You must do everything in your power to ensure this environment.",  
+"Every adversity, every failure, every disappointment carries with it the seed of an equal or greater benefit.",  
+"The point is that you should expect to fail a few times because it's part of life.",  
+"Mistakes and missteps are inevitable on your path to success, but not their side effects.",  
+"Even the most organized plans will encounter obstacles: you simply have to rebuild them and try again.",  
+"Your mastermind alliance will help you.",  
+"Of course, you must be a leader within your alliance and develop proper leadership skills.",  
+"These include:",  
+"Courage",  
+"Ability to control yourself and your actions",  
+"Sense of justice",  
+"Great decision-making ability",  
+"Ability to develop solid plans",  
+"Always going beyond what's expected",  
+"Willingness to cooperate and work well with others.",  
+"A good leader doesn't pretend to know everything.",  
+"Do an analysis of your leadership skills, be brave, and ask yourself tough questions.",  
+"If you become a firm leader, you'll develop solid plans that can overcome difficulties, perhaps with some restructuring along the way.",  
+"When things don't work, get up and keep going.",  
+"Avoid procrastination to progress in whatever you're trying to achieve.",  
+"The most successful people on the planet can make quick and firm decisions without letting procrastination affect their choices.",  
+"Henry Ford was famous for his ability to make quick decisions, but if changes needed to be made, he took too long to check all possibilities in advance.",  
+"This has indeed happened with some of the most successful individuals who have walked this planet.",  
+"If you need to make any changes, think them through carefully.",  
+"Worrying too much about what others think or listening to opinions will simply hold you back.",  
+"If you worry too much about others' viewpoints, you won't be able to create that desire or faith because you'll be too concerned about others.",  
+"It would be very helpful if you only cared about your thoughts and the perspective of those who are within your Mastermind Alliance.",  
+"For this reason, be very selective about who you let into your group; friends and family may have good intentions, but it rarely works.",  
+"Prioritize the opinions of people who matter to you.",  
+"However, being precise and firm in your decisions requires a lot of courage in many cases.",  
+"Hill reminds us of the fifty-six men who signed the Declaration of Independence.",  
+"They risked their lives, sure of their choice.",  
+"Although your decision may not be as dramatic, it should be equally solid and firm.",  
+"At this point, you already know the possible obstacles and the importance of not giving up.",  
+"How can you not give up when facing difficulties?",  
+"You must train persistence and believe that your dreams can come true.",  
+"Persistence is like willpower, but when you add it to desire, it's a combination that can hardly be hindered on the path to success.",  
+"Sometimes persistence may seem to slow you down, but taking small steps is a fundamental part of progress.",  
+"These are the characteristics that develop persistence:",  
+"Having a very defined purpose",  
+"Desire",  
+"Being self-sufficient",  
+"Making very precise plans",  
+"Having specialized knowledge",  
+"Working with other people, such as your mastermind alliance",  
+"Having great willpower",  
+"Creating positive habits",  
+"The power of the brain and the subconscious.",  
+"The brain and subconscious can be affected by autosuggestion, something we've talked about before.",  
+"Your subconscious, in particular, is very vulnerable to the things you tell yourself and repeat, so it makes sense to use this to your advantage.",  
+"Your subconscious never stops; it's working while you're awake and asleep.",  
+"You can't completely control your subliminal thoughts.",  
+"However, you can try using your emotions.",  
+"This part of your mind is much more affected by emotions than the conscious brain, which relies more on logical thinking and reason.",  
+"If you feel emotions towards something, you're more likely to try to achieve it or make it permanent.",  
+"Your emotions can distract you, but having a solid plan will decrease their influence.",  
+"There are seven positive emotions: desire, faith, love, sex, enthusiasm, romance, and hope.",  
+"If you use these positive emotions, you can create a positive mindset.",  
+"It's impossible to be positive and negative at the same time; one has to cancel out the other.",  
+"Eliminate negative emotions such as fear, hatred, revenge, greed, anger, and superstition.",  
+"This way, you can create a more positive attitude towards life, which is known as the law of habit.",  
+"This law makes you more positive, focusing on the seven positive emotions.",  
+"Mastering the philosophy of the law of success means having insurance against failure.",
+"Fear usually attracts failure.",  
+"The most common fears are:",  
+"Poverty",  
+"Criticism",  
+"Poor health",  
+"Loss of a loved one",  
+"Old age",  
+"Death.",  
+"This will also create a cycle, where one will lead to another.",  
+"Fear isn't real, but it can quickly make your plans fail.",  
+"Indecision makes you overthink, usually about certain aspects of anxiety without a solid foundation.",  
+"To help protect yourself against fear and other negative factors, you must develop willpower and always use it to build a wall.",  
+"This wall will keep negativity away and help you focus on your mind and a positive mindset.",  
+"It's also important to surround yourself with positive and helpful people, not those who are negative.",  
+"A pessimistic person can easily transmit their negativity and doubts to you without even intending to.",  
+"Conclusion.",  
+"By becoming a stronger and more determined person, you can change your mindset about success; this means you'll be getting closer to it.",  
+"No more falling by the wayside when things start to get complicated.",  
+"Instead, you'll enhance the mindset that leads you to achieve your goals and become the person everyone will admire.",  
+"After all, isn't that what everyone wants?",  
+"Remember that changing mindset isn't achieved overnight.",  
+"It's a process that you must dedicate time and effort to if you want it to work.",  
+"You must completely master each aspect before moving on to others.",  
+"The whole process has a snowball effect, and as you master one part, it will strongly lead you to the next.",  
+"As you achieve each goal, your confidence will increase.",  
+"Focus on being a stronger person with a more solid mindset.",  
+"Trust yourself and work with a specific plan.",  
+"This method will increase your confidence and help you achieve your future goals.",  
+"Becoming a successful person shouldn't be left to chance.",  
+"It depends on hard work and perseverance.",  
+"These are things anyone can incorporate into their life; you simply need to be aware of it and have the ability to understand when current tactics aren't working.",  
+"Take control of your emotions, develop a plan, and start moving closer to your goals in life.",  
+"Try this:",  
+"Practice repeating positive affirmations to strengthen your faith.",  
+"Identify the people you want by your side throughout your journey, such as your mastermind alliance.",  
+"Consider attending a meeting of like-minded people.",  
+"It will help you overcome the fear of meeting new people and developing connections."
+];
+
+const englishPhrases = [
+"¿Quieres lograr más?",  
+"Cambia tu mentalidad.",  
+"Tu poder reside en las profundidades de tu ser.",  
+"Demasiadas personas crean una idea, creen que funcionará y luego encuentran un obstáculo.",  
+"Puede ser algo pequeño y generalmente relativamente insignificante, pero aun así, se olvidan de ello y se rinden.",  
+"Si esto es algo que has hecho en el pasado, no te desanimes: estás entre la mayoría.",  
+"Lo que importa es que cambies tu forma de hacer las cosas a partir de este momento.",  
+"En la búsqueda de la riqueza, la mayoría de las personas se quedan atrás.",  
+"¿Por qué?",  
+"No han desarrollado la mentalidad adecuada para alcanzar sus metas.",  
+"¡Piense y hágase rico puede ser lo que revolucione tu vida!",  
+"Olvídate de procrastinar.",  
+"Deja de tener miedo: el fracaso ha terminado.",  
+"Simplemente confía y ten fe ciega en que lograrás tu objetivo.",  
+"¿Quieres saber la parte más irónica?",  
+"¡Lograrás cualquier cosa que desees siguiendo los pasos en este resumen!",  
+"Tiene confianza en su idea.",  
+"Si las cosas empeoran, prepárate para persistir.",  
+"Piensa y hágase rico fue publicado originalmente hace casi sesenta y cinco años.",  
+"La versión actual se aplica a nuestros tiempos.",  
+"Estas mismas ideas han influido en muchas figuras famosas, como John D. Rockefeller, Theodore Roosevelt, Alexander Graham Bell y Thomas Edison; ¡y pueden hacer lo mismo por ti!",  
+"Necesitas desarrollar las herramientas mentales y la determinación necesarias para no rendirte cuando las cosas se pongan difíciles.",  
+"Todo está en tu mente.",  
+"El éxito llega a quienes son conscientes del éxito.",  
+"El fracaso llega a quienes se permiten ser conscientes del fracaso.",  
+"Un deseo inquebrantable es un paso crucial para el éxito.",  
+"El primer paso para desarrollar la mentalidad adecuada es desearlo.",  
+"No debería ser solo un impulso cualquiera, sino una motivación sólida e inquebrantable, sin importar lo que suceda.",  
+"Probablemente te rendiste en el pasado cuando las cosas se pusieron un poco difíciles, pero ¿cómo podrías haber sabido si el éxito estaba cerca?",  
+"Si te das cuenta y aprovechas el potencial de un deseo ardiente, ningún obstáculo impedirá tu progreso.",  
+"Durante la fiebre del oro, una gran familia descubrió una reserva pero no tenía la maquinaria necesaria para extraerla.",  
+"Desarrollaron un plan para obtener la maquinaria y comenzaron a excavar.",  
+"Se dieron cuenta de que tenían una de las mejores minas en Colorado, y todo fue fantástico por un breve período.",  
+"Entonces, inesperadamente, no pudieron encontrar el oro; se había secado y desaparecido.",  
+"Poco después, se rindieron y vendieron su maquinaria para reducir pérdidas.",  
+"No sabían que si hubieran seguido cavando un metro más, habrían encontrado el oro, afectado por una simple falla.",  
+"Otra familia encontró ese oro y obtuvo las riquezas que la primera familia habría logrado si no se hubiera rendido.",  
+"Este escenario que nos parece tan familiar tiene una solución: puedes cambiar tu mentalidad y desarrollar un deseo inquebrantable para alcanzar tu objetivo.",  
+"De esta manera, serás mucho menos propenso a rendirte.",  
+"Edwin C. Barnes es un excelente ejemplo de esto.",  
+"Tenía un deseo ardiente de trabajar con Thomas Edison.",  
+"No se detuvo hasta que hizo de ese deseo una realidad y trabajó con él durante más de treinta años.",  
+"Entonces, ¿cómo desarrollas un deseo inquebrantable?",  
+"Controlando tus pensamientos.",  
+"Dite a ti mismo lo que quieres; cuanto más específico, mejor, y crea un plan definido.",  
+"Escribe todos los detalles y léelos en voz alta dos veces al día.",  
+"En poco tiempo, tu deseo crecerá a niveles que ningún obstáculo podrá derribar.",  
+"¿Sabías?",  
+"El cerebro humano es capaz de mucho más de lo que creemos.",  
+"Los científicos todavía están tratando de descifrarlo todo.",  
+"Se cree que el estriado y la corteza orbitofrontal están relacionados con la motivación.",  
+"La fe es intangible pero es una fuerza poderosa.",  
+"Muchas personas dudan de la fe, probablemente porque no se puede ver.",  
+"No es visible ni tangible; es un sentimiento y una sensación de confort.",  
+"Sin embargo, se puede controlar y crear a través de algo llamado autosugestión, lo que significa que puedes crear un poderoso sentido de convicción diciéndote a ti mismo lo que quieres creer.",  
+"Usar visualización y afirm aciones envía instrucciones claras a tu subconsciente.",  
+"Desde allí, crea un plan y ejecútalo cuidadosamente.",  
+"La fe y el deseo te ayudarán a resolver cualquier posible problema.",  
+"Las personas que entran en contacto por primera vez con actividades criminales específicas, como el robo o las drogas, lo odian al principio.",  
+"Sin embargo, cuando están en contacto con ello durante un período prolongado, se acostumbran.",  
+"Si esa persona vive cerca de ese crimen el tiempo suficiente, será influenciada por él.",  
+"Todo esto se debe a la repetición que se infiltra en el subconsciente.",  
+"¡De hecho, estás entrenando tu mente!",  
+"Usa la autosugestión para tener más fe hablándote a ti mismo diariamente.",  
+"Dite a ti mismo lo que quieres y exige perseverancia y acción de ti mismo.",  
+"Recuerda que desarrollarás confianza y que no dejarás de intentar alcanzar tu objetivo.",  
+"Es tu manifiesto.",  
+"A través de esto, también entenderás que no puedes tener éxito si tus acciones afectan negativamente a los demás.",  
+"Deja claras tus intenciones.",  
+"Debes creer en tu idea y estar dispuesto a mantenerla, incluso cuando las cosas se pongan difíciles.",  
+"Este mantra es una promesa que te haces a ti mismo sobre lo que harás para llegar a donde quieres estar.",  
+"Además de este manifiesto no escrito, ya debes visualizar el logro de lo que deseas: ¿cómo se siente?",  
+"¿Cómo se ve?",  
+"Todo esto ayudará a influir en tu subconsciente y desarrollar esa fe invisible.",  
+"También te motivará a avanzar con tus ambiciones.",  
+"Es fácil posponer las cosas cuando no tienes una visión clara.",  
+"Disfrutar de los logros suena genial en teoría, pero ¿puedes imaginar lo magnífico que sería en la práctica?",  
+"La clave del éxito radica en especializar tu conocimiento.",  
+"Tenemos la falsa creencia de que 'el conocimiento es poder', pero ¿de qué sirve saturar el cerebro con información aleatoria que nunca será útil?",  
+"De hecho, es mejor especializar el conocimiento, enfocándose en áreas que serán más útiles para ti y que inspirarán tus acciones y planes futuros.",  
+"Hay dos tipos de conocimiento, y ambos son poderosos: general y especializado.",  
+"La información especializada te ayudará a dar grandes pasos en tu nicho específico.",  
+"Cuando el cerebro está saturado con demasiada información, puedes sentirte abrumado, exhausto y a veces estresado.",  
+"Tu atención puede volverse dispersa y caótica, lo que influye en tu rendimiento y habilidades en general.",  
+"Al ayudar a tu cerebro eligiendo un nicho y estudiándolo lo más a fondo posible, le darás a tu viaje un destino al que dedicar tus mayores esfuerzos.",  
+"Por supuesto, sería agradable saber todo sobre el mundo, pero es un objetivo poco realista que podría obstaculizar tus ambiciones.",  
+"Tu objetivo principal debe ser adquirir tanto conocimiento como sea posible sobre tu campo elegido.",  
+"La maestría es la clave del éxito.",  
+"Lee sobre lo que te interesa y aprende más.",  
+"Haz preguntas y busca respuestas.",  
+"Cuanto más especializado te vuelvas, más exitoso serás.",  
+"Aprender no te trae riqueza; simplemente condiciona tu plan y, por lo tanto, tus acciones.",  
+"Henry Ford señaló esta idea muy claramente.",  
+"Cuestionó su conocimiento general o la falta de este; se preguntó por qué se molestaría en saturar su cerebro cuando tenía a otras personas que podían decirle todo lo que necesitaba saber.",  
+"Ford puede no haber sido la persona más educada académicamente en el mundo.",  
+"Aún así, se aseguró de que lo que aprendió fuera especializado en su nicho y tomó decisiones firmes basadas en ello.",  
+"¿Sabías?",  
+"Se cree que el lado derecho del cerebro es responsable de los pensamientos creativos.",  
+"Se ocupa de ideas abstractas, imaginación, contexto y emociones.",  
+"El lado izquierdo del cerebro, a veces llamado lógico, se ocupa del razonamiento, análisis de información, lectura y expresión verbal.",  
+"Si puedes imaginar algo, puedes lograrlo.",  
+"Todo está en tu mente.",  
+"Cuando éramos niños, siempre escuchamos que debíamos tener imaginación y sueños, pero de alguna manera, cuando crecemos, dejamos de hacerlo.",  
+"Si quieres lograr tus sueños en la adultez, debes seguir imaginando, pero enfocándote más claramente en ello.",  
+"La imaginación no es inútil cuando llegas a la adolescencia; enfoca tus habilidades creativas en áreas que están relacionadas con tus objetivos.",  
+"Tu imaginación es donde te ocurren ideas y haces tus planes.",  
+"Hay un dicho que asegura que puedes crear cualquier cosa que la mente humana pueda imaginar.",  
+"Esto se demuestra cuando piensas en enormes avances tecnológicos: ¿quién habría soñado que podríamos hablar con personas al otro lado del mundo simplemente usando una computadora?",  
+"¿Quién habría soñado que enviaríamos regularmente personas al espacio exterior?",  
+"Todas estas ideas fueron creadas en la mente de alguien.",  
+"Hay dos tipos de imaginación: sintética, que te permite reafirmar el conocimiento existente, y creativa, que te anima a soñar con nuevas ideas y planes.",  
+"Es esencial usar la correcta.",  
+"Pensar sintéticamente no consiste realmente en inventar nada nuevo, sino simplemente en reafirmar lo que ya sabes.",  
+"Por otro lado, el pensamiento creativo es poderoso; es donde el cerebro se comunica con algo llamado inteligencia infinita.",  
+"La inteligencia infinita te permite enfocarte en tu plan final, llevándote a donde quieres ir.",  
+"A través de ella, experimentas esas corazonadas o destellos de ideas que no parecen tener mucho sentido o razón.",  
+"Si pones esas ideas y corazonadas en un plan, debe ser definido y organizado.",  
+"Cuanto más sólido y organizado sea, más probable será que tu objetivo tenga éxito.",  
+"Sin embargo, no puedes hacerlo solo; necesitas crear un equipo de personas con quienes puedas intercambiar ideas, obtener consejos y una nueva perspectiva.",  
+"Napoleón Hill los llama su 'Alianza Maestra.'",  
+"Debes elegir a estas personas cuidadosamente y asegurar la armonía y la igualdad entre todos, con reuniones regulares para avanzar en el plan.",  
+"¿Sabías?",  
+"Thomas Edison fracasó unas 10,000 veces antes de inventar la famosa bombilla.",  
+"Sea un líder y desarrolle un plan firme para poder progresar.",  
+"La clave para crear un plan sólido radica en una buena organización.",  
+"Eso es lo que define tu camino hacia el éxito.",  
+"Tu plan no debería ser confuso o caótico.",  
+"Es mucho más fácil procrastinar cuando no tienes un plan bien definido.",  
+"Cuestiona tu conocimiento general o la falta de este; pregúntate por qué te molestarías en saturar tu cerebro cuando tienes a otras personas que podrían decirte todo lo que necesitas saber sobre temas específicos.",  
+"También es beneficioso tener varios planes para diferentes ocasiones.",  
+"Muchas cosas pueden desviarse, y te sentirás mucho más a gusto si planeas para posibles obstáculos.",  
+"Otro elemento clave para el éxito son las personas con las que trabajas.",  
+"Ningún ser humano es una isla.",  
+"Con un buen grupo de apoyo, llegarás muy lejos.",  
+"También debes tener buenas habilidades interpersonales para generar un ambiente acogedor en el grupo.",  
+"Las personas con las que trabajas deben sentirse inspiradas y motivadas para crear.",  
+"Debes hacer todo lo posible para asegurar este ambiente.",  
+"Cada adversidad, cada fracaso, cada decepción lleva consigo la semilla de un beneficio igual o mayor.",
+"El punto es que debes esperar fracasar algunas veces porque es parte de la vida.",  
+"Los errores y tropiezos son inevitables en tu camino hacia el éxito, pero no sus efectos secundarios.",  
+"Incluso los planes más organizados encontrarán obstáculos: simplemente tienes que reconstruirlos e intentarlo de nuevo.",  
+"Tu alianza maestra te ayudará.",  
+"Por supuesto, debes ser un líder dentro de tu alianza y desarrollar habilidades de liderazgo adecuadas.",  
+"Estas incluyen:",  
+"Coraje",  
+"Capacidad para controlarte a ti mismo y tus acciones",  
+"Sentido de justicia",  
+"Gran capacidad de toma de decisiones",  
+"Capacidad para desarrollar planes sólidos",  
+"Siempre ir más allá de lo esperado",  
+"Disposición para cooperar y trabajar bien con los demás.",  
+"Un buen líder no finge saberlo todo.",  
+"Haz un análisis de tus habilidades de liderazgo, sé valiente y pregúntate preguntas difíciles.",  
+"Si te conviertes en un líder firme, desarrollarás planes sólidos que pueden superar dificultades, quizás con algo de reestructuración en el camino.",  
+"Cuando las cosas no funcionan, levántate y sigue adelante.",  
+"Evita la procrastinación para progresar en lo que sea que estés tratando de lograr.",  
+"Las personas más exitosas del planeta pueden tomar decisiones rápidas y firmes sin dejar que la procrastinación afecte sus elecciones.",  
+"Henry Ford era famoso por su capacidad para tomar decisiones rápidas, pero si necesitaban hacerse cambios, se tomaba demasiado tiempo para revisar todas las posibilidades con anticipación.", "Esto ha sucedido de hecho con algunas de las personas más exitosas que han caminado por este planeta.",  
+"Si necesitas hacer algún cambio, piénsalo cuidadosamente.",  
+"Preocuparse demasiado por lo que piensan los demás o escuchar opiniones simplemente te retendrá.",  
+"Si te preocupas demasiado por los puntos de vista de los demás, no podrás crear ese deseo o fe porque estarás demasiado preocupado por los demás.",  
+"Sería muy útil si solo te importaran tus pensamientos y la perspectiva de aquellos que están dentro de tu Alianza Maestra.",  
+"Por esta razón, sé muy selectivo sobre a quién dejas entrar en tu grupo; amigos y familiares pueden tener buenas intenciones, pero rara vez funciona.",  
+"Prioriza las opiniones de las personas que te importan.",  
+"Sin embargo, ser preciso y firme en tus decisiones requiere mucho coraje en muchos casos.",  
+"Hill nos recuerda a los cincuenta y seis hombres que firmaron la Declaración de Independencia.",  
+"Arriesgaron sus vidas, seguros de su elección.",  
+"Aunque tu decisión puede no ser tan dramática, debería ser igualmente sólida y firme.",  
+"En este punto, ya conoces los posibles obstáculos y la importancia de no rendirte.",  
+"¿Cómo puedes no rendirte al enfrentar dificultades?",  
+"Debes entrenar la persistencia y creer que tus sueños pueden hacerse realidad.",  
+"La persistencia es como la fuerza de voluntad, pero cuando la agregas al deseo, es una combinación que difícilmente puede ser obstaculizada en el camino hacia el éxito.",  
+"A veces, la persistencia puede parecer que te ralentiza, pero dar pequeños pasos es una parte fundamental del progreso.",  
+"Estas son las características que desarrollan la persistencia:",  
+"Tener un propósito muy definido",  
+"Deseo",  
+"Ser autosuficiente",  
+"Hacer planes muy precisos",  
+"Tener conocimiento especializado",  
+"Trabajar con otras personas, como tu alianza maestra",  
+"Tener gran fuerza de voluntad",  
+"Crear hábitos positivos.",  
+"El poder del cerebro y el subconsciente.",  
+"El cerebro y el subconsciente pueden ser afectados por la autosugestión, algo de lo que hemos hablado antes.",  
+"Tu subconsciente, en particular, es muy vulnerable a las cosas que te dices a ti mismo y repites, por lo que tiene sentido usar esto a tu favor.",  
+"Tu subconsciente nunca se detiene; está trabajando mientras estás despierto y dormido.",  
+"No puedes controlar completamente tus pensamientos subliminales.",  
+"Sin embargo, puedes intentar usar tus emociones.",  
+"Esta parte de tu mente es mucho más afectada por las emociones que el cerebro consciente, que se basa más en el pensamiento lógico y la razón.",  
+"Si sientes emociones hacia algo, es más probable que intentes lograrlo o hacerlo permanente.",  
+"Tus emociones pueden distraerte, pero tener un plan sólido disminuirá su influencia.",  
+"Hay siete emociones positivas: deseo, fe, amor, sexo, entusiasmo, romance y esperanza.",  
+"Si usas estas emociones positivas, puedes crear una mentalidad positiva.",  
+"Es imposible ser positivo y negativo al mismo tiempo; uno tiene que cancelar al otro.",  
+"Elimina emociones negativas como el miedo, el odio, la venganza, la codicia, la ira y la superstición.",  
+"De esta manera, puedes crear una actitud más positiva hacia la vida, que se conoce como la ley del hábito.",  
+"Esta ley te hace más positivo, enfocándote en las siete emociones positivas.",  
+"Dominar la filosofía de la ley del éxito significa tener un seguro contra el fracaso.",
+"El miedo generalmente atrae el fracaso.",  
+"Los miedos más comunes son:",  
+"Pobreza",  
+"Crítica",  
+"Mala salud",  
+"Pérdida de un ser querido",  
+"Vejez",  
+"Muerte.",  
+"Esto también creará un ciclo, donde uno llevará a otro.",  
+"El miedo no es real, pero puede hacer que tus planes fallen rápidamente.",  
+"La indecisión te hace sobrepensar, generalmente sobre ciertos aspectos de la ansiedad sin una base sólida.",  
+"Para ayudar a protegerte contra el miedo y otros factores negativos, debes desarrollar fuerza de voluntad y siempre usarla para construir un muro.",  
+"Este muro mantendrá la negatividad alejada y te ayudará a enfocarte en tu mente y en una mentalidad positiva.",  
+"También es importante rodearte de personas positivas y útiles, no de aquellas que son negativas.",  
+"Una persona pesimista puede transmitir fácilmente su negatividad y dudas a ti sin siquiera pretenderlo.",  
+"Conclusión.",  
+"Al convertirte en una persona más fuerte y decidida, puedes cambiar tu mentalidad sobre el éxito; esto significa que te estarás acercando a él.",  
+"Ya no más quedarte atrás cuando las cosas se compliquen.",  
+"En cambio, mejorarás la mentalidad que te lleva a alcanzar tus metas y a convertirte en la persona que todos admirarán.",  
+"Después de todo, ¿no es eso lo que todos quieren?",  
+"Recuerda que cambiar la mentalidad no se logra de la noche a la mañana.",  
+"Es un proceso al que debes dedicar tiempo y esfuerzo si quieres que funcione.",  
+"Debes dominar completamente cada aspecto antes de pasar a otros.",  
+"Todo el proceso tiene un efecto bola de nieve, y a medida que dominas una parte, te llevará fuertemente a la siguiente.",  
+"A medida que logres cada meta, tu confianza aumentará.",  
+"Enfócate en ser una persona más fuerte con una mentalidad más sólida.",  
+"Confía en ti mismo y trabaja con un plan específico.",  
+"Este método aumentará tu confianza y te ayudará a alcanzar tus metas futuras.",  
+"Convertirse en una persona exitosa no debería dejarse al azar.",  
+"Depende del trabajo duro y la perseverancia.",  
+"Estas son cosas que cualquiera puede incorporar a su vida; simplemente necesitas ser consciente de ello y tener la capacidad de entender cuándo las tácticas actuales no están funcionando.",  
+"Toma el control de tus emociones, desarrolla un plan y comienza a acercarte a tus metas en la vida.",  
+"Prueba esto:",  
+"Practica repetir afirmaciones positivas para fortalecer tu fe.",  
+"Identifica a las personas que deseas a tu lado a lo largo de tu viaje, como tu alianza maestra.",  
+"Considera asistir a una reunión de personas con ideas afines.",  
+"Te ayudará a superar el miedo de conocer gente nueva y desarrollar conexiones."
+];
+
+let currentPhraseIndex = 0;
+let currentWords = [];
+
+function displayPhrase() {
+  const sourceContainer = document.getElementById('sourceContainer');
+  const targetContainer = document.getElementById('targetContainer');
+  const translationDiv = document.getElementById('translation');
+  
+  sourceContainer.innerHTML = '';
+  targetContainer.innerHTML = '';
+  translationDiv.style.display = 'none';
+
+  // Use current index to select the phrase
+  const currentPhrase = spanishPhrases[currentPhraseIndex];
+  currentWords = currentPhrase.split(' ');
+  const shuffledWords = shuffleArray([...currentWords]);
+
+  shuffledWords.forEach((word, index) => {
+    const wordElement = createElement(word);
+    wordElement.style.animationDelay = `${index * 0.1}s`;
+    sourceContainer.appendChild(wordElement);
+  });
+
+  document.getElementById('progress').textContent = 
+    `Frase ${currentPhraseIndex + 1} de ${spanishPhrases.length}`;
+}
+
+function shuffleArray(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
+function createElement(word) {
+  const wordElement = document.createElement('div');
+  wordElement.className = 'word';
+  wordElement.textContent = word;
+  wordElement.draggable = true;
+  return wordElement;
+}
+
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-EN';
+  speechSynthesis.speak(utterance);
+}
+
+function returnWordsToSource() {
+  const sourceContainer = document.getElementById('sourceContainer');
+  const targetContainer = document.getElementById('targetContainer');
+  const words = Array.from(targetContainer.getElementsByClassName('word'));
+
+  words.forEach((word, index) => {
+    word.style.opacity = '0';
+    setTimeout(() => {
+      word.style.opacity = '1';
+      sourceContainer.appendChild(word);
+    }, 300 + (index * 100));
+  });
+}
+
+function checkOrder() {
+  const targetContainer = document.getElementById('targetContainer');
+  const currentWordsInDOM = Array.from(targetContainer.getElementsByClassName('word'))
+    .map(word => word.textContent);
+
+  if (currentWordsInDOM.length !== currentWords.length) {
+    const feedback = document.getElementById('feedback');
+    feedback.style.color = '#f44336';
+    feedback.textContent = 'Mueve todas las palabras al área de ordenación';
+    return;
+  }
+
+  const isCorrect = currentWords.join(' ') === currentWordsInDOM.join(' ');
+  const feedback = document.getElementById('feedback');
+
+  if (isCorrect) {
+    feedback.style.color = '#4CAF50';
+    feedback.textContent = '¡Correcto!';
+    
+    setTimeout(() => {
+      if (currentPhraseIndex < spanishPhrases.length - 1) {
+        currentPhraseIndex++;
+        displayPhrase();
+        feedback.textContent = '';
+      } else {
+        feedback.textContent = '¡Has completado todas las frases!';
+        document.getElementById('checkBtn').disabled = true;
+      }
+    }, 1500);
+  } else {
+    feedback.style.color = '#f44336';
+    feedback.textContent = 'Inténtalo de nuevo';
+    setTimeout(returnWordsToSource, 1000);
+  }
+}
+
+function toggleTranslation() {
+  const translationDiv = document.getElementById('translation');
+  const translateBtn = document.getElementById('translateBtn');
+  
+  if (translationDiv.style.display === 'none') {
+    translationDiv.style.display = 'block';
+    translationDiv.textContent = englishPhrases[currentPhraseIndex];
+    translateBtn.textContent = 'Ocultar traducción';
+  } else {
+    translationDiv.style.display = 'none';
+    translateBtn.textContent = 'Ver traducción';
+  }
+}
+
+// Event Listeners
+document.getElementById('speakBtn').addEventListener('click', () => {
+  speak(spanishPhrases[currentPhraseIndex]);
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkOrder);
+document.getElementById('translateBtn').addEventListener('click', toggleTranslation);
+
+// Drag and Drop functionality
+let draggedElement = null;
+
+document.addEventListener('dragstart', (e) => {
+  if (e.target.className === 'word') {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.5';
+  }
+});
+
+document.addEventListener('dragend', (e) => {
+  if (e.target.className === 'word') {
+    e.target.style.opacity = '1';
+  }
+});
+
+document.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  if (e.target.className.includes('word-container')) {
+    e.target.style.background = '#e8f5e9';
+  }
+});
+
+document.addEventListener('dragleave', (e) => {
+  if (e.target.className.includes('word-container')) {
+    e.target.style.background = e.target.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+  }
+});
+
+document.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const container = e.target.closest('.word-container');
+  if (container) {
+    container.style.background = container.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+    container.appendChild(draggedElement);
+  }
+});
+
+// Initialize the first phrase
+displayPhrase();
+</script>
+</body>
+</html>
