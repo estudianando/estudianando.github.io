@@ -1,0 +1,694 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aprender Español - Ordena las palabras </title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.source-container {
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+}
+
+.target-container {
+  background: #fff;
+  border: 2px dashed #4CAF50;
+}
+
+.word {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s, all 0.3s ease;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+.progress {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.area-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: -10px;
+}
+
+.word {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<center><h1>¡Ordena las palabras!</h1></center>
+<div class="word-area">
+  <div class="area-label">Palabras disponibles:</div>
+  <div id="sourceContainer" class="word-container source-container"></div>
+  <div class="area-label">Ordena las palabras aquí:</div>
+  <div id="targetContainer" class="word-container target-container"></div>
+</div>
+<div class="options">
+  <button id="speakBtn">🔊 Escuchar</button>
+  <button id="checkBtn">Comprobar</button>
+</div>
+<div class="progress" id="progress"></div>
+<div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const phrases = [
+
+"Hoy no estoy bien",
+
+"Estaba de mal humor porque ayer mis padres se pelearon y firmaron un contrato de divorcio",
+
+"Ayer fue definitivo y firmaron el divorcio",
+
+"Sí, pero no era en serio",
+
+"Y en el contrato se dice que mi padre abandona todas las propiedades",
+
+"Entonces tu padre se quedaría sin nada",
+
+"Algo parecido le ocurrió a un hermano mío",
+
+"Él se divorció de su pareja y lo perdió todo",
+
+"La casa, el coche, todo",
+
+"Y como tiene la custodia compartida para ver a su hijo, entonces solo puede verlo 3 días cada 2 semanas",
+
+"La verdad es que los divorcios son duros",
+
+"Yo llevo casado desde el 2019 porque recuerdo que fue antes de la pandemia",
+
+"No es fácil hoy en día llevar las relaciones",
+
+"Mi esposa es taiwanesa",
+
+"Los dos vivimos en Taichung",
+
+"Entonces tú eres taiwanés también",
+
+"Me gusta mucho más la vida aquí en Taiwán más que en Barcelona",
+
+"En Barcelona la vida es más agobiante",
+
+"Siempre con prisas",
+
+"Taipéi también tiene una vida frenética",
+
+"Supongo que es porque es una gran ciudad",
+
+"La comida aquí en Taiwán me encanta",
+
+"Para mí Taiwán es muy exótico",
+
+"Hay comida que en España no existe",
+
+"Aquí hay una especie de maíz muy dulce que en España no hay",
+
+"El maíz asado en el mercado nocturno",
+
+"Ahora mi madre se fue a la casa de mi tía para escapar de mi padre",
+
+"Ahora me siento indiferente porque ha ocurrido varias veces",
+
+"Ahora como que te da un poco igual",
+
+"Ahora quiero que no me molesten",
+
+"Y tengo que enfocarme en las oposiciones",
+
+"¿En Taiwán un funcionario gana mucho dinero?",
+
+"No puedo decir eso pero puede vivir una vida más estable",
+
+"Pero con esta cantidad de dinero es difícil comprar una casa, especialmente para la generación más joven",
+
+"Estuve viendo los precios de las viviendas en Taiwán y aquí son más caros que en Barcelona",
+
+"Porque Taiwán es más pequeña",
+
+"Pero la remuneración media no es más alta que en Barcelona",
+
+"En Barcelona el salario neto medio más o menos está en 1700 € pero con esa cantidad es difícil llegar a fin de mes",
+
+"En Barcelona, necesitas un sueldo de 2200 para vivir bien",
+
+"El alquiler en Barcelona está sobre los 800, 900 Euros, incluso 1000 € para algo más o menos decente",
+
+"¿Qué incluye en la habitación que cuesta esta cantidad?",
+
+"Incluye un cuarto de baño, tres habitaciones y un salón",
+
+"A veces incluso una terraza o un balcón o un patio si es un bajo",
+
+"Un bajo sería el primer piso a nivel de la calle",
+
+"Lo que pasa que en Barcelona hay mucha humedad",
+
+"Entonces en los bajos se acumula la humedad y no es saludable",
+
+"Lo recomendable sería un ático",
+
+"El ático es el que está en lo alto",
+
+"Porque entra más luz",
+
+"Es una chica que vive en la zona de montaña de Los Alpes en Suiza",
+
+"Fue una serie muy famosa",
+
+"Aunque el anime, que serían los dibujos animados, es japonés",
+
+"Pero la historia es de 1889, creo",
+
+"Una historia antigua",
+
+"Una novela muy antigua",
+
+"Y se han hecho películas, obras de teatro",
+
+"¿Sabes de qué trataba la serie?",
+
+"Generalmente es sobre la vida de esta chica y sus amigos",
+
+"Esta chica vive con su abuelo",
+
+"Y recuerdo una historia",
+
+"Su casa está en un pueblo de los Alpes",
+
+"No recuerdo los detalles",
+
+"Frankfurt era la ciudad donde vivía una amiga suya, Clara",
+
+"Clara, una chica rubia que no podía andar",
+
+"Siempre se sentaba en una silla de ruedas",
+
+"Era minusválida",
+
+"Minusválida significa que tiene una incapacidad",
+
+"En este caso, no puede andar",
+
+"Pero en los últimos capítulos, podía andar un poquito",
+
+"Podía dar unos pocos pasos",
+
+"Tardaba en ponerse de pie y caminar",
+
+"Pero recuerdo que no sucedió",
+
+"No podía correr como Heidi",
+
+"Leyenda urbana es algo misterioso",
+
+"Se refiere a fantasmas o personas misteriosas",
+
+"Cosas misteriosas",
+
+"Más o menos va por ahí",
+
+"Leyenda urbana significa una historia que se presenta como verdad pero que en realidad no es tan cierta",
+
+"Un mito es algo que se cree que es verdad pero no es verdad",
+
+"Ejemplo de mito sería comer por la noche engorda pero no es verdad",
+
+"Si es algo que es falso pero parece cierto",
+
+"Con la serie Heidi había una leyenda urbana, que incluso hay un video en YouTube sobre Heidi",
+
+"Que es que Heidi empuja a Clara por un barranco",
+
+"Hay memes",
+
+"Hay fotos sobre eso",
+
+"Es por la leyenda urbana de Heidi",
+
+"Capitán Tsubasa",
+
+"Anime japonés",
+
+"De la época de tus padres",
+
+"Pelota de Dragón, las bolas del Dragón",
+
+"La veía de una forma interrumpida",
+
+"Entonces no entiendo toda la historia",
+
+"Pero entiendo que cuando recopiladas las 7 bolas de Dragón se puede pedir un deseo",
+
+"Puede hacer una petición",
+
+"Cuando reúnes las 7 bolas de Dragón puedes pedir un deseo",
+
+"Y el protagonista",
+
+"El protagonista inolvidable",
+
+"El personaje inolvidable para mí es uno muy bajo y de color rosa",
+
+"¿Un cerdito?",
+
+"Hay dos versiones, uno de gordo y otro de delgado",
+
+"Ah, el monstruo Bu",
+
+"En los últimos capítulos, en la bola de Dragón Z",
+
+"Ahora está Bola de Dragón Super",
+
+"Es muy famosa pero para mí la mejor es la Z",
+
+"¿Quién es el gato de la siguiente imagen?",
+
+"Es un gato mecánico",
+
+"Es un gato robot",
+
+"Que tiene varias herramientas en su bolsillo",
+
+"Para ayudar al personaje principal",
+
+"Es un chico muy pobre y siempre es regañado por sus padres y maestros",
+
+"Creo que sufre un acoso escolar de sus compañeros de clase",
+
+"Siempre hace lo que quiere, nunca estudia, saca malas notas",
+
+"En español no usamos tanto esa voz pasiva",
+
+"Siempre le regañan sus padres y maestros",
+
+"El personaje principal se llama Nobita",
+
+"También hay otra leyenda urbana sobre Doraemon en España",
+
+"La leyenda urbana es que Nobita en verdad es un niño enfermo que se lo imagina todo",
+
+"El capítulo final es que todo es mentira y forma parte de la imaginación de Nobita",
+
+"¿El final real lo conoces?",
+
+"¿Quieres que te diga el final de la serie?",
+
+"Todos los personajes crecieron y el protagonista se ha casado con la chica: Shizuka",
+
+"A Doraemon se le acaba la batería y no funciona",
+
+"Entonces Nobita, el chico de las gafas, estudia ingeniería para que funcione Doraemon",
+
+"Un final feliz",
+
+"De hecho había leído cómics cuando estaba en primaria",
+
+"Y así me volví en una visión corta",
+
+"Y tuve problemas de visión y por eso tengo visión corta",
+
+"Usas gafas",
+
+"Pero ahora llevo lentillas o lentes de contacto",
+
+"Yo también a veces las uso",
+
+"Y tengo un problema muy grave de visión corta",
+
+"800 dioptrías",
+
+"Los cómics son los libros de dibujos",
+
+"A los cómics japoneses los llamamos mangas",
+
+"A los cómics españoles los llamamos tebeos",
+
+"Y a los cómics de Estados Unidos o de otro país los llamamos cómics",
+
+"¿Qué tipo de series te gusta más?",
+
+"Depende: como Sinchan o Doraemon es bueno porque puedo verlo cuando estoy comiendo",
+
+"Porque la duración de cada episodio es muy corto",
+
+"El tipo que me gusta",
+
+"El tipo que me gusta es quizás de acción pero con mucha historia interesante",
+
+"Una historia en la que haya giros",
+
+"Giros en la historia",
+
+"El cómic o el manga que me encanta no está entre ellos",
+
+"¿Cómo se llama?",
+
+"Hunter x Hunter",
+
+"Y el otro es Attack on Titan",
+
+"Ese lo veía mucho cuando salió el anime",
+
+"¿Sabes que el autor de Hunter x Hunter siempre se sale de los tiempos de entrega?",
+
+"La primera vez que vi el cómic estaba en primero de secundaria",
+
+"Pero ahora la historia no llega al final",
+
+"Entonces los internautas siempre dicen que nuestros nietos pueden quemar los cómics para nosotros",
+
+"En la tradición de Taiwán, quemamos el dinero o las cosas",
+
+"Quemar el dinero para que vaya a los antepasados",
+
+"Es bastante curioso lo de quemar",
+
+"Porque puede esperar muchísimo", "El autor empezó de nuevo a dibujar a fin del año pasado pero la última vez fue hace 3 años",
+
+"3 años de vacaciones",
+
+"El autor ha sufrido una enfermedad corporal",
+
+"Y no puede sentarse",
+
+"La esposa también es una escritora de cómics",
+
+"También hay una obra muy famosa",
+
+"Se llama Sailor Moon",
+
+"La escritora de Sailor Moon es su esposa",
+
+"Los ojos de la protagonista son muy bonitos",
+
+"Entonces los internautas dicen que su esposa le ayuda a dibujar",
+
+"En Sailor Moon se enfoca en los ojos",
+
+"Has mencionado Sailor Moon",
+
+"Hay otro anime de esa época que se llama Ranma 1/2",
+
+"Otra obra de la misma escritora",
+
+"Pensé que era una mujer",
+
+"Ahora está en Netflix una reedición de Ranma",
+
+"Rumiko",
+
+"¿Prefieres ver las series dobladas o en versión original con subtítulos?",
+
+"Prefiero ver series con un audio original pero con los subtítulos de chino mandarín tradicional",
+
+"Mientras disfruto de la obra original",
+
+"Yo pienso igual que tú",
+
+"Porque hay mucha interpretación en la voz",
+
+"Cuando se dobla ya es bastante diferente",
+
+"Suena antinatural",
+
+"Que no suena natural",
+
+"Especialmente en series japonesas que le ponen mucha interpretación a la vez",
+
+"First Love",
+
+"Raramente veo las series porque son muy adictivas",
+
+"Es muy adictivo",
+
+"Y tarda mucho tiempo para terminarlas todas",
+
+"Sólo te la recomiendo si te gustan las series románticas",
+
+"Tu pareja habrá visto First Love mínimo 4 veces",
+
+"Es una serie que es bastante buena",
+
+"Para las series, prefiero el tipo de horror, sangrientas y violentas",
+
+"¿Crees que algún día plataformas como Netflix podrían sustituir a la televisión tradicional?",
+
+"No lo creo",
+
+"Pero creo que la forma de la gente de disfrutar de los videos ha cambiado muchísimo",
+
+"Desde la televisión en plataformas como Netflix",
+
+"A veces la televisión tradicional como las noticias o los programas",
+
+"Pero no lo hacemos los jóvenes",
+
+"Entonces el hábito en el que la gente recibe la información ha cambiado",
+
+"Los mayores o personas de mediana edad prefieren ver la televisión tradicional",
+
+"Quizás básicamente porque no saben cómo funciona el ordenador o no saben cómo usar el ordenador",
+
+"Y también porque es un lío a veces ver la tele desde un ordenador en lugar de la TV",
+
+"Igual no saben conectar el ordenador con la TV y tienen que verlo desde el ordenador",
+
+];
+
+// Crear array de índices y mezclarlo
+let phraseIndices = [...Array(phrases.length).keys()];
+let currentPhraseIndex = 0;
+let currentWords = [];
+
+function shuffleArray(array) {
+const newArray = [...array];
+for (let i = newArray.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+}
+return newArray;
+}
+
+// Mezclar los índices al inicio
+phraseIndices = shuffleArray(phraseIndices);
+
+function displayPhrase() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+sourceContainer.innerHTML = '';
+targetContainer.innerHTML = '';
+
+// Usar el índice aleatorio para seleccionar la frase
+const randomPhrase = phrases[phraseIndices[currentPhraseIndex]];
+currentWords = randomPhrase.split(' ');
+const shuffledWords = shuffleArray(currentWords);
+
+shuffledWords.forEach((word, index) => {
+  const wordElement = createElement(word);
+  wordElement.style.animationDelay = `${index * 0.1}s`;
+  sourceContainer.appendChild(wordElement);
+});
+
+document.getElementById('progress').textContent = 
+  `Frase ${currentPhraseIndex + 1} de ${phrases.length}`;
+}
+
+function createElement(word) {
+const wordElement = document.createElement('div');
+wordElement.className = 'word';
+wordElement.textContent = word;
+wordElement.draggable = true;
+return wordElement;
+}
+
+function speak(text) {
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = 'es-ES';
+speechSynthesis.speak(utterance);
+}
+
+function returnWordsToSource() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+const words = Array.from(targetContainer.getElementsByClassName('word'));
+
+words.forEach((word, index) => {
+  word.style.opacity = '0';
+  setTimeout(() => {
+    word.style.opacity = '1';
+    sourceContainer.appendChild(word);
+  }, 300 + (index * 100));
+});
+}
+
+function checkOrder() {
+const targetContainer = document.getElementById('targetContainer');
+const currentWordsInDOM = Array.from(targetContainer.getElementsByClassName('word'))
+  .map(word => word.textContent);
+
+if (currentWordsInDOM.length !== currentWords.length) {
+  const feedback = document.getElementById('feedback');
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Mueve todas las palabras al área de ordenación';
+  return;
+}
+
+const isCorrect = currentWords.join(' ') === currentWordsInDOM.join(' ');
+const feedback = document.getElementById('feedback');
+
+if (isCorrect) {
+  feedback.style.color = '#4CAF50';
+  feedback.textContent = '¡Correcto!';
+  
+  setTimeout(() => {
+    if (currentPhraseIndex < phrases.length - 1) {
+      currentPhraseIndex++;
+      displayPhrase();
+      feedback.textContent = '';
+    } else {
+      feedback.textContent = '¡Has completado todas las frases!';
+      document.getElementById('checkBtn').disabled = true;
+    }
+  }, 1500);
+} else {
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Inténtalo de nuevo';
+  setTimeout(returnWordsToSource, 1000);
+}
+}
+
+// Event Listeners
+document.getElementById('speakBtn').addEventListener('click', () => {
+speak(phrases[phraseIndices[currentPhraseIndex]]);
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkOrder);
+
+// Drag and Drop functionality
+let draggedElement = null;
+
+document.addEventListener('dragstart', (e) => {
+if (e.target.className === 'word') {
+  draggedElement = e.target;
+  e.target.style.opacity = '0.5';
+}
+});
+
+document.addEventListener('dragend', (e) => {
+if (e.target.className === 'word') {
+  e.target.style.opacity = '1';
+}
+});
+
+document.addEventListener('dragover', (e) => {
+e.preventDefault();
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = '#e8f5e9';
+}
+});
+
+document.addEventListener('dragleave', (e) => {
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = e.target.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+}
+});
+
+document.addEventListener('drop', (e) => {
+e.preventDefault();
+const container = e.target.closest('.word-container');
+if (container) {
+  container.style.background = container.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+  container.appendChild(draggedElement);
+}
+});
+
+// Initialize the first phrase
+displayPhrase();
+</script>
+</body>
+</html>
