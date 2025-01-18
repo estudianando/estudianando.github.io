@@ -1,0 +1,445 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aprender Español - Ordena las palabras </title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.source-container {
+  background: #f0f0f0;
+  border: 2px solid #ddd;
+}
+
+.target-container {
+  background: #fff;
+  border: 2px dashed #4CAF50;
+}
+
+.word {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s, all 0.3s ease;
+}
+
+.word:hover {
+  transform: scale(1.05);
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #1976D2;
+}
+
+.progress {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.area-label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: -10px;
+}
+
+.word {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<center><h1>¡Ordena las palabras!</h1></center>
+<div class="word-area">
+  <div class="area-label">Palabras disponibles:</div>
+  <div id="sourceContainer" class="word-container source-container"></div>
+  <div class="area-label">Ordena las palabras aquí:</div>
+  <div id="targetContainer" class="word-container target-container"></div>
+</div>
+<div class="options">
+  <button id="speakBtn">🔊 Escuchar</button>
+  <button id="checkBtn">Comprobar</button>
+</div>
+<div class="progress" id="progress"></div>
+<div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const phrases = [
+
+"Hoy ha sido un buen día",
+
+"La amiga de mi esposa ha venido a mi casa y comimos juntos para la cena",
+
+"¿Y qué comisteis?",
+
+"Pollo caliente",
+
+"Tu esposa es vegetariana",
+
+"Sí, por eso nosotros comimos verduras, tofu y huevos",
+
+"No comimos carne, pescado o marisco",
+
+"¿Tienes planeado hacer algo en el Año Nuevo Lunar?",
+
+"¿Tienes algún plan para hacer en el Año Nuevo Lunar?",
+
+"No tengo planes, pero como siempre, voy a regresar a la casa de mis padres",
+
+"Donde me cuidaban",
+
+"En Suiza, por ejemplo, tenemos mucha ayuda del estado para poder criar a mi hijo o mi hija",
+
+"Es de un texto",
+
+"¿Dónde viven tus padres?",
+
+"Mis padres viven en Yilan",
+
+"Yilan está en el noreste de Taiwán y está al lado de Taipéi",
+
+"Está cerquita de donde vives",
+
+"Pues como decimos, la casa de sus padres",
+
+"La casa de mis viejos",
+
+"La casa de mis viejos es más usada en el español de Latinoamérica",
+
+"Pero en España no solemos decir 'la casa de mis viejos'",
+
+"Hay gente que la usa, pero no es muy común en España",
+
+"La casa de mis padres",
+
+"Y allí cenáis todos juntos, ¿verdad?",
+
+"Cenar = comida de la noche",
+
+"En la noche del fin de año lunar cenamos juntos como cada año",
+
+"Conozco la tradición: dais un sobre rojo con dinero, ¿verdad?",
+
+"Y la decoración de la casa con pegatinas de color rojo. En este caso, una serpiente porque es el animal del Año Nuevo",
+
+"Es el año de la serpiente",
+
+"Pegatina = algo que está pegado en una superficie = sticker en inglés",
+
+"Serpiente = snake en inglés",
+
+"¿Cuál es tu animal del horóscopo?",
+
+"Nací en el año del tigre",
+
+"Y mi padre nació en el año de la serpiente",
+
+"¡Qué guay!",
+
+"Entonces, este año va a ser el de tu padre",
+
+"Este va a ser el año de tu padre",
+
+"Por eso es muy fácil contar cuántos años tiene",
+
+"Usamos 'para' porque 'contar cuántos años tiene' es la finalidad. Cuando necesitamos decir la finalidad o propósito de algo, usamos 'para'",
+
+"Como mi padre tiene más de 60 años, por eso 12",
+
+"Los años divididos entre 12",
+
+"12 multiplicado por X",
+
+"Si mi padre tuviera X años, tendría más de 60 años",
+
+"Por eso mi padre tiene 70 años",
+
+"Según el calendario lunar",
+
+"Es 72",
+
+"¿Cuál es tu propósito de Año Nuevo?",
+
+"Como he escrito en la conversación",
+
+"Pero no lo de beber",
+
+"Me gusta mucho que en Taiwán la gente no bebe tanto alcohol",
+
+"En España la gente bebe más",
+
+"Hay gente que bebe mucho alcohol también",
+
+"Pero no entiendo cómo los españoles beben tanto",
+
+"En España se bebe mucho, pero no hasta estar muy, muy borracho",
+
+"Solo un poquito",
+
+"Pero en Taiwán nunca he visto a nadie beber, por ejemplo, en los parques",
+
+"En España a veces veo a jóvenes bebiendo en los parques",
+
+"Si bebes en la calle, ¿la policía te multa?",
+
+"He aprendido la palabra 'multar'",
+
+"En Taiwán la policía no te multa",
+
+"Pero hay un problema: la gente conduce borracha",
+
+"Pero el problema es cuando la gente conduce borracha",
+
+"He oído que los españoles también conducen borrachos",
+
+"Sí, sobre todo los fines de semana cuando la gente vuelve de fiesta",
+
+"Cuando la gente vuelve de fiesta, a veces está borracha incluso conduciendo",
+
+"Que es muy peligroso",
+
+"¿En Taiwán la gente sale a las discotecas?",
+
+"Discotecas = lugar donde va la gente a bailar, beber y disfrutar",
+
+"Sí, y también cuando alguien se casa",
+
+"En España también es muy común que la gente beba mucho en las bodas",
+
+"Normalmente, ¿cuántas horas estudias español?",
+
+"No lo cuento, tal vez al menos 1 hora al día",
+
+"Por ejemplo, cuando tengo tareas de casa",
+
+"Cuando cocino, escucho español",
+
+"Escuchas y repites",
+
+"Yo también hago eso. Cuando limpio, cuando saco al perro. Siempre estoy con el móvil y repitiendo las palabras"
+];
+
+// Crear array de índices y mezclarlo
+let phraseIndices = [...Array(phrases.length).keys()];
+let currentPhraseIndex = 0;
+let currentWords = [];
+
+function shuffleArray(array) {
+const newArray = [...array];
+for (let i = newArray.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+}
+return newArray;
+}
+
+// Mezclar los índices al inicio
+phraseIndices = shuffleArray(phraseIndices);
+
+function displayPhrase() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+sourceContainer.innerHTML = '';
+targetContainer.innerHTML = '';
+
+// Usar el índice aleatorio para seleccionar la frase
+const randomPhrase = phrases[phraseIndices[currentPhraseIndex]];
+currentWords = randomPhrase.split(' ');
+const shuffledWords = shuffleArray(currentWords);
+
+shuffledWords.forEach((word, index) => {
+  const wordElement = createElement(word);
+  wordElement.style.animationDelay = `${index * 0.1}s`;
+  sourceContainer.appendChild(wordElement);
+});
+
+document.getElementById('progress').textContent = 
+  `Frase ${currentPhraseIndex + 1} de ${phrases.length}`;
+}
+
+function createElement(word) {
+const wordElement = document.createElement('div');
+wordElement.className = 'word';
+wordElement.textContent = word;
+wordElement.draggable = true;
+return wordElement;
+}
+
+function speak(text) {
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = 'es-ES';
+speechSynthesis.speak(utterance);
+}
+
+function returnWordsToSource() {
+const sourceContainer = document.getElementById('sourceContainer');
+const targetContainer = document.getElementById('targetContainer');
+const words = Array.from(targetContainer.getElementsByClassName('word'));
+
+words.forEach((word, index) => {
+  word.style.opacity = '0';
+  setTimeout(() => {
+    word.style.opacity = '1';
+    sourceContainer.appendChild(word);
+  }, 300 + (index * 100));
+});
+}
+
+function checkOrder() {
+const targetContainer = document.getElementById('targetContainer');
+const currentWordsInDOM = Array.from(targetContainer.getElementsByClassName('word'))
+  .map(word => word.textContent);
+
+if (currentWordsInDOM.length !== currentWords.length) {
+  const feedback = document.getElementById('feedback');
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Mueve todas las palabras al área de ordenación';
+  return;
+}
+
+const isCorrect = currentWords.join(' ') === currentWordsInDOM.join(' ');
+const feedback = document.getElementById('feedback');
+
+if (isCorrect) {
+  feedback.style.color = '#4CAF50';
+  feedback.textContent = '¡Correcto!';
+  
+  setTimeout(() => {
+    if (currentPhraseIndex < phrases.length - 1) {
+      currentPhraseIndex++;
+      displayPhrase();
+      feedback.textContent = '';
+    } else {
+      feedback.textContent = '¡Has completado todas las frases!';
+      document.getElementById('checkBtn').disabled = true;
+    }
+  }, 1500);
+} else {
+  feedback.style.color = '#f44336';
+  feedback.textContent = 'Inténtalo de nuevo';
+  setTimeout(returnWordsToSource, 1000);
+}
+}
+
+// Event Listeners
+document.getElementById('speakBtn').addEventListener('click', () => {
+speak(phrases[phraseIndices[currentPhraseIndex]]);
+});
+
+document.getElementById('checkBtn').addEventListener('click', checkOrder);
+
+// Drag and Drop functionality
+let draggedElement = null;
+
+document.addEventListener('dragstart', (e) => {
+if (e.target.className === 'word') {
+  draggedElement = e.target;
+  e.target.style.opacity = '0.5';
+}
+});
+
+document.addEventListener('dragend', (e) => {
+if (e.target.className === 'word') {
+  e.target.style.opacity = '1';
+}
+});
+
+document.addEventListener('dragover', (e) => {
+e.preventDefault();
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = '#e8f5e9';
+}
+});
+
+document.addEventListener('dragleave', (e) => {
+if (e.target.className.includes('word-container')) {
+  e.target.style.background = e.target.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+}
+});
+
+document.addEventListener('drop', (e) => {
+e.preventDefault();
+const container = e.target.closest('.word-container');
+if (container) {
+  container.style.background = container.classList.contains('source-container') ? '#f0f0f0' : '#fff';
+  container.appendChild(draggedElement);
+}
+});
+
+// Initialize the first phrase
+displayPhrase();
+</script>
+</body>
+</html>
