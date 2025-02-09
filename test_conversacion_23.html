@@ -1,0 +1,286 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de vocabulario </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de vocabulario </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <button class="btn btn-primary" id="next-btn" style="width: 100%">Siguiente pregunta</button>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+{
+	"question": "¿Qué significa --serie-- en el entrenamiento con pesas?",
+	"options": ["La repetición de un ejercicio", "El ejercicio en sí", "un grupo de ejercicios", "Todos los ejercicios"],
+	"correct": 2
+},
+{
+	"question": "¿Qué es el --culturismo--?",
+	"options": ["disciplina que se centra en desarrollar grasa", "disciplina que se centra en el desarrollo y mejora de la musculatura", "disciplina que se enfoca en desarrollar la inteligencia", "Todas son correctas"],
+	"correct": 1
+},
+{
+	"question": "Voy al gimnasio para _________ pesas",
+	"options": ["entrenar con", "hacer de", "sujetar", "romper"],
+	"correct": 0
+},
+{
+	"question": "¿Qué significa la palabra --famoso--?",
+	"options": ["que a veces lo conocen y otras veces no", "que nadie lo conoce", "como celebridad que todo el mundo lo conoce", "Todas son correctas"],
+	"correct": 2
+},
+{
+	"question": "¿En qué consiste el --síndrome del trabajador quemado-- o burnout?",
+	"options": ["estado que no hay agotamiento ni físicamente ni mentalmente", "estado de agotamiento sólo físico", "estado de agotamiento solo mental", "estado de agotamiento tanto físico como mental extremo"],
+	"correct": 3
+},
+
+{
+	"question": "¿Qué significa la palabra --riguroso--?",
+	"options": ["entrenamiento duro, severo o exigente", "entrenamiento fácil", "entrenamiento medio", "entrenamiento un poco difícil"],
+	"correct": 0
+},
+
+{
+	"question": "¿Qué significa descalificar a un competidor en una competición deportiva?",
+	"options": ["decirle a un jugador las normas", "incluir a un jugador por cumplir las normas", "echar a un jugador por inclumplir las normas", "darle un premio a un jugador"],
+	"correct": 2
+},
+
+{ 
+	"question": "¿Qué significa la palabra --cobrar un pastizal--?",
+	"options": ["donar dinero", "robar dinero", "ganar poco dinero", "ganar mucho dinero"],
+	"correct": 3
+},
+
+{ 
+	"question": "¿Qué significa la palabra --sobrevalorado--?",
+	"options": ["que le dan menos valor que el que realmente tiene", "que le dan más valor que el que realmente tiene", "Las dos anteriores son correctas", "Ninguna es correcta"],
+	"correct": 1
+},
+
+{ 
+	"question": "¿Qué significa la palabra --cantera de un equipo--?",
+	"options": ["las categorías inferiores del equipo", "las categorias superiores del equipo", "que vale mucho dinero", "que marca muchos goles"],
+	"correct": 0
+}
+
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
