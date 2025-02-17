@@ -1,0 +1,193 @@
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lector de Texto</title>
+<style>	
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.text-container {
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.text-label {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #f0f0f0;
+}
+
+.btn svg {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
+
+.nav-button {
+  display: block;
+  text-align: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #45a049;
+}
+
+
+</style>	
+</head>
+<body>
+  <div class="container">
+    <h1>Los jóvenes españoles y sus valores prioritarios</h1>
+    
+    <div class="controls">
+      <button id="playButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M8 5v14l11-7z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="pauseButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="stopButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 6h12v12H6z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+	
+	
+    <div class="text-container">
+      <label id="text-to-read" class="text-label">
+Al igual que los adultos, los jóvenes españoles también establecen una jerarquía clara de valores a los que dan prioridad por encima del resto. Lo curioso es que, en buena medida, coinciden con los mayores. La salud y los afectos, familiares o amorosos, destacan en sus preferencias por encima de otros factores como el trabajo y el dinero, según un sondeo elaborado por el Centro de Investigaciones Sociológicas (CIS), que constata además la buena imagen que los jóvenes tienen de sí mismos.
+<br><br>
+En este estudio, basado en una muestra de 1.500 personas, entre los 15 y los 29 años, que por abrumadora mayoría se declaran satisfechas con su vida (83%); un 15% incluso se siente muy satisfecho, mientras el 68% dice estarlo bastante. El resto, por el contrario, muestra una evidente insatisfacción personal.
+<br><br>
+Con un mercado de trabajo pobre en empleo estable para los jóvenes, estos ven negro su futuro laboral. Por ello, no es de extrañar que la mayoría de los jóvenes señalen al paro como el principal problema que afecta a la sociedad. En lo económico, la juventud española considera el panorama regular y no cree que vaya a mejorar. Los que se muestran más optimistas en cuanto a la economía personal son aquellos que viven en domicilio familiar, un 40%.
+<br><br>
+Puestos frente al espejo, los jóvenes se perciben como un colectivo solidario, desinteresado, tolerante y comprometido con causas nobles. Dicen ser, además, más contestatarios y menos conformistas que sus padres. En este juicio benevolente también hay un cierto lugar para la autocrítica: se consideran menos maduros y más dependientes que sus padres a su misma edad.
+<br><br>
+Para la directora del Instituto de la Juventud, el autorretrato positivo de los jóvenes no se ajusta a la realidad que se ve en los grandes estudios sociológicos, menos positiva y con bajos niveles de participación juvenil en proyectos solidarios o en compromiso humanitario.
+<br>	  
+	  </label>
+    </div>
+
+
+    <a href="test_jovenes_espanoles.html" class="nav-button"> Hacer el test </a>
+  </div>
+
+  <script>
+  let speech = null;
+let isPaused = false;
+
+function initSpeech() {
+  speech = new SpeechSynthesisUtterance();
+  speech.lang = 'es-ES';
+  speech.rate = 1;
+  speech.pitch = 1;
+}
+
+function playText() {
+  const text = document.getElementById('text-to-read').textContent;
+  
+  if (!speech) {
+    initSpeech();
+  }
+  
+  if (isPaused) {
+    window.speechSynthesis.resume();
+    isPaused = false;
+  } else {
+    speech.text = text;
+    window.speechSynthesis.speak(speech);
+  }
+}
+
+function pauseText() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    isPaused = true;
+  }
+}
+
+function stopText() {
+  window.speechSynthesis.cancel();
+  isPaused = false;
+}
+
+document.getElementById('playButton').addEventListener('click', playText);
+document.getElementById('pauseButton').addEventListener('click', pauseText);
+document.getElementById('stopButton').addEventListener('click', stopText);
+  
+  
+  </script>
+</body>
+</html>
