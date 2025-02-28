@@ -1,0 +1,193 @@
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lector de Texto</title>
+<style>	
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.text-container {
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.text-label {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #f0f0f0;
+}
+
+.btn svg {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
+
+.nav-button {
+  display: block;
+  text-align: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #45a049;
+}
+
+
+</style>	
+</head>
+<body>
+  <div class="container">
+    <h1>Las tradiciones españolas</h1>
+    
+    <div class="controls">
+      <button id="playButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M8 5v14l11-7z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="pauseButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="stopButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 6h12v12H6z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+	
+	
+    <div class="text-container">
+      <label id="text-to-read" class="text-label">
+España tiene muchas tradiciones interesantes. En cada comunidad autónoma, hay fiestas especiales. Por ejemplo, en Valencia, se celebran Las Fallas, donde se queman figuras grandes.
+<br><br>
+Algunas fiestas conmemoran eventos históricos. El Dos de Mayo recuerda una revuelta contra la invasión francesa. En el pasado, hubo una represión, pero hoy se recuerda con orgullo.
+<br><br>
+También hay fiestas para recordar a los antecesores. En noviembre, el Día de Todos los Santos la gente honra a sus fallecidos con flores. Los descendientes visitan los cementerios.
+<br><br>
+La cultura española ha tenido una gran difusión en el mundo. Su música y danzas autóctonas como el flamenco muestran una gran adaptación a los tiempos modernos.
+<br><br>
+Las tradiciones tienen muchos beneficios, como unir a la gente. Además, algunas festividades ayudan a retomar costumbres antiguas y también tienen un valor académico, porque enseñan historia y cultura.
+<br>	  
+	  </label>
+    </div>
+
+
+    <a href="test_tradiciones_espanolas.html" class="nav-button"> Hacer el test </a>
+  </div>
+
+  <script>
+  let speech = null;
+let isPaused = false;
+
+function initSpeech() {
+  speech = new SpeechSynthesisUtterance();
+  speech.lang = 'es-ES';
+  speech.rate = 1;
+  speech.pitch = 1;
+}
+
+function playText() {
+  const text = document.getElementById('text-to-read').textContent;
+  
+  if (!speech) {
+    initSpeech();
+  }
+  
+  if (isPaused) {
+    window.speechSynthesis.resume();
+    isPaused = false;
+  } else {
+    speech.text = text;
+    window.speechSynthesis.speak(speech);
+  }
+}
+
+function pauseText() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    isPaused = true;
+  }
+}
+
+function stopText() {
+  window.speechSynthesis.cancel();
+  isPaused = false;
+}
+
+document.getElementById('playButton').addEventListener('click', playText);
+document.getElementById('pauseButton').addEventListener('click', pauseText);
+document.getElementById('stopButton').addEventListener('click', stopText);
+  
+  
+  </script>
+</body>
+</html>
