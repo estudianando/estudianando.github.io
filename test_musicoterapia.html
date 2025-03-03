@@ -1,0 +1,283 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de comprensión lectora </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de comprensión lectora </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <center>
+	
+    <button class="btn btn-primary" id="next-btn">Siguiente pregunta</button>
+	
+	<br>
+    <br>
+
+    <a href="lectura_texto_musicoterapia.html" class="btn btn-primary" style="text-decoration:none;">Volver a leer el texto</a>
+	</center>
+  </div>
+</div>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+{
+	"question": "Según el texto, la Musicoterapia es eficaz...",
+	"options": ["desde el nacimiento hasta el final de la vida", "para la preparación en algunas intervenciones quirúrgicas.", "para diversas disciplinas médicas, entre ellas, problemas de la vejez.", "Todas son correctas"],
+	"correct": 0
+},
+{
+	"question": "En el texto se indica que el tratamiento de Musicoterapia...",
+	"options": ["comienza solo tras la aprobación de un profesional.", "es más efectivo si el paciente tiene conocimientos musicales.", "se organiza según las circunstancias particulares de cada persona.", "Ninguna es correcta"],
+	"correct": 2
+},
+{
+	"question": "En el texto se indica que en las sesiones...",
+	"options": ["el paciente no debe hablar.", "la música sirve para conocer los problemas de salud del paciente.", "el canto siempre se combina con instrumentos.", "No menciona nada al respecto"],
+	"correct": 1
+},
+{
+	"question": "Según el texto, la música grabada...",
+	"options": ["no tiene por qué ser clásica.", "no puede adaptarse a cada caso de tratamiento.", "no puede relajar al paciente.", "Ninguna es correcta"],
+	"correct": 0
+},
+{
+	"question": "En el texto se afirma que la Musicoterapia...",
+	"options": ["está reconocida por asociaciones nacionales e internacionales.", "se ofrece en algunas clínicas.", "tiene carácter oficial en algunos centros y universidades españolas.", "Todas son correctas"],
+	"correct": 0
+},
+
+{
+	"question": "Según el texto, la Musicoterapia...",
+	"options": ["prescinde de medicamentos.", "implica a la persona en la modificación de su entorno.", " está subvencionada por el Sistema Nacional de Salud.", "No menciona nada de eso en el texto"],
+	"correct": 1
+},
+
+{
+	"question": "¿Cuál es una de las principales características de la Musicoterapia según la AMTA?",
+	"options": ["Es una terapia basada únicamente en la improvisación musical.", "Se centra exclusivamente en el tratamiento de enfermedades mentales.", "Utiliza la música de manera científica para mejorar la salud física y psíquica.", "Solo puede aplicarse a niños con problemas de aprendizaje."],
+	"correct": 2
+},
+
+{
+	"question": "¿Por qué se considera fundamental la música en directo en la Musicoterapia?",
+	"options": ["Porque la música grabada no se usa en ningún tratamiento.", "Porque permite adaptar la música a cada paciente según su estado y necesidades.", " Porque solo la música clásica tiene efectos terapéuticos.", "Porque la improvisación es la única técnica aceptada en Musicoterapia."],
+	"correct": 1
+}
+
+
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
