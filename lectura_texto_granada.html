@@ -1,0 +1,194 @@
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lectura de Texto</title>
+<style>	
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.text-container {
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.text-label {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #f0f0f0;
+}
+
+.btn svg {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
+
+.nav-button {
+  display: block;
+  text-align: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #45a049;
+}
+
+
+</style>	
+</head>
+<body>
+  <div class="container">
+    <h1> Granada: Antes y ahora </h1>
+    
+    <div class="controls">
+      <button id="playButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M8 5v14l11-7z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="pauseButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="stopButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 6h12v12H6z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+	
+	
+    <div class="text-container">
+      <label id="text-to-read" class="text-label">
+	  
+Granada, situada en el sur de España, ha sido un cruce de culturas a lo largo de su historia. En la antigüedad, la ciudad fue habitada por diversas civilizaciones, incluyendo los íberos, romanos y visigodos. Sin embargo, su época más gloriosa comenzó con la llegada de los musulmanes en el siglo VIII. Durante el dominio musulmán, Granada se convirtió en un importante centro cultural y político, destacándose por su esplendor arquitectónico y su rica vida intelectual.
+<br><br>
+La Alhambra, un majestuoso palacio y fortaleza, fue construida durante este período y se convirtió en símbolo de la ciudad. Este complejo arquitectónico, con sus intrincados detalles, jardines y fuentes, refleja la sofisticación del arte islámico. Granada también fue la última ciudad en caer ante los Reyes Católicos en 1492, marcando el fin de la Reconquista. La convivencia de musulmanes, judíos y cristianos en esta época dio lugar a un ambiente multicultural que enriqueció la vida social y cultural de la ciudad.
+<br><br>
+Hoy en día, Granada es una ciudad vibrante que combina su rica herencia histórica con la modernidad. La Alhambra sigue siendo uno de los principales atractivos turísticos de España, atrayendo a millones de visitantes cada año. La ciudad ha sabido preservar su patrimonio, con barrios como el Albaicín, que conserva su trazado árabe y sus casas encaladas, y el Sacromonte, famoso por sus cuevas y su tradición flamenca.
+<br><br>
+Granada también es un importante centro académico, gracias a la Universidad de Granada, que atrae a estudiantes de todo el mundo. La vida cultural es rica y diversa, con festivales, conciertos y eventos que celebran tanto la herencia andalusí como la contemporaneidad.
+<br><br>
+A pesar de su modernización, Granada ha mantenido su esencia. Las tapas, una tradición culinaria local, siguen siendo una parte fundamental de la vida social, y los mercados tradicionales, como el Mercado de San Agustín, ofrecen productos frescos y locales. La ciudad también enfrenta desafíos contemporáneos, como la gestión del turismo y la preservación de su patrimonio, pero sigue siendo un lugar donde la historia y la modernidad coexisten de manera armoniosa.
+<br><br>
+	  </label>
+    </div>
+
+
+    <a href="test_granada.html" class="nav-button"> Hacer el test </a>
+  </div>
+
+  <script>
+  let speech = null;
+let isPaused = false;
+
+function initSpeech() {
+  speech = new SpeechSynthesisUtterance();
+  speech.lang = 'es-ES';
+  speech.rate = 1;
+  speech.pitch = 1;
+}
+
+function playText() {
+  const text = document.getElementById('text-to-read').textContent;
+  
+  if (!speech) {
+    initSpeech();
+  }
+  
+  if (isPaused) {
+    window.speechSynthesis.resume();
+    isPaused = false;
+  } else {
+    speech.text = text;
+    window.speechSynthesis.speak(speech);
+  }
+}
+
+function pauseText() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    isPaused = true;
+  }
+}
+
+function stopText() {
+  window.speechSynthesis.cancel();
+  isPaused = false;
+}
+
+document.getElementById('playButton').addEventListener('click', playText);
+document.getElementById('pauseButton').addEventListener('click', pauseText);
+document.getElementById('stopButton').addEventListener('click', stopText);
+  
+  
+  </script>
+</body>
+</html>
