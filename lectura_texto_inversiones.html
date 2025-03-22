@@ -1,0 +1,207 @@
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lectura de Texto</title>
+<style>	
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.text-container {
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.text-label {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #f0f0f0;
+}
+
+.btn svg {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
+
+.nav-button {
+  display: block;
+  text-align: center;
+  padding: 0.8rem 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #45a049;
+}
+
+
+</style>	
+</head>
+<body>
+  <div class="container">
+    <h1> Las inversiones </h1>
+    
+    <div class="controls">
+      <button id="playButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M8 5v14l11-7z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="pauseButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+        </svg>
+      </button>
+      
+      <button id="stopButton" class="btn">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M6 6h12v12H6z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+	
+	
+    <div class="text-container">
+      <label id="text-to-read" class="text-label">
+	  
+Luis tenía 25 años y quería ahorrar dinero. Un día, su amigo Carla le dijo:
+<br><br>
+—Luis, ¿por qué no inviertes tu dinero?
+<br><br>
+—¿Invertir? No sé cómo hacerlo —respondió Luis.
+<br><br>
+Carla le explicó que podía invertir en acciones, bienes raíces o su propio negocio. Luis pensó mucho y decidió invertir en una pequeña cafetería.
+<br><br>
+Al principio, tenía miedo de perder su dinero, pero estudió el mercado, habló con expertos y encontró un buen local. Compró máquinas de café y decoró el lugar con mucho esfuerzo.
+<br><br>
+Después de unos meses, la cafetería empezó a tener muchos clientes. Luis estaba feliz porque su inversión había sido un éxito. Ganaba dinero y aprendía a administrar un negocio.
+<br><br>
+Un día, Carla visitó la cafetería y dijo:
+<br><br>
+—¡Luis, hiciste una gran inversión!
+<br><br>
+Luis sonrió y respondió:
+<br><br>
+—Sí, aprendí que invertir es un riesgo, pero si estudias y trabajas duro, puedes tener éxito.
+<br><br>
+Desde entonces, Luis siguió invirtiendo y ayudó a otros a aprender sobre finanzas.
+
+
+	  </label>
+    </div>
+
+
+    <a href="test_inversiones.html" class="nav-button"> Hacer el test </a>
+  </div>
+
+  <script>
+  let speech = null;
+let isPaused = false;
+
+function initSpeech() {
+  speech = new SpeechSynthesisUtterance();
+  speech.lang = 'es-ES';
+  speech.rate = 1;
+  speech.pitch = 1;
+}
+
+function playText() {
+  const text = document.getElementById('text-to-read').textContent;
+  
+  if (!speech) {
+    initSpeech();
+  }
+  
+  if (isPaused) {
+    window.speechSynthesis.resume();
+    isPaused = false;
+  } else {
+    speech.text = text;
+    window.speechSynthesis.speak(speech);
+  }
+}
+
+function pauseText() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    isPaused = true;
+  }
+}
+
+function stopText() {
+  window.speechSynthesis.cancel();
+  isPaused = false;
+}
+
+document.getElementById('playButton').addEventListener('click', playText);
+document.getElementById('pauseButton').addEventListener('click', pauseText);
+document.getElementById('stopButton').addEventListener('click', stopText);
+  
+  
+  </script>
+</body>
+</html>
