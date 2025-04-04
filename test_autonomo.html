@@ -1,0 +1,328 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de comprensión lectora </title>
+<style>
+:root {
+  --primary: #2196f3;
+  --secondary: #1976d2;
+  --success: #4caf50;
+  --danger: #f44336;
+  --light: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.question {
+  margin-bottom: 2rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background: #f5f5f5;
+}
+
+.option.selected {
+  border-color: var(--primary);
+  background: #e3f2fd;
+}
+
+.option.correct {
+  border-color: var(--success);
+  background: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: var(--danger);
+  background: #ffebee;
+}
+
+.progress {
+  height: 4px;
+  background: #ddd;
+  margin-bottom: 2rem;
+  border-radius: 2px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.results {
+  text-align: center;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.footer {
+  /*  background: linear-gradient(85deg, #121d59, #8200ad 99.88%); */
+    bacground: white;
+    color: black;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.copyright {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <h1>Test de comprensión lectora: Ser autómo en España </h1>
+</nav>
+
+<div class="container">
+  <div id="test-container">
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+    <div class="card" id="question-card">
+      <!-- Questions will be inserted here -->
+    </div>
+    <center>
+	
+    <button class="btn btn-primary" id="next-btn">Siguiente pregunta</button>
+	
+	<br>
+    <br>
+
+    <a href="lectura_texto_autonomo.html" class="btn btn-primary" style="text-decoration:none;">Volver a leer el texto</a>
+	<br><br><br>
+    <a href="prueba_oral_autonomo.html" class="btn btn-primary" style="text-decoration:none;"> Realizar la prueba oral </a>
+
+	</center>
+  </div>
+</div>
+
+   <footer class="footer">
+	 <a href="https://estudianando.github.io/">
+		<img src="logo.png" width="150" height="51" alt="mi logo">
+	 </a>
+    
+	
+	
+	
+	<!--
+	
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                </svg>
+            </a>
+            <a href="https://youtube.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+                </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+            </a>
+        </div>
+		
+	-->	
+	<br><br>
+        <p class="copyright">Copyright 2025 - All Rights Reserved</p>
+    </footer>
+
+<script>
+class TestApp {
+  constructor() {
+    this.questions = [ // Para las respuestas: 0 - el primero, 1 - el segundo, 2 el tercero, etc...
+{
+	"question": "¿A qué se dedicó el autónomo durante las vacaciones?",
+	"options": ["A hacer deporte", "A viajar por Europa", "Al bricolaje en casa", "A estudiar un máster"],
+	"correct": 2
+},
+{
+	"question": "¿Qué escuchó el protagonista en la radio?",
+	"options": ["Que la lotería había salido premiada", "Que había una tormenta cerca", "Que había subido el precio de la madera", "Que el tipo de interés había bajado"],
+	"correct": 3
+},
+{
+	"question": "¿Qué compró ese mismo día?",
+	"options": ["Herramientas nuevas", "Una oveja", "El décimo de la Navidad", "Un préstamo"],
+	"correct": 2
+},
+{
+	"question": "¿Qué números forman parte del número que juega siempre?",
+	"options": [" Del décimo al vigésimo", "Del primero al décimo", "Del segundo al duodécimo", "Sólo el tercero y el séptimo"],
+	"correct": 1
+},
+{
+	"question": "¿Qué animal vio el protagonista en el campo?",
+	"options": ["Vacas", "Ovejas", "Caballos", "Perros"],
+	"correct": 1
+},
+{
+	"question": "¿Qué reflexión hizo al ver el ganado?",
+	"options": ["Que debía mudarse al campo", "Que quería cambiar de profesión", "Que a veces es necesario moverse en grupo y desconectar", "Que las ovejas son muy listas"],
+	"correct": 2
+}
+
+
+    ];
+    
+    this.currentQuestion = 0;
+    this.score = 0;
+    this.answered = false;
+    
+    this.questionCard = document.getElementById('question-card');
+    this.nextBtn = document.getElementById('next-btn');
+    this.progress = document.getElementById('progress');
+    
+    this.nextBtn.addEventListener('click', () => this.handleNext());
+    this.renderQuestion();
+  }
+  
+  renderQuestion() {
+    const question = this.questions[this.currentQuestion];
+    this.progress.style.width = `${(this.currentQuestion / this.questions.length) * 100}%`;
+    
+    this.questionCard.innerHTML = `
+      <div class="question">
+        <h2>${question.question}</h2>
+      </div>
+      <div class="options">
+        ${question.options.map((option, index) => `
+          <div class="option" data-index="${index}">
+            ${option}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.questionCard.querySelectorAll('.option').forEach(option => {
+      option.addEventListener('click', () => this.handleOptionClick(option));
+    });
+    
+    this.answered = false;
+    this.nextBtn.disabled = true;
+  }
+  
+  handleOptionClick(option) {
+    if (this.answered) return;
+    
+    const selectedIndex = parseInt(option.dataset.index);
+    const question = this.questions[this.currentQuestion];
+    
+    this.answered = true;
+    this.nextBtn.disabled = false;
+    
+    if (selectedIndex === question.correct) {
+      option.classList.add('correct');
+      this.score++;
+    } else {
+      option.classList.add('incorrect');
+      this.questionCard.querySelectorAll('.option')[question.correct].classList.add('correct');
+    }
+  }
+  
+  handleNext() {
+    if (this.currentQuestion < this.questions.length - 1) {
+      this.currentQuestion++;
+      this.renderQuestion();
+    } else {
+      this.showResults();
+    }
+  }
+  
+  showResults() {
+    const percentage = (this.score / this.questions.length) * 100;
+    this.questionCard.innerHTML = `
+      <div class="results">
+        <div class="score">${percentage}%</div>
+        <p>Has acertado ${this.score} de ${this.questions.length} preguntas</p>
+        <button class="btn btn-primary" onclick="location.reload()">Repetir test</button>
+      </div>
+    `;
+    this.nextBtn.style.display = 'none';
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+  new TestApp();
+});
+</script>
+</body></html>
