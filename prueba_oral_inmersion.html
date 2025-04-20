@@ -1,0 +1,383 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Pronunciación</title>
+    <style>
+	
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #1a73e8;
+}
+
+.phrase-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+#randomPhrase {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1a73e8;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #1557b0;
+}
+
+button svg {
+    fill: currentColor;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #ccc;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.hidden {
+    display: none;
+}
+
+#accuracy {
+    font-weight: bold;
+}
+
+.recording {
+    animation: pulse 1.5s infinite;
+}
+
+.error {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.success-message {
+    color: #388e3c;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#nextPhraseBtn {
+    background-color: #388e3c;
+    margin: 15px auto;
+    display: none;
+}
+
+#nextPhraseBtn:hover {
+    background-color: #2e7d32;
+}	
+	
+	</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prueba oral</h1>
+        <div class="phrase-container">
+            <p id="randomPhrase"></p>
+            <button id="playPhrase">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M3,9v6h4l5,5V4L7,9H3z M16.5,12c0-1.77-1.02-3.29-2.5-4.03v8.05C15.48,15.29,16.5,13.77,16.5,12z"/>
+                </svg>
+                Escuchar
+            </button>
+        </div>
+        
+        <div class="controls">
+            <button id="startRecording">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12,14c1.66,0,3-1.34,3-3V5c0-1.66-1.34-3-3-3S9,3.34,9,5v6C9,12.66,10.34,14,12,14z"/>
+                    <path d="M17,11c0,2.76-2.24,5-5,5s-5-2.24-5-5H5c0,3.53,2.61,6.43,6,6.92V21h2v-3.08c3.39-0.49,6-3.39,6-6.92H17z"/>
+                </svg>
+                Grabar
+            </button>
+        </div>
+
+        <div id="result" class="result hidden">
+            <p>Tu pronunciación: <span id="spokenText"></span></p>
+            <p id="accuracy"></p>
+            <button id="playRecording" disabled>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                </svg>
+                Reproducir grabación
+            </button>
+            <button id="nextPhraseBtn" onclick="getRandomPhrase()">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                </svg>
+                Siguiente frase
+            </button>
+        </div>
+		
+		
+   <center><footer class="footer">
+	 <a href="https://estudianando.github.io/">
+		<img src="logo.png" width="150" height="51" alt="mi logo">
+	 </a>
+    
+	
+	
+	
+	<!--
+	
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                </svg>
+            </a>
+            <a href="https://youtube.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+                </svg>
+            </a>
+            <a href="https://facebook.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com" target="_blank">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+            </a>
+        </div>
+		
+	-->	
+	<br><br>
+        <p class="copyright">Copyright 2025 - All Rights Reserved</p>
+    </footer></center>
+
+		
+    </div>
+    <script>
+
+const phrases = [
+
+	"La inmersión lingüística es una forma de aprender un idioma rodeándote de él todos los días",
+	"Gracias a los estímulos visuales y auditivos Tomás puede aprender aunque no entienda todas las palabras",
+	"Escuchar programas de radio ayuda a mejorar la comprensión auditiva",
+	"Tomás quiere mejorar su expresión oral hablando con personas nativas",
+	"Al principio cometía muchos errores pero poco a poco fue mejorando",
+	"Ver televisión y escuchar música son técnicas que forman parte de una buena inmersión",
+	"Su objetivo es llegar al nivel B1 de español en seis meses",
+	"Aprender un idioma con esta técnica es una forma natural divertida y efectiva"
+
+];
+
+let currentPhrase = '';
+let usedPhrases = new Set();
+const randomPhraseElement = document.getElementById('randomPhrase');
+const playPhraseButton = document.getElementById('playPhrase');
+const startRecordingButton = document.getElementById('startRecording');
+const resultDiv = document.getElementById('result');
+const spokenTextElement = document.getElementById('spokenText');
+const accuracyElement = document.getElementById('accuracy');
+const playRecordingButton = document.getElementById('playRecording');
+
+// Speech Recognition setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = 'es-ES';
+recognition.continuous = false;
+recognition.interimResults = false;
+
+// Speech synthesis setup
+const synth = window.speechSynthesis;
+
+// Media Recorder setup
+let mediaRecorder;
+let audioChunks = [];
+let lastRecordedAudio = null;
+
+function getRandomPhrase() {
+    // If all phrases have been used, show completion message
+    if (usedPhrases.size === phrases.length) {
+        randomPhraseElement.textContent = "¡Has terminado todas las frases, buen trabajo!";
+        randomPhraseElement.classList.add('success-message');
+        playPhraseButton.style.display = 'none';
+        startRecordingButton.style.display = 'none';
+        resultDiv.classList.add('hidden');
+        return;
+    }
+
+    // Get a random phrase that hasn't been used yet
+    let newPhrase;
+    do {
+        newPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    } while (usedPhrases.has(newPhrase));
+
+    currentPhrase = newPhrase;
+    usedPhrases.add(currentPhrase);
+    randomPhraseElement.textContent = currentPhrase;
+    
+    // Hide results when moving to next phrase
+    resultDiv.classList.add('hidden');
+    spokenTextElement.textContent = '';
+    accuracyElement.textContent = '';
+    playRecordingButton.disabled = true;
+    lastRecordedAudio = null;
+}
+
+function speakPhrase() {
+    const utterance = new SpeechSynthesisUtterance(currentPhrase);
+    utterance.lang = 'es-ES';
+    synth.speak(utterance);
+}
+
+function calculateSimilarity(str1, str2) {
+    str1 = str1.toLowerCase();
+    str2 = str2.toLowerCase();
+    
+    if (str1 === str2) return 100;
+    
+    const words1 = str1.split(' ');
+    const words2 = str2.split(' ');
+    let matchingWords = 0;
+    
+    words1.forEach(word => {
+        if (words2.includes(word)) matchingWords++;
+    });
+    
+    return Math.round((matchingWords / Math.max(words1.length, words2.length)) * 100);
+}
+
+playPhraseButton.addEventListener('click', speakPhrase);
+
+async function startRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
+        });
+
+        mediaRecorder.addEventListener('stop', () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            lastRecordedAudio = URL.createObjectURL(audioBlob);
+            playRecordingButton.disabled = false;
+        });
+
+        mediaRecorder.start();
+        recognition.start();
+        startRecordingButton.classList.add('recording');
+        startRecordingButton.textContent = 'Grabando...';
+    } catch (err) {
+        console.error('Error accessing microphone:', err);
+        alert('No se pudo acceder al micrófono. Por favor, asegúrate de que tienes un micrófono conectado y has dado permiso para usarlo.');
+    }
+}
+
+startRecordingButton.addEventListener('click', startRecording);
+
+recognition.onresult = (event) => {
+    const spokenText = event.results[0][0].transcript;
+    spokenTextElement.textContent = spokenText;
+    
+    const accuracy = calculateSimilarity(currentPhrase, spokenText);
+    accuracyElement.textContent = `Precisión: ${accuracy}%`;
+    
+    if (accuracy < 30) {
+        accuracyElement.textContent = "No se ha reconocido la voz. Inténtalo de nuevo";
+        accuracyElement.classList.add('error');
+        document.getElementById('nextPhraseBtn').style.display = 'none';
+    } else {
+        accuracyElement.classList.remove('error');
+        if (accuracy === 100) {
+            document.getElementById('nextPhraseBtn').style.display = 'flex';
+        } else {
+            document.getElementById('nextPhraseBtn').style.display = 'none';
+        }
+    }
+    
+    resultDiv.classList.remove('hidden');
+};
+
+recognition.onend = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+    
+    startRecordingButton.classList.remove('recording');
+    startRecordingButton.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12,14c1.66,0,3-1.34,3-3V5c0-1.66-1.34-3-3-3S9,3.34,9,5v6C9,12.66,10.34,14,12,14z"/>
+            <path d="M17,11c0,2.76-2.24,5-5,5s-5-2.24-5-5H5c0,3.53,2.61,6.43,6,6.92V21h2v-3.08c3.39-0.49,6-3.39,6-6.92H17z"/>
+        </svg>
+        Grabar
+    `;
+};
+
+playRecordingButton.addEventListener('click', () => {
+    if (lastRecordedAudio) {
+        const audio = new Audio(lastRecordedAudio);
+        audio.play();
+    }
+});
+
+// Initialize with a random phrase
+getRandomPhrase();	
+	
+	</script>
+</body>
+</html>
